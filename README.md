@@ -1,4 +1,4 @@
-# docker-db-tools ![sxapi](https://img.shields.io/badge/latest-v0.0.1-blue.svg)
+# docker-db-tools ![sxapi](https://img.shields.io/badge/latest-v0.0.2-blue.svg)
 
 Container for database management with mysql and couchbase backend
 
