@@ -1,14 +1,12 @@
 #!/bin/bash
 
-TOOLS_VERSION="dev"
-MYSQL_DUMP_DATAFILE="data.sql"
-MYSQL_DUMP_SCHEMAFILE="schema.sql"
-COUCHBASE_DUMP_DATAFILE="data.json"
 OS=`cat /etc/os-release | grep "PRETTY_NAME" | sed 's/PRETTY_NAME=//g' | sed 's/["]//g' | awk '{print $1}'`
 
 function displayStartTools {
     echo "==================================" 
-    echo "= SXV4 api Dev tools (version $TOOLS_VERSION)"
+    echo "= STARTX db-tools (version $TOOLS_VERSION)"
+    echo "= see https://github.com/startxfr/docker-db-tools/blob/master/README.md"
+    echo "= --------------------------------" 
     echo "= version : $TOOLS_VERSION"
     echo "= OS      : $OS"
     echo "= host    : $HOSTNAME"
@@ -168,17 +166,34 @@ function displayNoAction {
 }
 
 function checkMysqlEnv {
-    if [ -z "$MYSQL_HOST" ]; then
-        echo "Need to set MYSQL_HOST"
-        exit 128;
-    fi 
-    if [ -z "$MYSQL_USER" ]; then
-        echo "Need to set MYSQL_USER"
-        exit 128;
-    fi 
-    if [ -z "$MYSQL_PASSWORD" ]; then
-        echo "Need to set MYSQL_PASSWORD"
-        exit 128;
+    if [ ! -z "$DBM_ENV_MARIADB_VERSION" ]; then
+        echo "Use mysql linked container information"
+        echo "server version : $DBM_ENV_MARIADB_VERSION"
+        if [ -z "$DBM_PORT_3306_TCP_ADDR" ]; then
+            echo "Need to expose port 3306 in your mysql container"
+            exit 128;
+        fi 
+        MYSQL_HOST="$DBM_PORT_3306_TCP_ADDR"
+        MYSQL_USER="root"
+        if [ -z "$DBM_ENV_MYSQL_ROOT_PASSWORD" ]; then
+            echo "Need to set MYSQL_ROOT_PASSWORD environment var in your mysql container"
+            exit 128;
+        fi 
+        MYSQL_PASSWORD="$DBM_ENV_MYSQL_ROOT_PASSWORD"
+    else
+        echo "No mysql linked container labeled 'dbm'"
+        if [ -z "$MYSQL_HOST" ]; then
+            echo "Need to set MYSQL_HOST"
+            exit 128;
+        fi 
+        if [ -z "$MYSQL_USER" ]; then
+            echo "Need to set MYSQL_USER"
+            exit 128;
+        fi 
+        if [ -z "$MYSQL_PASSWORD" ]; then
+            echo "Need to set MYSQL_PASSWORD"
+            exit 128;
+        fi 
     fi 
     if [ -z "$MYSQL_DATABASE" ]; then
         echo "Need to set MYSQL_DATABASE"
@@ -370,13 +385,25 @@ function doMysqlReset {
 }
 
 function checkCouchbaseEnv {
-    if [ -z "$COUCHBASE_HOST" ]; then
-        echo "Need to set COUCHBASE_HOST"
-        exit 128;
-    fi 
-    if [ -z "$COUCHBASE_PORT" ]; then
-        COUCHBASE_PORT=8091
-    fi 
+    if [ ! -z "$DBC_PORT_8091_TCP_START" ]; then
+        echo "Use couchbase linked container information"
+        echo "server point : $DBC_PORT_8091_TCP_START"
+        if [ -z "$DBC_PORT_8091_TCP_ADDR" ]; then
+            echo "Need to expose port 8091 from your couchbase container"
+            exit 128;
+        fi 
+        COUCHBASE_HOST="$DBC_PORT_8091_TCP_ADDR"
+        COUCHBASE_PORT="$DBC_PORT_8091_TCP_PORT_START"
+    else
+        echo "No mysql linked container labeled 'dbc'"
+        if [ -z "$COUCHBASE_HOST" ]; then
+            echo "Need to set COUCHBASE_HOST"
+            exit 128;
+        fi 
+        if [ -z "$COUCHBASE_PORT" ]; then
+            COUCHBASE_PORT=8091
+        fi 
+    fi
     if [ -z "$COUCHBASE_BUCKET" ]; then
         echo "Need to set COUCHBASE_BUCKET"
         exit 128;

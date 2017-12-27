@@ -2,26 +2,19 @@ app:
   build: ./
   container_name: "startx-db-tools"
   links:
-    - db-mysql
-    - db-couchbase
+    - db-mysql:dbm
+    - db-couchbase:dbc
   environment:
-   - MYSQL_HOST=db-mysql
-   - MYSQL_USER=root
-   - MYSQL_PASSWORD=root
-   - MYSQL_DATABASE=dev
-   - MYSQL_DATABASE_USER=dev
-   - MYSQL_DATABASE_PASSWORD=dev
-   - MYSQL_DUMP_DIR=/data/mysql-dump
-   - MYSQL_DUMP_ISEXTENDED=true
-   - COUCHBASE_HOST=db-couchbase
-   - COUCHBASE_USER=dev
-   - COUCHBASE_PASSWORD=dev
-   - COUCHBASE_BUCKET=dev
-   - COUCHBASE_DUMP_DIR=/data/couchbase-dump
+   - MYSQL_DATABASE=startx_dev
+   - MYSQL_DATABASE_USER=startx_dev
+   - MYSQL_DATABASE_PASSWORD=startx_dev
+   - COUCHBASE_USER=startx_dev
+   - COUCHBASE_PASSWORD=startx_dev
+   - COUCHBASE_BUCKET=startx_dev
   volumes:
     - "./mounts/couchbase-dump:/data/couchbase-dump:Z"
     - "./mounts/mysql-dump:/data/mysql-dump:Z"
-#    - "./tools.sh:/bin/sxv4_api_tools:Z"
+    - "./tools.sh:/bin/sxv4_api_tools:Z"
   command: ["init"]
 
 db-mysql:
