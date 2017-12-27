@@ -12,8 +12,8 @@ app:
    - COUCHBASE_PASSWORD=startx_dev
    - COUCHBASE_BUCKET=startx_dev
   volumes:
-    - "./mounts/couchbase-dump:/data/couchbase-dump:Z"
-    - "./mounts/mysql-dump:/data/mysql-dump:Z"
+    - "./mounts/couchbase:/data/couchbase:Z"
+    - "./mounts/mysql:/data/mysql:Z"
     - "./tools.sh:/bin/sxv4_api_tools:Z"
   command: ["init"]
 

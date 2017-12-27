@@ -9,16 +9,16 @@ COPY process-mysqldump /bin/sxv4_api_tools-process-mysqldump
 COPY tools.sh /bin/sxv4_api_tools
 RUN chmod ug+x /bin/sxv4_api_tools
 
-VOLUME /data/couchbase-dump
-VOLUME /data/mysql-dump
+VOLUME /data/couchbase
+VOLUME /data/mysql
 
 USER couchbase
 
-ENV TOOLS_VERSION="0.0.10" \
-    MYSQL_DUMP_DIR=/data/mysql-dump \
+ENV TOOLS_VERSION="0.0.11" \
+    MYSQL_DUMP_DIR=/data/mysql \
     MYSQL_DUMP_DATAFILE="data.sql" \
     MYSQL_DUMP_SCHEMAFILE="schema.sql" \
-    COUCHBASE_DUMP_DIR=/data/couchbase-dump \
+    COUCHBASE_DUMP_DIR=/data/couchbase \
     COUCHBASE_DUMP_DATAFILE="data.json" \
     MYSQL_HOST=dbm \
     MYSQL_USER=root \

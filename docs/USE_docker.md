@@ -3,7 +3,6 @@
 You can use startx db-tools within a container by using our public 
 [official sxapi docker image](https://hub.docker.com/r/startx/db-tools/)
 
-
 ## Want to try ?
 
 To try this application before working on it, the easiest way 
@@ -36,21 +35,22 @@ This will update your local docker image cache.
 docker pull startx/db-tools:latest
 ```
 
+### 3. Create your database's init files 
 
-### 3. Create your database init files 
-
-Create the following file structure
+Create the following file structure. 
+You can skip the `mysql` directory if you don't plan to use this container with a mysql backend. 
+You can skip the `couchbase` directory if you don't plan to use this container with a couchbase backend. 
 
 ```bash
 mkdir mounts
-mkdir mounts/mysql-dump
-touch mounts/mysql-dump/schema.sql
-touch mounts/mysql-dump/data.sql
-mkdir mounts/couchbase-dump
-touch mounts/couchbase-dump/data.json
+mkdir mounts/mysql
+touch mounts/mysql/schema.sql
+touch mounts/mysql/data.sql
+mkdir mounts/couchbase
+touch mounts/couchbase/data.json
 ```
 
-Example for schema.sql
+Example for `mounts/mysql/schema.sql`
 ```sql
 DROP TABLE IF EXISTS `app`;
 CREATE TABLE `app` (
@@ -63,7 +63,7 @@ CREATE TABLE `app` (
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 ```
 
-Example for data.sql
+Example for `mounts/mysql/data.sql`
 ```sql
 SET names 'utf8';
 LOCK TABLES `app` WRITE;
@@ -72,10 +72,10 @@ INSERT INTO `app` VALUES
 UNLOCK TABLES;
 ```
 
-Example for data.json
+Example for `mounts/couchbase/data.json`
 ```javascript
 [
-    {"_id":"app::version","app":"startx-db-tools","stage":"dev","version":"0.0.10"}
+    {"_id":"app::version","app":"startx-db-tools","stage":"dev","version":"0.0.11"}
 ]
 ```
 
@@ -85,8 +85,8 @@ without action
 
 ```bash
 docker run -d \
-    --link db-mysql \
-    --link db-couchbase \
+    --link db-mysql:dbm \
+    --link db-couchbase:dbc \
     startx/db-tools
 ```
 
@@ -94,23 +94,16 @@ or using environement variable and init global action
 
 ```bash
 docker run -d \
-    --link db-mysql \
-    --link db-couchbase \
-    -v ./mounts/mysql-dump:/data/mysql-dump:Z \
-    -v ./mounts/couchbase-dump:/data/couchbase-dump:Z \
-    --env MYSQL_HOST=db-mysql \
-    --env MYSQL_USER=root \
-    --env MYSQL_PASSWORD=root \
+    --link db-mysql:dbm \
+    --link db-couchbase:dbc \
+    -v ./mounts/mysql:/data/mysql:Z \
+    -v ./mounts/couchbase:/data/couchbase:Z \
     --env MYSQL_DATABASE=dev \
     --env MYSQL_DATABASE_USER=dev \
     --env MYSQL_DATABASE_PASSWORD=dev \
-    --env MYSQL_DUMP_DIR=/tmp/mysql-dump \
-    --env MYSQL_DUMP_ISEXTENDED=true \
-    --env COUCHBASE_HOST=db-couchbase \
     --env COUCHBASE_USER=dev \
     --env COUCHBASE_PASSWORD=dev \
     --env COUCHBASE_BUCKET=dev \
-    --env COUCHBASE_DUMP_DIR=/tmp/couchbase-dump \
     startx/db-tools \
     init
 ```
@@ -118,3 +111,19 @@ docker run -d \
 ### 6. See result
 
 You can connect to your database backend to see created database or look at volumes 
+
+## Container environement
+
+### Container linked database
+
+Only 2 backend are actually supported : 
+- mysql : use mariadb 5.5 client and mysqldump. Should be based on 
+- couchbase : use couchbase enterprise 4.5 client tools
+
+
+| Param           | Mandatory | Type | default | Description
+|-----------------|:---------:|:----:|---------|---------------
+| **duration**    | no        | int  | 3600    | time in second for a session length. Could be used by transport (ex: cookie) or backend (ex: mysql) to control session duration. <br> If this time is exceed, session will return an error response. Used in conjunction with stop field property in mysql backend or cookie duration in cookie transport type.
+| **auto_create** | no        | bool | false   | If transport type could not find a session ID, create a new session transparently
+| **transport**   | no        | obj  | null    | An object describing the transport type used to get and set session ID. See [transport section](#transport-using-type)
+| **backend**     | no        | obj  | null    | An object describing the backend type used to store and retrive session context. See [backend section](#backend-using-type)
