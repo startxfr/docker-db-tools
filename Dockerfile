@@ -1,7 +1,7 @@
-FROM couchbase
+FROM couchbase:enterprise-5.0.1
 RUN apt-get update && \
     apt-get dist-upgrade && \
-    apt-get install -y mariadb-server mariadb-client && \
+    apt-get install -y mariadb-server-5.5 mariadb-client-5.5 && \
     apt-get clean
 ADD tools.sh /bin/sxv4_api_tools
 ADD process-mysqldump /bin/sxv4_api_tools-process-mysqldump
