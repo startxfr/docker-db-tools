@@ -1,17 +1,17 @@
-# docker-db-tools ![sxapi](https://img.shields.io/badge/latest-v0.0.8-blue.svg)
+# docker-db-tools ![sxapi](https://img.shields.io/badge/latest-v0.0.9-blue.svg)
 
 Container for database management with mysql and couchbase backend
 
-[![Build Status](https://travis-ci.org/startxfr/docker-db-tools.svg?branch=dev)](https://travis-ci.org/startxfr/docker-db-tools) 
+[![Build Status](https://travis-ci.org/startxfr/docker-db-tools.svg?branch=master)](https://travis-ci.org/startxfr/docker-db-tools) 
 [![docker build](https://img.shields.io/docker/build/startx/db-tools.svg)](https://hub.docker.com/r/startx/db-tools/) 
 [![last commit](https://img.shields.io/github/last-commit/startxfr/docker-db-tools.svg)](https://github.com/startxfr/docker-db-tools) 
 [![licence](https://img.shields.io/github/license/startxfr/docker-db-tools.svg)](https://github.com/startxfr/docker-db-tools) 
 
 ## Getting Started
 
-- [Docker user guide](https://github.com/startxfr/docker-db-tools/tree/dev/docs/USE_docker.md)
-- [Docker-compose user guide](https://github.com/startxfr/docker-db-tools/tree/dev/docs/USE_compose.md)
-- [Openshift user guide](https://github.com/startxfr/docker-db-tools/tree/dev/docs/USE_openshift.md)
+- [Docker user guide](https://github.com/startxfr/docker-db-tools/tree/master/docs/USE_docker.md)
+- [Docker-compose user guide](https://github.com/startxfr/docker-db-tools/tree/master/docs/USE_compose.md)
+- [Openshift user guide](https://github.com/startxfr/docker-db-tools/tree/master/docs/USE_openshift.md)
 
 ## Troubleshooting
 
@@ -25,12 +25,12 @@ If you run into difficulties installing or running db-tools, you can [create an 
 
 ## Contributing
 
-Read the [contributing guide](https://github.com/startxfr/sxapi-core/tree/dev/docs/5.Contribute.md) for details on our code of conduct, and the process for submitting pull requests to us.
+Read the [contributing guide](https://github.com/startxfr/sxapi-core/tree/master/docs/5.Contribute.md) for details on our code of conduct, and the process for submitting pull requests to us.
 
 ## Authors
 
-This project is mainly developped by the [startx](https://www.startx.fr) dev team. You can see the complete list of contributors who participated in this project by reading [CONTRIBUTORS.md](https://github.com/startxfr/sxapi-core/tree/dev/docs/CONTRIBUTORS.md).
+This project is mainly developped by the [startx](https://www.startx.fr) dev team. You can see the complete list of contributors who participated in this project by reading [CONTRIBUTORS.md](https://github.com/startxfr/sxapi-core/tree/master/docs/CONTRIBUTORS.md).
 
 ## License
 
-This project is licensed under the Apache License Version 2.0 - see the [LICENSE](https://github.com/startxfr/docker-db-tools/tree/dev/LICENSE) file for details
+This project is licensed under the Apache License Version 2.0 - see the [LICENSE](https://github.com/startxfr/docker-db-tools/tree/master/LICENSE) file for details
