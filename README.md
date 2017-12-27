@@ -1,4 +1,4 @@
-# docker-db-tools ![sxapi](https://img.shields.io/badge/latest-v0.0.11-blue.svg)
+# docker-db-tools ![sxapi](https://img.shields.io/badge/latest-v0.0.12-blue.svg)
 
 Container for managing data from a mysql and/or a couchbase backend. 
 Linked to a mysql and/or a couchbase backend you can easyly create, save and restore 
@@ -14,18 +14,18 @@ content from one database or one bucket.
 
 ## Actions you can perform
 
-- mysql
-  - create : create user, database and load schema and data into it
-  - delete : delete user and database
-  - reset  : delete and recreate user and database
-  - dump   : save database schema and data
-- couchbase
-  - create : create bucket and load data into it
-  - delete : delete bucket
-  - reset  : delete and recreate bucket
-  - dump   : save bucket data
-- init   : create mysql and couchbase environement
-- dump   : save mysql and couchbase environement
+| Service   | Action   | Description
+|-----------|:--------:|:---------------
+| init      |          | create mysql and couchbase environement
+| dump      |          | save mysql and couchbase environement
+| mysql     | create   | create user, database and load schema and data into it
+| mysql     | delete   | delete user and database
+| mysql     | reset    | delete and recreate user and database
+| mysql     | dump     | save database schema and data
+| couchbase | create   | create bucket and load data into it
+| couchbase | delete   | delete bucket
+| couchbase | reset    | delete and recreate bucket
+| couchbase | dump     | save bucket data
 
 Initialize mysql and couchbase backend
 ```bash
@@ -56,32 +56,33 @@ docker run -d --link db-couchbase:dbc -v ./:/data/couchbase:rw startx/db-tools c
 
 you must tag properly the database service when you link your containers. 
 
-- dbm : a mysql container running offical mariadb:5.5 image
-- dbc : a couchbase container running offical couchbase:couchbase:enterprise-5.0.1 image
+| Link tag  | Description
+|-----------|:------------
+| dbm       | mysql container running offical mariadb:5.5 image
+| dbc       | couchbase container running offical couchbase:couchbase:enterprise-5.0.1 image
 
+Initialize mysql and couchbase linked database
 ```bash
-docker run -d \
-    --link db-mysql:dbm \
-    --link db-couchbase:dbc \
-    startx/db-tools \
-    init
+docker run -d --link db-mysql:dbm --link db-couchbase:dbc startx/db-tools init
 ```
 
 ## Data volumes
 
-you must tag properly the database service when you link your containers. 
+you must use the appropriate data volumes and fill them with appropriate file to get your data
+loaded or dumped properly.
 
-- /data/mysql : a volume containing one schema.sql file and one data.sql file
-- /data/couchbase : a volume containing one data.json file
+| Container volume | Description
+|------------------|:------------
+| /data/mysql      | volume containing a schema.sql file + a data.sql file
+| /data/couchbase  | volume containing one data.json file
 
+Dump mysql linked database into local directory
 ```bash
-docker run -d \
-    --link db-mysql:dbm \
-    --link db-couchbase:dbc \
-    -v ./mounts/mysql:/data/mysql:rw \
-    -v ./mounts/couchbase:/data/couchbase:rw \
-    startx/db-tools \
-    dump
+docker run -d --link db-mysql:dbm -v ./:/data/mysql:rw startx/db-tools mysql dump
+```
+Dump couchbase linked bucket into local directory
+```bash
+docker run -d --link db-couchbase:dbc -v ./:/data/couchbase:rw startx/db-tools couchbase dump
 ```
 
 ## Troubleshooting

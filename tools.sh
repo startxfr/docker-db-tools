@@ -141,7 +141,7 @@ function displayStartTools {
 function displayNoService { 
     echo "= service : NOT FOUND"
     echo "==================================" 
-    echo "You must run 'sxv4_api_tools <service>' or"
+    echo "You must run 'startx_dbtools <service>' or"
     echo "docker run ≤tool_image> <service> with a service name or a global action"
     echo "Two service name are available :"
     echo "- mysql : perform actions against the mysql backend"
@@ -155,7 +155,7 @@ function displayNoService {
 function displayNoAction { 
     echo "= action  : NOT FOUND"
     echo "==================================" 
-    echo "You must run 'sxv4_api_tools $1 <action>' with an action name"
+    echo "You must run 'startx_dbtools $1 <action>' with an action name"
     echo "or docker run ≤tool_image>  $1 <service> with an action name"
     echo "Four actions are available for $1 :"
     echo "- dump   : Dump database data into readable volume"
@@ -269,7 +269,7 @@ function dumpMysqlDatabaseData {
             $MYSQL_DATABASE > $MYSQL_DUMP_DIR/dd.sql
             echo -e "SET names 'utf8';\n$(cat $MYSQL_DUMP_DIR/dd.sql)" > $MYSQL_DUMP_DIR/dd2.sql
             
-            if(/bin/sxv4_api_tools-process-mysqldump $MYSQL_DUMP_DIR/dd2.sql >  $MYSQL_DUMP_DIR/dd3.sql == 0) then 
+            if(/bin/startx_dbtools-process-mysqldump $MYSQL_DUMP_DIR/dd2.sql >  $MYSQL_DUMP_DIR/dd3.sql == 0) then 
                 echo "OK mysql extended worked fine. Get a multiple line dump"
                 mv $MYSQL_DUMP_DIR/dd3.sql $MYSQL_DUMP_DIR/$MYSQL_DUMP_DATAFILE
             else
@@ -315,8 +315,8 @@ function doMysqlCreate {
     echo "host        : $MYSQL_HOST"
     if checkMysqlDatabaseExist; then
         echo "! Database already exist"
-        echo "You must run 'sxv4_api_tools mysql delete' before this action"
-        echo "You can also run 'sxv4_api_tools mysql reset' to perform delete a create all in one"
+        echo "You must run 'startx_dbtools mysql delete' before this action"
+        echo "You can also run 'startx_dbtools mysql reset' to perform delete a create all in one"
         exit 1;
     else
         echo "source dir  : $MYSQL_DUMP_DIR"
@@ -520,8 +520,8 @@ function doCouchbaseCreate {
     fi
     if checkCouchbaseBucketExist; then
         echo "! Bucket already exist"
-        echo "You must run 'sxv4_api_tools couchbase delete' before this action"
-        echo "You can also run 'sxv4_api_tools couchbase reset' to perform delete a create all in one"
+        echo "You must run 'startx_dbtools couchbase delete' before this action"
+        echo "You can also run 'startx_dbtools couchbase reset' to perform delete a create all in one"
         exit 1;
     else
         echo "source dir  : $COUCHBASE_DUMP_DIR"

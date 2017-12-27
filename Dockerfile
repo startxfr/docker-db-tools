@@ -5,16 +5,16 @@ RUN apt-get update && \
     apt-get install -y mariadb-server-5.5 mariadb-client-5.5 && \
     apt-get clean
 COPY mounts /data
-COPY process-mysqldump /bin/sxv4_api_tools-process-mysqldump
-COPY tools.sh /bin/sxv4_api_tools
-RUN chmod ug+x /bin/sxv4_api_tools
+COPY process-mysqldump /bin/startx_dbtools-process-mysqldump
+COPY tools.sh /bin/startx_dbtools
+RUN chmod ug+x /bin/startx_dbtools
 
 VOLUME /data/couchbase
 VOLUME /data/mysql
 
 USER couchbase
 
-ENV TOOLS_VERSION="0.0.11" \
+ENV TOOLS_VERSION="0.0.12" \
     MYSQL_DUMP_DIR=/data/mysql \
     MYSQL_DUMP_DATAFILE="data.sql" \
     MYSQL_DUMP_SCHEMAFILE="schema.sql" \
@@ -32,4 +32,4 @@ ENV TOOLS_VERSION="0.0.11" \
     COUCHBASE_PASSWORD=dev \
     COUCHBASE_BUCKET=dev
 
-ENTRYPOINT ["/bin/sxv4_api_tools"]
+ENTRYPOINT ["/bin/startx_dbtools"]
