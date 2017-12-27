@@ -134,6 +134,14 @@ function displayStartTools {
         echo "Dump terminated"
         exit 0;
     else
+    elif  [  "$1" == "debug"  ]; then
+        echo "= action  : debug"
+        echo "==================================" 
+        printenv
+        echo "Debug terminated"
+        exit 0;
+    else
+        printenv
         displayNoService
     fi
 }
