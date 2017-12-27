@@ -5,7 +5,7 @@ env:
     - secure: "lRKQSTlWjO5NWk+IgonFLw04aJHQ7NZNUDPbKHofeU88e4KRbHOzgkGjHA5nq3Htu/2P379LlRI6beaeK1Ptw7xTTRPxMGPcYCXFrZlew75G8K9lJwNQ8FEOzOz1bV4GiCUxOnFVv1QAJWW0BHwQLqF8m8E/QTGq8ejkb+7rhrHtreJ17iEZXV55qA7s6ny6iBE7Evwo37vaUp5gTfHUp1LXglzjUMjpvPuPICamzv9f9xi/cSJeJK+1ARA8c8SHskmjOFnlh9WNlxWOMiPLp7P6glZuCETQalYHDfQoEtzv8ocE+GSShojkL+pCje1PSxQ5tiBfQqMuXLPK/a/1QMJwSk49xwJH11EV11fxTQqJxZ0xUfs4YJ8VjyNBAaGhFIAJ4jcIx05SrK6bSJsmkzbLLOT/mTn1+aYAaRp02NQdcWbs9k512IOC3zbMcB8aoPUYZlMCON9eqVaeZtIv8PFOLQPI/xxrpyB3pZ4GX7gDbBIY1UbZez3/59/REuF5NaMwHFRz/a1Andc4yVYyN0HITmEEshEWAaw+alVpG5oKTLR+sy5cOrczDNvqjJl1ji7fyhStjCOLHOBYMH+3y02b9M+iXIK+JEOHBnps4vkDDuwQldT4FCIVNxpwyFs/fap8X0LK8HFhahrbE7RLUKRSQAd7yD9WqgJaLmFr+2M=" # DOCKER_PASS
     - COMMIT=${TRAVIS_COMMIT::8}
     - REPO=startx/db-tools
-    - RELEASE=0.0.6
+    - RELEASE=0.0.7
 
 sudo: required
 
@@ -13,7 +13,9 @@ services:
   - docker
 
 before_install:
-- docker pull couchbase:latest
+- docker pull couchbase:enterprise-5.0.1
+- docker pull mariadb:5.5
+- docker pull phpmyadmin/phpmyadmin
 - docker images
 
 script: ./travis-test.sh
@@ -23,5 +25,5 @@ after_success:
   - export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH ; fi`
   - docker build -f Dockerfile -t $REPO:$COMMIT .
   - docker tag $REPO:$COMMIT $REPO:$TAG
-  - docker tag $REPO:$COMMIT $REPO:v$RELEASE
+  - docker tag $REPO:$COMMIT $REPO:$RELEASE
   - docker push $REPO

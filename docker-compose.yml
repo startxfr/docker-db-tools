@@ -25,13 +25,13 @@ app:
   command: ["init"]
 
 db-mysql:
-  image: mariadb:latest
+  image: mariadb:5.5
   container_name: "startx-db-tools_mysql"
   environment:
    - MYSQL_ROOT_PASSWORD=root
    
 db-couchbase:
-  image: couchbase
+  image: couchbase:enterprise-5.0.1
   container_name: "startx-db-tools_couchbase"
   ports:
     - 8091-8094:8091-8094
