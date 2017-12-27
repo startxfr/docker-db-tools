@@ -28,4 +28,5 @@ curl -I http://localhost:1900 && echo ""
 curl -I http://localhost:1901 && echo ""
 curl -I http://localhost:8091 && echo ""
 
+echo "========> END TESTING APPLICATIONS"
 exit 0;
