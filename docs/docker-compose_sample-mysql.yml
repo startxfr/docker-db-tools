@@ -1,0 +1,28 @@
+app:
+  image: startx/db-tools:latest
+  links:
+    - db-mysql:dbm
+  environment:
+   - MYSQL_DATABASE=demo
+   - MYSQL_DATABASE_USER=my_user
+   - MYSQL_DATABASE_PASSWORD=my_pwd
+  command: ["mysql" , "create"]
+
+db-mysql:
+  image: mariadb:5.5
+  container_name: "startx-db-tools_mysql"
+  environment:
+   - MYSQL_ROOT_PASSWORD=root_pwd
+
+pma:
+  image: phpmyadmin/phpmyadmin
+  container_name: "startx-db-tools_pma"
+  links:
+    - db-mysql:db
+  environment:
+   - PMA_HOST=db
+   - PMA_USER=root
+   - PMA_PASSWORD=root_pwd
+   - PMA_ABSOLUTE_URI=http://localhost:1901
+  ports:
+    - "1901:80"

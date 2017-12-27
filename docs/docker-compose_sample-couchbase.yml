@@ -1,0 +1,16 @@
+app:
+  image: startx/db-tools:latest
+  links:
+    - db-couchbase:dbc
+  environment:
+   - COUCHBASE_USER=admin
+   - COUCHBASE_PASSWORD=admin_pwd
+   - COUCHBASE_BUCKET=demo
+  command: ["couchbase" , "create"]
+   
+db-couchbase:
+  image: couchbase:enterprise-5.0.1
+  container_name: "startx-db-tools_couchbase"
+  ports:
+    - 8091-8094:8091-8094
+    - 11210:11210

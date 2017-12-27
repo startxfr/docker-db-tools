@@ -9,10 +9,7 @@ To try this application before working on it, the easiest way
 is to use the container version. Follow theses steps to run
 a startx dbtools within the next couple of minutes. 
 (You can skip the first step if you already have [docker](https://www.docker.com)
-installed and running)<br>
-If your're experienced with docker and docker-compose, you can use our 
-[docker-compose.yml example](./docker-compose-sample.yml) and start reading
-the [linked service section](#linked-services).
+installed and running).
 
 ### 1. Install and start docker
 
@@ -78,7 +75,7 @@ UNLOCK TABLES;
 Example for `mounts/couchbase/data.json`
 ```javascript
 [
-    {"_id":"app::version","app":"startx-db-tools","stage":"dev","version":"0.0.15"}
+    {"_id":"app::version","app":"startx-db-tools","stage":"dev","version":"0.0.16"}
 ]
 ```
 
