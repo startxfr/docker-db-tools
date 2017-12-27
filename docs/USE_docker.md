@@ -7,9 +7,12 @@ You can use startx db-tools within a container by using our public
 
 To try this application before working on it, the easiest way 
 is to use the container version. Follow theses steps to run
-a sxapi application within the next couple of minutes. 
+a startx dbtools within the next couple of minutes. 
 (You can skip the first step if you already have [docker](https://www.docker.com)
-installed and running)
+installed and running)<br>
+If your're experienced with docker and docker-compose, you can use our 
+[docker-compose.yml example](./docker-compose-sample.yml) and start reading
+the [linked service section](#linked-services).
 
 ### 1. Install and start docker
 
@@ -75,7 +78,7 @@ UNLOCK TABLES;
 Example for `mounts/couchbase/data.json`
 ```javascript
 [
-    {"_id":"app::version","app":"startx-db-tools","stage":"dev","version":"0.0.14"}
+    {"_id":"app::version","app":"startx-db-tools","stage":"dev","version":"0.0.15"}
 ]
 ```
 
@@ -114,16 +117,75 @@ You can connect to your database backend to see created database or look at volu
 
 ## Container environement
 
-### Container linked database
+### Linked services
 
-Only 2 backend are actually supported : 
-- mysql : use mariadb 5.5 client and mysqldump. Should be based on 
-- couchbase : use couchbase enterprise 4.5 client tools
+Only 2 backend are actually supported
+
+| Backend   | Description
+|-----------|:------------
+| mysql     | mysql container running offical `mariadb:5.5` image
+| couchbase | couchbase container running offical `couchbase:couchbase:enterprise-5.0.1` image
 
 
-| Param           | Mandatory | Type | default | Description
-|-----------------|:---------:|:----:|---------|---------------
-| **duration**    | no        | int  | 3600    | time in second for a session length. Could be used by transport (ex: cookie) or backend (ex: mysql) to control session duration. <br> If this time is exceed, session will return an error response. Used in conjunction with stop field property in mysql backend or cookie duration in cookie transport type.
-| **auto_create** | no        | bool | false   | If transport type could not find a session ID, create a new session transparently
-| **transport**   | no        | obj  | null    | An object describing the transport type used to get and set session ID. See [transport section](#transport-using-type)
-| **backend**     | no        | obj  | null    | An object describing the backend type used to store and retrive session context. See [backend section](#backend-using-type)
+### Data volumes
+
+you must use the appropriate data volumes and fill them with appropriate file to get your data
+loaded or dumped properly.
+
+| Container volume   | Description
+|--------------------|:------------
+| `/data/mysql`      | volume containing a `schema.sql` file + a `data.sql` file
+| `/data/couchbase`  | volume containing one `data.json` file
+
+Dump mysql linked database into local directory
+```bash
+docker run -d --link db-mysql:dbm -v ./:/data/mysql:rw startx/db-tools mysql dump
+```
+Dump couchbase linked bucket into local directory
+```bash
+docker run -d --link db-couchbase:dbc -v ./:/data/couchbase:rw startx/db-tools couchbase dump
+```
+
+### Environement variables
+
+Using environement variable you can customize this tools and use it to interact with
+various kind of backend infrastructure (container, host, remote, IaaS, DBaaS)
+
+| Variable                 | Default         | Description
+|--------------------------|:---------------:|:---------------
+| MYSQL_DUMP_DIR           | /data/mysql     | Directory used for save and restore mysql dump (container internal path)
+| MYSQL_DUMP_DATAFILE      | data.sql        | Filename of the sql data dump file
+| MYSQL_DUMP_SCHEMAFILE    | schema.sql      | Filename of the sql schema dump file
+| MYSQL_DUMP_ISEXTENDED    | true            | Enable smart extended dump for fast load, readibility and versioning
+| MYSQL_HOST               | dbm             | Hostname of the mysql database. Could use whatever public IP or DSN.
+| MYSQL_USER               | root            | Mysql admin user authorized to create user and database
+| MYSQL_PASSWORD           | root            | Password for the mysql admin user
+| MYSQL_DATABASE           | dev             | Mysql database name to use or create
+| MYSQL_DATABASE_USER      | dev             | Mysql user of the database
+| MYSQL_DATABASE_PASSWORD  | dev             | Password for the mysql database user
+| COUCHBASE_DUMP_DIR       | /data/couchbase | Directory used for save and restore couchbase dump (container internal path)
+| COUCHBASE_DUMP_DATAFILE  | data.json       | Filename of the json data dump file
+| COUCHBASE_HOST           | dbc             | Hostname of the couchbase database. Could use whatever public IP or DSN.
+| COUCHBASE_USER           | dev             | Couchbase admin user authorized to create and delete buckets
+| COUCHBASE_PASSWORD       | dev             | Password for the couchbase admin user
+| COUCHBASE_BUCKET         | dev             | Couchbase bucket name to use or create
+
+Create a database `demo` + user `demo_user`. Load sample schema and data into database
+and allow `demo_user` to access this database only.
+```bash
+docker run -d --link db-mysql:dbm \
+    --env MYSQL_DATABASE=demo \
+    --env MYSQL_DATABASE_USER=demo_user \
+    --env MYSQL_DATABASE_PASSWORD=demo_pwd123
+    startx/db-tools mysql create
+```
+
+Create a bucket `demo` and load sample data into bucket. If couchbase cluster is not initialized,
+initialize it with a user 'cbAdmin'
+```bash
+docker run -d --link db-couchbase:dbc \
+    --env COUCHBASE_USER=cbAdmin \
+    --env COUCHBASE_PASSWORD=cbAdmin123 \
+    --env COUCHBASE_BUCKET=demo \
+    startx/db-tools couchbase create
+```

@@ -1,27 +1,22 @@
 app:
-  build: ./
-  container_name: "startx-db-tools"
+  image: startx/db-tools:latest
   links:
     - db-mysql:dbm
     - db-couchbase:dbc
   environment:
-   - MYSQL_DATABASE=startx_dev
-   - MYSQL_DATABASE_USER=startx_dev
-   - MYSQL_DATABASE_PASSWORD=startx_dev
-   - COUCHBASE_USER=startx_dev
-   - COUCHBASE_PASSWORD=startx_dev
-   - COUCHBASE_BUCKET=startx_dev
-  volumes:
-    - "./mounts/couchbase:/data/couchbase:Z"
-    - "./mounts/mysql:/data/mysql:Z"
-    - "./tools.sh:/bin/startx_dbtools:Z"
+   - MYSQL_DATABASE=demo
+   - MYSQL_DATABASE_USER=my_user
+   - MYSQL_DATABASE_PASSWORD=my_pwd
+   - COUCHBASE_USER=admin
+   - COUCHBASE_PASSWORD=admin_pwd
+   - COUCHBASE_BUCKET=demo
   command: ["init"]
 
 db-mysql:
   image: mariadb:5.5
   container_name: "startx-db-tools_mysql"
   environment:
-   - MYSQL_ROOT_PASSWORD=root
+   - MYSQL_ROOT_PASSWORD=root_pwd
    
 db-couchbase:
   image: couchbase:enterprise-5.0.1
@@ -38,9 +33,7 @@ pma:
   environment:
    - PMA_HOST=db
    - PMA_USER=root
-   - PMA_PASSWORD=root
-   - PMA_VERBOSE=true
-   - PMA_PORT=3306
+   - PMA_PASSWORD=root_pwd
    - PMA_ABSOLUTE_URI=http://localhost:1901
   ports:
     - "1901:80"
