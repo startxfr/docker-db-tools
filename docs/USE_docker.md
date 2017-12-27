@@ -74,7 +74,7 @@ UNLOCK TABLES;
 Example for data.json
 ```javascript
 [
-    {"_id":"app::version","app":"startx-db-tools","stage":"dev","version":"0.0.3"}
+    {"_id":"app::version","app":"startx-db-tools","stage":"dev","version":"0.0.5"}
 ]
 ```
 
