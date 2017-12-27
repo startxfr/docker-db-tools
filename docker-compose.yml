@@ -21,7 +21,7 @@ app:
   volumes:
     - "./mounts/couchbase-dump:/data/couchbase-dump:Z"
     - "./mounts/mysql-dump:/data/mysql-dump:Z"
-    - "./containers/tools/tools.sh:/bin/sxv4_api_tools:Z"
+#    - "./tools.sh:/bin/sxv4_api_tools:Z"
   command: ["init"]
 
 db-mysql:
