@@ -1,0 +1,4 @@
+/nbproject
+mounts/app-logs/*
+mounts/couchbase-data/*
+mounts/mysql-data/*
