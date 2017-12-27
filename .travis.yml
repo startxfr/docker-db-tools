@@ -1,3 +1,12 @@
+env:
+  global:
+    - secure: "dX5uLxzRbyBE6W9hzHdi92CiTwe6wKr5kFHemfI/bWZXYAtzvHlf5CRx21RBFa6iqBbAdQYIIaxfIKwFM3zDASOW1uXyoaZJa0mU7CzFiYfNpYZm3WviJ0Gsx384HopbtkpTQSDkMaWigg9dYnFc9ajhbholSeXJbblDOde2nZ+PKRb8KrBuSb3jI6NAfkFkh7lTuKruBzJi1AfOrNmeo3JF9GuUmekNMO95SXci2NSjddeLbBMbAmsD3UkR8+ZVvcdiXG8PeUD5H2wgA1F3QdBwFF/2I63JjW+T30avI3JfugXS6C/36RS+oZqHOvRDSTNr9gwDTXfQipbvbh5/bqnPqsiTbgeSbFj6JikXwZ5kAzeYjZd2kWegTghegtNu3rBtjOvdVUg8upjkVsiIe41O0GxUTJdelO8UM+Nx8E+WucYizDwcY6693buKLP7rpfCJdKGv+Ddkexa5yxtxixiwc28kqQIsO6uuryS1v/6kzcoG5E8OoNEzV0ZZfuGW5Da+TLg0/BEyJbzwsMBC6wTrHngr4TLQKVcy8Nvrs80mXW2gml8J/UywYAAvIaM4pWC5oJ24A34TCJx9+w2FuZigfO8mv6fnN2lfh0++CIyvKM4hwwcRBHb+ns+YQT5GJazzzTwk1/N/gBYVwGKwDmVkPBNtaQbOKleXtp1meWE=" # DOCKER_EMAIL
+    - secure: "zV4Ejmry3s3yNdUQasirsbtij1TRvX5vQxyGtuxfydDo//rqnHSPUPJrNYeKfPCzRhMYpX3wg10ERlPSXkIQrPhhiPRGeHmxKHHvAJeCzDKwe0kCnFfULr+CVk5NQRB9733WS7AnyAgDMo9+8M/ck4Azdnc3eJkpZc92+BFwirMXjNHeMUtIgKlQY/oA7iWlEhGSw02U4b3OJqIooP0gv0d9RvvLAzn/bwpIJ0vAx96xawRvBIPThXffDVP1jwwuG+laj5acETsROeHXhN1TGeqllaq75w4NjflP7M1JVSdRu467oX4no1H+ESkHiWI8ePtOxXbIXWka/HuyCb+ynDqdKDB3mtJqZ39e143sCuVUctJXm2mya1C7IkYKosLhhh9/AlMmTZGAEN9tcSlDbJrrORgT63DGyMBJFT7crQwzdCagfWFrWZGRKMwJZsd+tBtQZfK6LR+Wi5CBw0ZtdhnQw1f8dPWHP7VxmPGkuQ97cADp1ITMmDuH2B0F3DvUO7eDrRyXFizAOw2S0jr/KEC935F6UZPAydG0anmph6tGQ/szMvemj+AuZz3tKXoH4EBRwpJZ9zuu4xvOlIyh5qWH/b0i49yv9QZDcbEYzVwciUbOEqlJS99wkK6sxrGWBAq3z8kUgIGz6xODxoy7U4QX1u2tcq9G2zJyqd8IZw4=" # DOCKER_USER
+    - secure: "lRKQSTlWjO5NWk+IgonFLw04aJHQ7NZNUDPbKHofeU88e4KRbHOzgkGjHA5nq3Htu/2P379LlRI6beaeK1Ptw7xTTRPxMGPcYCXFrZlew75G8K9lJwNQ8FEOzOz1bV4GiCUxOnFVv1QAJWW0BHwQLqF8m8E/QTGq8ejkb+7rhrHtreJ17iEZXV55qA7s6ny6iBE7Evwo37vaUp5gTfHUp1LXglzjUMjpvPuPICamzv9f9xi/cSJeJK+1ARA8c8SHskmjOFnlh9WNlxWOMiPLp7P6glZuCETQalYHDfQoEtzv8ocE+GSShojkL+pCje1PSxQ5tiBfQqMuXLPK/a/1QMJwSk49xwJH11EV11fxTQqJxZ0xUfs4YJ8VjyNBAaGhFIAJ4jcIx05SrK6bSJsmkzbLLOT/mTn1+aYAaRp02NQdcWbs9k512IOC3zbMcB8aoPUYZlMCON9eqVaeZtIv8PFOLQPI/xxrpyB3pZ4GX7gDbBIY1UbZez3/59/REuF5NaMwHFRz/a1Andc4yVYyN0HITmEEshEWAaw+alVpG5oKTLR+sy5cOrczDNvqjJl1ji7fyhStjCOLHOBYMH+3y02b9M+iXIK+JEOHBnps4vkDDuwQldT4FCIVNxpwyFs/fap8X0LK8HFhahrbE7RLUKRSQAd7yD9WqgJaLmFr+2M=" # DOCKER_PASS
+    - COMMIT=${TRAVIS_COMMIT::8}
+    - REPO=startx/db-tools
+    - RELEASE=0.0.1
+
 sudo: required
 
 services:
@@ -9,3 +18,10 @@ before_install:
 
 script: ./travis-test.sh
 
+after_success:
+  - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+  - export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH ; fi`
+  - docker build -f Dockerfile -t $REPO:$COMMIT .
+  - docker tag $REPO:$COMMIT $REPO:$TAG
+  - docker tag $REPO:$COMMIT $REPO:v$RELEASE-$TRAVIS_BUILD_NUMBER
+  - docker push $REPO
