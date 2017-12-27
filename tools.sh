@@ -2,7 +2,7 @@
 
 TOOLS_VERSION="dev"
 MYSQL_DUMP_DATAFILE="data.sql"
-MYSQL_DUMP_SCHEMAFILE="create-schema.sql"
+MYSQL_DUMP_SCHEMAFILE="schema.sql"
 COUCHBASE_DUMP_DATAFILE="data.json"
 OS=`cat /etc/os-release | grep "PRETTY_NAME" | sed 's/PRETTY_NAME=//g' | sed 's/["]//g' | awk '{print $1}'`
 
