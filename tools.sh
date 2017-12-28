@@ -1,5 +1,4 @@
 #!/bin/bash
-
 OS=`cat /etc/os-release | grep "PRETTY_NAME" | sed 's/PRETTY_NAME=//g' | sed 's/["]//g' | awk '{print $1}'`
 
 function displayStartTools {
@@ -133,7 +132,6 @@ function displayStartTools {
         fi
         echo "Dump terminated"
         exit 0;
-    else
     elif  [  "$1" == "debug"  ]; then
         echo "= action  : debug"
         echo "==================================" 
