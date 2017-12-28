@@ -7,14 +7,15 @@ RUN apt-get update && \
 COPY mounts /data
 COPY process-mysqldump /bin/startx_dbtools-process-mysqldump
 COPY tools.sh /bin/startx_dbtools
-RUN chmod ug+x /bin/startx_dbtools
+RUN chmod ug+x /bin/startx_dbtools && \
+    adduser couchbase mysql
 
 VOLUME /data/couchbase
 VOLUME /data/mysql
 
 USER couchbase
 
-ENV TOOLS_VERSION="0.0.18" \
+ENV TOOLS_VERSION="0.0.19" \
     MYSQL_DUMP_DIR=/data/mysql \
     MYSQL_DUMP_DATAFILE="data.sql" \
     MYSQL_DUMP_SCHEMAFILE="schema.sql" \
