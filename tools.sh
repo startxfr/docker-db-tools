@@ -141,7 +141,6 @@ function displayStartTools {
         echo "Debug terminated"
         exit 0;
     else
-        printenv
         displayNoService
     fi
 }
