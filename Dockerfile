@@ -10,15 +10,16 @@ COPY tools.sh /bin/startx_dbtools
 RUN chmod ug+x /bin/startx_dbtools && \
     adduser couchbase mysql && \
     adduser mysql couchbase  && \
-    chown -R couchbase:mysql /data/mysql  && \
-    chmod -R ug+rw /data/mysql
+    chown -R couchbase:mysql /data  && \
+    chown -R mysql:couchbase /data/mysql  && \
+    chmod -R ug+rw /data
 
 VOLUME /data/couchbase
 VOLUME /data/mysql
 
 USER couchbase
 
-ENV TOOLS_VERSION="0.0.20" \
+ENV TOOLS_VERSION="0.0.21" \
     MYSQL_DUMP_DIR=/data/mysql \
     MYSQL_DUMP_DATAFILE="data.sql" \
     MYSQL_DUMP_SCHEMAFILE="schema.sql" \
