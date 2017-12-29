@@ -273,7 +273,6 @@ function dumpMysqlDatabaseData {
             --host $MYSQL_HOST --user $MYSQL_USER -p$MYSQL_PASSWORD \
             $MYSQL_DATABASE > $MYSQL_DUMP_DIR/dd.sql
             echo -e "SET names 'utf8';\n$(cat $MYSQL_DUMP_DIR/dd.sql)" > $MYSQL_DUMP_DIR/dd2.sql
-            
             if(/bin/startx_dbtools-process-mysqldump $MYSQL_DUMP_DIR/dd2.sql >  $MYSQL_DUMP_DIR/dd3.sql == 0) then 
                 echo "OK mysql extended worked fine. Get a multiple line dump"
                 mv $MYSQL_DUMP_DIR/dd3.sql $MYSQL_DUMP_DIR/$MYSQL_DUMP_DATAFILE
