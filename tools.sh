@@ -1,10 +1,11 @@
 #!/bin/bash
+SXDBT_VERSION="0.0.23"
 OS=`cat /etc/os-release | grep "PRETTY_NAME" | sed 's/PRETTY_NAME=//g' | sed 's/["]//g' | awk '{print $1}'`
 
 function displayStartTools {
     echo "==================================" 
     echo "= STARTX db-tools (version $TOOLS_VERSION)"
-    echo "= see https://github.com/startxfr/docker-db-tools/blob/master/README.md"
+    echo "= see https://github.com/startxfr/docker-db-tools/"
     echo "= --------------------------------" 
     echo "= version : $TOOLS_VERSION"
     echo "= OS      : $OS"
@@ -138,7 +139,13 @@ function displayStartTools {
         printenv
         echo "Debug terminated"
         exit 0;
-    else
+    elif  [  "$1" == "version"  ]; then
+        echo "= action  : version"
+        echo "= version : $SXDBT_VERSION"
+        echo "==================================" 
+        echo "version terminated"
+        exit 0;
+    else 
         displayNoService
     fi
 }
@@ -149,11 +156,13 @@ function displayNoService {
     echo "You must run 'startx_dbtools <service>' or"
     echo "docker run ≤tool_image> <service> with a service name or a global action"
     echo "Two service name are available :"
-    echo "- mysql : perform actions against the mysql backend"
+    echo "- mysql     : perform actions against the mysql backend"
     echo "- couchbase : perform actions against the couchbase backend"
     echo "Two global actions are available :"
-    echo "- init : initialize mysql and couchbase backends"
-    echo "- dump : dump data from mysql and couchbase backends"
+    echo "- init    : initialize mysql and couchbase backends"
+    echo "- dump    : dump data from mysql and couchbase backends"
+    echo "- debug   : display debug info about environement"
+    echo "- version : display the version number of this tools"
     exit 0;
 }
 
@@ -586,6 +595,5 @@ function doCouchbaseReset {
         exit 0;
     fi
 }
-
 
 displayStartTools $1 $2

@@ -1,4 +1,4 @@
-# docker-db-tools ![sxapi](https://img.shields.io/badge/latest-v0.0.22-blue.svg)
+# docker-db-tools ![sxapi](https://img.shields.io/badge/latest-v0.0.23-blue.svg)
 
 Container for managing data from a mysql and/or a couchbase backend. 
 Linked to a mysql and/or a couchbase backend you can easyly create, save and restore 

@@ -75,7 +75,7 @@ UNLOCK TABLES;
 Example for `mounts/couchbase/data.json`
 ```javascript
 [
-    {"_id":"app::version","app":"startx-db-tools","stage":"dev","version":"0.0.22"}
+    {"_id":"app::version","app":"startx-db-tools","stage":"dev","version":"0.0.23"}
 ]
 ```
 
