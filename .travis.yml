@@ -23,6 +23,5 @@ script: ./travis-test.sh
 after_success:
   - docker login -u $DOCKER_USER -p $DOCKER_PASS
   - export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $RELEASE ; fi`
-  - docker build -f Dockerfile -t $REPO:$COMMIT .
-  - docker tag $REPO:$COMMIT $REPO:$TAG
+  - docker build -f Dockerfile --squash -t $REPO:$TAG .
   - docker push $REPO
