@@ -99,8 +99,7 @@ docker run -d \
     -v ./mounts/mysql:/data/mysql:Z \
     -v ./mounts/couchbase:/data/couchbase:Z \
     --env MYSQL_DATABASE=dev \
-    --env MYSQL_DATABASE_USER=dev \
-    --env MYSQL_DATABASE_PASSWORD=dev \
+    --env MYSQL_USERS=dev:dev;dev2 \
     --env COUCHBASE_USER=dev \
     --env COUCHBASE_PASSWORD=dev \
     --env COUCHBASE_BUCKET=dev \
@@ -158,8 +157,7 @@ various kind of backend infrastructure (container, host, remote, IaaS, DBaaS)
 | MYSQL_USER               | root            | Mysql admin user authorized to create user and database
 | MYSQL_PASSWORD           | root            | Password for the mysql admin user
 | MYSQL_DATABASE           | dev             | Mysql database name to use or create
-| MYSQL_DATABASE_USER      | dev             | Mysql user of the database
-| MYSQL_DATABASE_PASSWORD  | dev             | Password for the mysql database user
+| MYSQL_USERS              | dev             | Mysql list of users to the database ";" is separator between users and ":" between user and his password. ex : user:password;user2:user2Password;user3;user4
 | COUCHBASE_DUMP_DIR       | /data/couchbase | Directory used for save and restore couchbase dump (container internal path)
 | COUCHBASE_DUMP_DATAFILE  | data.json       | Filename of the json data dump file
 | COUCHBASE_HOST           | dbc             | Hostname of the couchbase database. Could use whatever public IP or DSN.
@@ -172,8 +170,7 @@ and allow `demo_user` to access this database only.
 ```bash
 docker run -d --link db-mysql:dbm \
     --env MYSQL_DATABASE=demo \
-    --env MYSQL_DATABASE_USER=demo_user \
-    --env MYSQL_DATABASE_PASSWORD=demo_pwd123
+    --env MYSQL_USERS=demo_user:demo_pwd123 \
     startx/db-tools mysql create
 ```
 

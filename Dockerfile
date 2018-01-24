@@ -1,7 +1,7 @@
 FROM couchbase:enterprise-5.0.1
 
-RUN apt-get update && \
-    apt-get dist-upgrade && \
+RUN apt-get update -y && \
+    apt-get dist-upgrade -y && \
     apt-get install -y mariadb-server-5.5 mariadb-client-5.5 && \
     apt-get clean
 COPY mounts /data
@@ -27,8 +27,7 @@ ENV TOOLS_VERSION="0.0.23" \
     MYSQL_USER=root \
     MYSQL_PASSWORD=root \
     MYSQL_DATABASE=dev \
-    MYSQL_DATABASE_USER=dev \
-    MYSQL_DATABASE_PASSWORD=dev \
+    MYSQL_USERS=dev:pwd \
     MYSQL_DUMP_ISEXTENDED=true \
     COUCHBASE_HOST=dbc \
     COUCHBASE_USER=dev \

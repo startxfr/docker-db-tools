@@ -6,8 +6,7 @@ app:
     - db-couchbase:dbc
   environment:
    - MYSQL_DATABASE=startx_dev
-   - MYSQL_DATABASE_USER=startx_dev
-   - MYSQL_DATABASE_PASSWORD=startx_dev
+   - MYSQL_USERS=startx_dev:password123;test
    - COUCHBASE_USER=startx_dev
    - COUCHBASE_PASSWORD=startx_dev
    - COUCHBASE_BUCKET=startx_dev
@@ -15,7 +14,7 @@ app:
     - "./mounts/couchbase:/data/couchbase:Z"
     - "./mounts/mysql:/data/mysql:Z"
     - "./tools.sh:/bin/startx_dbtools:Z"
-  command: ["init"]
+  command: ["mysql", "create"]
 
 db-mysql:
   image: mariadb:5.5

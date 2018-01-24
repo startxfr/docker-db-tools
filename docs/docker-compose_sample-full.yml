@@ -5,8 +5,7 @@ app:
     - db-couchbase:dbc
   environment:
    - MYSQL_DATABASE=demo
-   - MYSQL_DATABASE_USER=my_user
-   - MYSQL_DATABASE_PASSWORD=my_pwd
+   - MYSQL_USERS=my_user:my_pwd
    - COUCHBASE_USER=admin
    - COUCHBASE_PASSWORD=admin_pwd
    - COUCHBASE_BUCKET=demo

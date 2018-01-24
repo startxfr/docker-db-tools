@@ -77,7 +77,7 @@ function displayStartTools {
             createMysqlDatabase
             echo "database    : $MYSQL_DATABASE created"
             createMysqlDatabaseUser
-            echo "db user     : $MYSQL_DATABASE_USER created"
+            echo "db user     : users created"
             loadMysqlDatabaseSchema
             echo "schema file : $MYSQL_DUMP_SCHEMAFILE loaded"
             loadMysqlDatabaseData
@@ -217,44 +217,91 @@ function checkMysqlEnv {
         echo "Need to set MYSQL_DUMP_DIR"
         exit 128;
     fi 
-    if [ -z "$MYSQL_DATABASE_USER" ]; then
-        echo "Need to set MYSQL_DATABASE_USER"
-        exit 128;
-    fi 
-    if [ -z "$MYSQL_DATABASE_PASSWORD" ]; then
-        echo "Need to set MYSQL_DATABASE_PASSWORD"
+    if [ -z "$MYSQL_USERS" ]; then
+        echo "Need to set MYSQL_USERS"
         exit 128;
     fi 
 }
 
 function checkMysqlDatabaseExist {
-    RESULT=`mysql -h $MYSQL_HOST -u $MYSQL_USER --password=$MYSQL_PASSWORD --skip-column-names -e "SHOW DATABASES LIKE '$MYSQL_DATABASE'"`
-    if [ "$RESULT" == "$MYSQL_DATABASE" ]; then
-        return 0; # no error
-    else
-        return 1; # error code
-    fi
+    if [ ! -z "$MYSQL_DATABASE" ]; then
+        for $DATABASE in $(echo $MYSQL_DATABASE | tr ";" "\n")
+        do
+            RESULT=`mysql -h $MYSQL_HOST -u $MYSQL_USER --password=$MYSQL_PASSWORD --skip-column-names -e "SHOW DATABASES LIKE '$DATABASE'"`
+            if [ "$RESULT" == "$DATABASE" ]; then
+                return 0; # no error
+            else
+                return 1; # error code
+            fi
+        done
+    fi 
 }
 
 function createMysqlDatabase {
+    if [ ! -z "$MYSQL_DATABASE" ]; then
+        for $DATABASE in $(echo $MYSQL_DATABASE | tr ";" "\n")
+        do
+            runCreateMysqlDatabase $DATABASE
+        done
+    fi 
+}
+function runCreateMysqlDatabase {
+    echo "create db       : $1"
     mysql -h $MYSQL_HOST -u $MYSQL_USER --password=$MYSQL_PASSWORD \
-    -e "CREATE DATABASE $MYSQL_DATABASE DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;"
+    -e "CREATE DATABASE $1 DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;"
 }
 
 function createMysqlDatabaseUser {
+    if [ ! -z "$MYSQL_USERS" ]; then
+        for userInfo in $(echo $MYSQL_USERS | tr ";" "\n")
+        do
+            set -f; IFS=':'; set -- $userInfo
+            USER=$1; PWD=$2; set +f; unset IFS
+            runCreateMysqlDatabaseUser $USER $PWD
+        done
+    fi 
+}
+function runCreateMysqlDatabaseUser {
+    USER=$1
+    PWD=$2
+    export RANDFILE=/tmp/.rnd
+    echo "create user     : $USER"
+    if [ -z "$PWD" ]; then
+        PWD=$(openssl rand -base64 32 | sha256sum | base64 | head -c 16 ; echo)
+        echo "! NOTICE    : The following password will be display only once"
+        echo "with pwd    : [generated] $PWD"
+    else 
+        echo "with pwd    : [user given] $PWD"
+    fi
     mysql -h $MYSQL_HOST -u $MYSQL_USER --password=$MYSQL_PASSWORD \
-    -e "CREATE USER $MYSQL_DATABASE_USER IDENTIFIED BY '$MYSQL_DATABASE_PASSWORD'; GRANT ALL PRIVILEGES ON $MYSQL_DATABASE.* TO '$MYSQL_DATABASE_USER' WITH GRANT OPTION;"
+    -e "CREATE USER $USER IDENTIFIED BY '$PWD'; GRANT ALL PRIVILEGES ON $MYSQL_DATABASE.* TO '$USER' WITH GRANT OPTION;"
+
 }
 
 function deleteMysqlDatabase {
-    mysql -h $MYSQL_HOST -u $MYSQL_USER --password=$MYSQL_PASSWORD \
-    -D $MYSQL_DATABASE \
-    -e "DROP DATABASE $MYSQL_DATABASE;"
+    if [ ! -z "$MYSQL_DATABASE" ]; then
+        for $DATABASE in $(echo $MYSQL_DATABASE | tr ";" "\n")
+        do
+            runDeleteMysqlDatabase $DATABASE
+        done
+    fi 
+}
+function runDeleteMysqlDatabase {
+    echo "delete db       : $1"
+    mysql -h $MYSQL_HOST -u $MYSQL_USER --password=$MYSQL_PASSWORD -D $1 -e "DROP DATABASE $1;"
 }
 
 function deleteMysqlDatabaseUser {
-    mysql -h $MYSQL_HOST -u $MYSQL_USER --password=$MYSQL_PASSWORD \
-    -e "DROP USER '$MYSQL_DATABASE_USER';"
+    if [ ! -z "$MYSQL_USERS" ]; then
+        for userInfo in $(echo $MYSQL_USERS | tr ";" "\n")
+        do
+            runDeleteMysqlDatabaseUser $USER
+        done
+    fi 
+}
+function runDeleteMysqlDatabaseUser {
+    echo "delete user : $1"
+    mysql -h $MYSQL_HOST -u $MYSQL_USER --password=$MYSQL_PASSWORD -e "DROP USER '$1';"
 }
 
 function loadMysqlDatabaseSchema {
@@ -336,7 +383,7 @@ function doMysqlCreate {
         createMysqlDatabase
         echo "database    : $MYSQL_DATABASE created"
         createMysqlDatabaseUser
-        echo "db user     : $MYSQL_DATABASE_USER created"
+        echo "db user     : users created"
         loadMysqlDatabaseSchema
         echo "schema file : $MYSQL_DUMP_SCHEMAFILE loaded"
         loadMysqlDatabaseData
@@ -354,7 +401,7 @@ function doMysqlDelete {
         deleteMysqlDatabase
         echo "database    : $MYSQL_DATABASE deleted"
         deleteMysqlDatabaseUser
-        echo "db user     : $MYSQL_DATABASE_USER deleted"
+        echo "db user     : users deleted"
         echo "result      : terminated"
         exit 0;
     else
@@ -373,11 +420,11 @@ function doMysqlReset {
         deleteMysqlDatabase
         echo "database    : $MYSQL_DATABASE deleted"
         deleteMysqlDatabaseUser
-        echo "db user     : $MYSQL_DATABASE_USER deleted"
+        echo "db user     : users deleted"
         createMysqlDatabase
         echo "database    : $MYSQL_DATABASE created"
         createMysqlDatabaseUser
-        echo "db user     : $MYSQL_DATABASE_USER created"
+        echo "db user     : users created"
         loadMysqlDatabaseSchema
         echo "schema file : $MYSQL_DUMP_SCHEMAFILE loaded"
         loadMysqlDatabaseData

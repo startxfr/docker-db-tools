@@ -4,8 +4,7 @@ app:
     - db-mysql:dbm
   environment:
    - MYSQL_DATABASE=demo
-   - MYSQL_DATABASE_USER=my_user
-   - MYSQL_DATABASE_PASSWORD=my_pwd
+   - MYSQL_USERS=my_user:my_pwd
   command: ["mysql" , "create"]
 
 db-mysql:
