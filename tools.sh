@@ -1,5 +1,5 @@
 #!/bin/bash
-SXDBT_VERSION="0.0.99"
+SXDBT_VERSION="0.1.0"
 OS=`cat /etc/os-release | grep "PRETTY_NAME" | sed 's/PRETTY_NAME=//g' | sed 's/["]//g' | awk '{print $1}'`
 
 function displayStartTools {

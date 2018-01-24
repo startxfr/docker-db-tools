@@ -17,7 +17,7 @@ VOLUME /data/mysql
 
 USER couchbase
 
-ENV TOOLS_VERSION="0.0.99" \
+ENV TOOLS_VERSION="0.1.0" \
     MYSQL_DUMP_DIR=/data/mysql \
     MYSQL_DUMP_DATAFILE="data.sql" \
     MYSQL_DUMP_SCHEMAFILE="schema.sql" \
