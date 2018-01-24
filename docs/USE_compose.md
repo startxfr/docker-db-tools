@@ -81,7 +81,7 @@ UNLOCK TABLES;
 Example for `mounts/couchbase/data.json`
 ```javascript
 [
-    {"_id":"app::version","app":"startx-db-tools","stage":"dev","version":"0.0.23"}
+    {"_id":"app::version","app":"startx-db-tools","stage":"dev","version":"0.0.99"}
 ]
 ```
 
@@ -177,14 +177,13 @@ various kind of backend infrastructure (container, host, remote, IaaS, DBaaS)
 | MYSQL_DUMP_SCHEMAFILE    | schema.sql      | Filename of the sql schema dump file
 | MYSQL_DUMP_ISEXTENDED    | true            | Enable smart extended dump for fast load, readibility and versioning
 | MYSQL_HOST               | dbm             | Hostname of the mysql database. Could use whatever public IP or DSN.
-| MYSQL_USER               | root            | Mysql admin user authorized to create user and database
-| MYSQL_PASSWORD           | root            | Password for the mysql admin user
+| MYSQL_ADMIN              | [linked user]   | Mysql admin user and password (ex: user:password). Default will use root and MYSQL_ROOT_PASSWORD found into the linked container
 | MYSQL_DATABASE           | dev             | Mysql database name to use or create
-| MYSQL_USERS              | dev             | Mysql list of users to the database ";" is separator between users and ":" between user and his password. ex : user:password;user2:user2Password;user3;user4
+| MYSQL_USERS              | dev             | Mysql list of users to the database "," is separator between users and ":" between user and his password. ex : user:password,user2:user2Password,user3,user4
 | COUCHBASE_DUMP_DIR       | /data/couchbase | Directory used for save and restore couchbase dump (container internal path)
 | COUCHBASE_DUMP_DATAFILE  | data.json       | Filename of the json data dump file
 | COUCHBASE_HOST           | dbc             | Hostname of the couchbase database. Could use whatever public IP or DSN.
-| COUCHBASE_USER           | dev             | Couchbase admin user authorized to create and delete buckets
+| COUCHBASE_ADMIN          | dev             | Couchbase admin user and password (ex: user:password)
 | COUCHBASE_PASSWORD       | dev             | Password for the couchbase admin user
 | COUCHBASE_BUCKET         | dev             | Couchbase bucket name to use or create
 
@@ -198,7 +197,7 @@ app:
     - db-mysql:dbm
   environment:
    - MYSQL_DATABASE=demo
-   - MYSQL_USERS=demo_user:demo_pwd123;demo_user2
+   - MYSQL_USERS=demo_user:demo_pwd123,demo_user2
   command: ["mysql" , "create"]
 ```
 
@@ -211,7 +210,7 @@ app:
   links:
     - db-couchbase:dbc
   environment:
-   - COUCHBASE_USER=cbAdmin
+   - COUCHBASE_ADMIN=cbAdmin
    - COUCHBASE_PASSWORD=cbAdmin123
    - COUCHBASE_BUCKET=demo
   command: ["couchbase" , "create"]

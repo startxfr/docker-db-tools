@@ -3,7 +3,7 @@ app:
   links:
     - db-couchbase:dbc
   environment:
-   - COUCHBASE_USER=admin
+   - COUCHBASE_ADMIN=admin
    - COUCHBASE_PASSWORD=admin_pwd
    - COUCHBASE_BUCKET=demo
   command: ["couchbase" , "create"]

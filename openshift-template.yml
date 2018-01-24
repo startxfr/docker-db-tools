@@ -12,7 +12,7 @@ objects:
   metadata:
     name: "${DBTOOLS_NAME}"
   data:
-    COUCHBASE_USER: "${COUCHBASE_USER}"
+    COUCHBASE_ADMIN: "${COUCHBASE_ADMIN}"
     COUCHBASE_PASSWORD: "${COUCHBASE_PASSWORD}"
     COUCHBASE_BUCKET: "${COUCHBASE_BUCKET}"
 - kind: StatefulSet
@@ -46,8 +46,8 @@ objects:
             successThreshold: 1
             failureThreshold: 3
           env:
-          - name: COUCHBASE_USER
-            value: "${COUCHBASE_USER}"
+          - name: COUCHBASE_ADMIN
+            value: "${COUCHBASE_ADMIN}"
           - name: COUCHBASE_PASSWORD
             value: "${COUCHBASE_PASSWORD}"
           lifecycle:
@@ -82,7 +82,7 @@ parameters:
   description: The name of the Application exposed.
   value: dbtools
   required: true
-- name: COUCHBASE_USER
+- name: COUCHBASE_ADMIN
   displayName: Couchbase Connection Username
   description: Username for Couchbase user that will be used for accessing the database.
   generate: expression

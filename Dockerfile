@@ -17,21 +17,18 @@ VOLUME /data/mysql
 
 USER couchbase
 
-ENV TOOLS_VERSION="0.0.23" \
+ENV TOOLS_VERSION="0.0.99" \
     MYSQL_DUMP_DIR=/data/mysql \
     MYSQL_DUMP_DATAFILE="data.sql" \
     MYSQL_DUMP_SCHEMAFILE="schema.sql" \
     COUCHBASE_DUMP_DIR=/data/couchbase \
     COUCHBASE_DUMP_DATAFILE="data.json" \
     MYSQL_HOST=dbm \
-    MYSQL_USER=root \
-    MYSQL_PASSWORD=root \
     MYSQL_DATABASE=dev \
     MYSQL_USERS=dev:pwd \
     MYSQL_DUMP_ISEXTENDED=true \
     COUCHBASE_HOST=dbc \
-    COUCHBASE_USER=dev \
-    COUCHBASE_PASSWORD=dev \
+    COUCHBASE_ADMIN=dev:dev \
     COUCHBASE_BUCKET=dev
 
 ENTRYPOINT ["/bin/startx_dbtools"]

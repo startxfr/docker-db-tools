@@ -5,22 +5,22 @@ app:
     - db-mysql:dbm
     - db-couchbase:dbc
   environment:
-   - MYSQL_DATABASE=startx_dev
-   - MYSQL_USERS=startx_dev:password123;test
-   - COUCHBASE_USER=startx_dev
-   - COUCHBASE_PASSWORD=startx_dev
-   - COUCHBASE_BUCKET=startx_dev
+   - MYSQL_DATABASE=demo,demo2
+   - MYSQL_ADMIN=root:rootPassword
+   - MYSQL_USERS=demo:pwd,user3:pwd3,test
+   - COUCHBASE_ADMIN=demo:password
+   - COUCHBASE_BUCKET=demo,demo2
   volumes:
-    - "./mounts/couchbase:/data/couchbase:Z"
-    - "./mounts/mysql:/data/mysql:Z"
-    - "./tools.sh:/bin/startx_dbtools:Z"
-  command: ["mysql", "create"]
+    - "./mounts/couchbase:/data/couchbase:z"
+    - "./mounts/mysql:/data/mysql:z"
+    - "./tools.sh:/bin/startx_dbtools:z"
+  command: ["init"]
 
 db-mysql:
   image: mariadb:5.5
   container_name: "startx-db-tools_mysql"
   environment:
-   - MYSQL_ROOT_PASSWORD=root
+   - MYSQL_ROOT_PASSWORD=rootPassword
    
 db-couchbase:
   image: couchbase:enterprise-5.0.1
