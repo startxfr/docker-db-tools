@@ -550,10 +550,10 @@ function checkCouchbaseEnv {
             COUCHBASE_ADMIN=$1; PWD=$2; set +f; unset IFS
             export RANDFILE=/tmp/.rnd
             if [ -z "$PWD" ]; then
-                export COUCHBASE_GENERATED="true"
-                export COUCHBASE_PASSWORD=$(openssl rand -base64 32 | sha256sum | base64 | head -c 16 ; echo)
+                COUCHBASE_GENERATED="true"
+                COUCHBASE_PASSWORD=$(openssl rand -base64 32 | sha256sum | base64 | head -c 16 ; echo)
             else 
-                export COUCHBASE_PASSWORD=$PWD
+                COUCHBASE_PASSWORD=$PWD
             fi
         fi
     fi 
