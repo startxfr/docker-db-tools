@@ -4,31 +4,36 @@ RUN apt-get update -y && \
     apt-get dist-upgrade -y && \
     apt-get install -y mariadb-server-5.5 mariadb-client-5.5 && \
     apt-get clean
-COPY mounts /data
-COPY process-mysqldump /bin/startx_dbtools-process-mysqldump
-COPY tools.sh /bin/startx_dbtools
-RUN chmod ug+x /bin/startx_dbtools && \
+COPY process-mysqldump /bin/sx-dbtools-process-mysqldump
+COPY tools.sh /bin/sx-dbtools
+RUN mkdir -p /dump/mysql && \
+    mkdir -p /dump/couchbase && \
+    mkdir -p /backup && \
+    chmod ug+x /bin/sx-dbtools && \
     adduser couchbase mysql && \
     adduser mysql couchbase  && \
-    chmod -R ugo+rw /data
+    chmod -R ugo+rw /dump /backup
 
-VOLUME /data/couchbase
-VOLUME /data/mysql
+VOLUME /dump
+VOLUME /backup
 
 USER couchbase
 
-ENV TOOLS_VERSION="0.1.0" \
-    MYSQL_DUMP_DIR=/data/mysql \
+ENV SXDBTOOLS_VERSION="0.1.0" \
+    SXDBTOOLS_DEBUG=true \
+    MYSQL_DUMP_DIR=/dump/mysql \
     MYSQL_DUMP_DATAFILE="data.sql" \
     MYSQL_DUMP_SCHEMAFILE="schema.sql" \
-    COUCHBASE_DUMP_DIR=/data/couchbase \
-    COUCHBASE_DUMP_DATAFILE="data.json" \
+    MYSQL_DUMP_ISEXTENDED=true \
     MYSQL_HOST=dbm \
     MYSQL_DATABASE=dev \
     MYSQL_USERS=dev:pwd \
-    MYSQL_DUMP_ISEXTENDED=true \
+    COUCHBASE_DUMP_DIR=/dump/couchbase \
+    COUCHBASE_DUMP_DATAFILE="data.json" \
     COUCHBASE_HOST=dbc \
     COUCHBASE_ADMIN=dev:dev \
     COUCHBASE_BUCKET=dev
 
-ENTRYPOINT ["/bin/startx_dbtools"]
+#ONBUILD COPY data /data
+
+ENTRYPOINT ["/bin/sx-dbtools"]

@@ -42,15 +42,15 @@ You can skip the `mysql` directory if you don't plan to use this container with 
 You can skip the `couchbase` directory if you don't plan to use this container with a couchbase backend. 
 
 ```bash
-mkdir mounts
-mkdir mounts/mysql
-touch mounts/mysql/schema.sql
-touch mounts/mysql/data.sql
-mkdir mounts/couchbase
-touch mounts/couchbase/data.json
+mkdir dump
+mkdir dump/mysql
+touch dump/mysql/schema.sql
+touch dump/mysql/data.sql
+mkdir dump/couchbase
+touch dump/couchbase/data.json
 ```
 
-Example for `mounts/mysql/schema.sql`
+Example for `dump/mysql/schema.sql`
 ```sql
 DROP TABLE IF EXISTS `app`;
 CREATE TABLE `app` (
@@ -63,7 +63,7 @@ CREATE TABLE `app` (
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 ```
 
-Example for `mounts/mysql/data.sql`
+Example for `dump/mysql/data.sql`
 ```sql
 SET names 'utf8';
 LOCK TABLES `app` WRITE;
@@ -72,7 +72,7 @@ INSERT INTO `app` VALUES
 UNLOCK TABLES;
 ```
 
-Example for `mounts/couchbase/data.json`
+Example for `dump/couchbase/data.json`
 ```javascript
 [
     {"_id":"app::version","app":"startx-db-tools","stage":"dev","version":"0.1.0"}
@@ -96,8 +96,8 @@ or using environement variable and init global action
 docker run -d \
     --link db-mysql:dbm \
     --link db-couchbase:dbc \
-    -v ./mounts/mysql:/data/mysql:Z \
-    -v ./mounts/couchbase:/data/couchbase:Z \
+    -v ./dump/mysql:/dump/mysql:Z \
+    -v ./dump/couchbase:/dump/couchbase:Z \
     --env MYSQL_DATABASE=dev \
     --env MYSQL_USERS=dev:dev,dev2 \
     --env COUCHBASE_ADMIN=dev \
@@ -130,16 +130,16 @@ loaded or dumped properly.
 
 | Container volume   | Description
 |--------------------|:------------
-| `/data/mysql`      | volume containing a `schema.sql` file + a `data.sql` file
-| `/data/couchbase`  | volume containing one `data.json` file
+| `/dump/mysql`      | volume containing a `schema.sql` file + a `data.sql` file
+| `/dump/couchbase`  | volume containing one `data.json` file
 
 Dump mysql linked database into local directory
 ```bash
-docker run -d --link db-mysql:dbm -v ./:/data/mysql:rw startx/db-tools mysql dump
+docker run -d --link db-mysql:dbm -v ./:/dump/mysql:rw startx/db-tools mysql dump
 ```
 Dump couchbase linked bucket into local directory
 ```bash
-docker run -d --link db-couchbase:dbc -v ./:/data/couchbase:rw startx/db-tools couchbase dump
+docker run -d --link db-couchbase:dbc -v ./:/dump/couchbase:rw startx/db-tools couchbase dump
 ```
 
 ### Environement variables
@@ -149,7 +149,7 @@ various kind of backend infrastructure (container, host, remote, IaaS, DBaaS)
 
 | Variable                 | Default         | Description
 |--------------------------|:---------------:|:---------------
-| MYSQL_DUMP_DIR           | /data/mysql     | Directory used for save and restore mysql dump (container internal path)
+| MYSQL_DUMP_DIR           | /dump/mysql     | Directory used for save and restore mysql dump (container internal path)
 | MYSQL_DUMP_DATAFILE      | data.sql        | Filename of the sql data dump file
 | MYSQL_DUMP_SCHEMAFILE    | schema.sql      | Filename of the sql schema dump file
 | MYSQL_DUMP_ISEXTENDED    | true            | Enable smart extended dump for fast load, readibility and versioning
@@ -157,7 +157,7 @@ various kind of backend infrastructure (container, host, remote, IaaS, DBaaS)
 | MYSQL_ADMIN              | [linked user]   | Mysql admin user and password (ex: user:password). Default will use root and MYSQL_ROOT_PASSWORD found into the linked container
 | MYSQL_DATABASE           | dev             | Mysql database name to use or create
 | MYSQL_USERS              | dev             | Mysql list of users to the database "," is separator between users and ":" between user and his password. ex : user:password,user2:user2Password,user3,user4
-| COUCHBASE_DUMP_DIR       | /data/couchbase | Directory used for save and restore couchbase dump (container internal path)
+| COUCHBASE_DUMP_DIR       | /dump/couchbase | Directory used for save and restore couchbase dump (container internal path)
 | COUCHBASE_DUMP_DATAFILE  | data.json       | Filename of the json data dump file
 | COUCHBASE_HOST           | dbc             | Hostname of the couchbase database. Could use whatever public IP or DSN.
 | COUCHBASE_ADMIN          | dev             | Couchbase admin user and password (ex: user:password)

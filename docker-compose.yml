@@ -1,5 +1,7 @@
 app:
-  build: ./
+  extends:
+    file: docker-compose-abstract.yml
+    service: app
   container_name: "startx-db-tools"
   links:
     - db-mysql:dbm
@@ -11,35 +13,33 @@ app:
    - COUCHBASE_ADMIN=demo:password
    - COUCHBASE_BUCKET=demo,demo2
   volumes:
-    - "./mounts/couchbase:/data/couchbase:z"
-    - "./mounts/mysql:/data/mysql:z"
-    - "./tools.sh:/bin/startx_dbtools:z"
-  command: ["init"]
+    - "./sample/dump/couchbase:/sample/dump/couchbase:z"
+    - "./sample/dump/mysql:/sample/dump/mysql:z"
+    - "./tools.sh:/bin/sx-dbtools:z"
+  command: ["mysql"]
 
 db-mysql:
-  image: mariadb:5.5
+  extends:
+    file: docker-compose-abstract.yml
+    service: db-mysql
   container_name: "startx-db-tools_mysql"
   environment:
    - MYSQL_ROOT_PASSWORD=rootPassword
    
 db-couchbase:
-  image: couchbase:enterprise-5.0.1
+  extends:
+    file: docker-compose-abstract.yml
+    service: db-couchbase
   container_name: "startx-db-tools_couchbase"
-  ports:
-    - 8091-8094:8091-8094
-    - 11210:11210
 
 pma:
-  image: phpmyadmin/phpmyadmin
+  extends:
+    file: docker-compose-abstract.yml
+    service: pma
   container_name: "startx-db-tools_pma"
   links:
     - db-mysql:db
   environment:
    - PMA_HOST=db
    - PMA_USER=root
-   - PMA_PASSWORD=root
-   - PMA_VERBOSE=true
-   - PMA_PORT=3306
-   - PMA_ABSOLUTE_URI=http://localhost:1901
-  ports:
-    - "1901:80"
+   - PMA_PASSWORD=rootPassword

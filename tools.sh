@@ -2,12 +2,22 @@
 SXDBT_VERSION="0.1.0"
 OS=`cat /etc/os-release | grep "PRETTY_NAME" | sed 's/PRETTY_NAME=//g' | sed 's/["]//g' | awk '{print $1}'`
 
+
+
+function displayDebugMessage {
+    if [ ! -z "$SXDBTOOLS_DEBUG" ]; then
+        if [[ $SXDBTOOLS_DEBUG == *"true"* ]]; then
+            echo "DEBUG: " $@
+        fi 
+    fi 
+}
+
 function displayStartTools {
     echo "==================================" 
-    echo "= STARTX db-tools (version $TOOLS_VERSION)"
+    echo "= STARTX db-tools (version $SXDBTOOLS_VERSION)"
     echo "= see https://github.com/startxfr/docker-db-tools/"
     echo "= --------------------------------" 
-    echo "= version   : $TOOLS_VERSION"
+    echo "= version   : $SXDBTOOLS_VERSION"
     echo "= OS        : $OS"
     echo "= container : $HOSTNAME"
     if  [  "$1" == "mysql"  ]; then
@@ -156,29 +166,33 @@ function displayNoService {
     exit 0;
 }
 function displayHelp { 
-    echo "You must run 'startx_dbtools <service>' or"
-    echo "docker run ≤tool_image> <service> with a service name or a global action"
-    echo "Two service name are available :"
-    echo "- mysql     : perform actions against the mysql backend"
-    echo "- couchbase : perform actions against the couchbase backend"
-    echo "Five global actions are available :"
-    echo "- init    : initialize mysql and couchbase backends"
-    echo "- dump    : dump data from mysql and couchbase backends"
-    echo "- debug   : display debug info about environement"
-    echo "- version : display the version number of this tools"
-    echo "- help    : display help informations"
+cat <<EOF
+You must run 'sx-dbtools <service>' or
+docker run ≤tool_image> <service> with a service name or a global action
+Two service name are available :
+- mysql     : perform actions against the mysql backend
+- couchbase : perform actions against the couchbase backend
+Five global actions are available :
+- init    : initialize mysql and couchbase backends
+- dump    : dump data from mysql and couchbase backends
+- debug   : display debug info about environement
+- version : display the version number of this tools
+- help    : display help informations
+EOF
 }
 
 function displayNoAction { 
-    echo "= action    : NOT FOUND"
-    echo "==================================" 
-    echo "You must run 'startx_dbtools $1 <action>' with an action name"
-    echo "or docker run ≤tool_image>  $1 <service> with an action name"
-    echo "Four actions are available for $1 :"
-    echo "- dump   : Dump database data into readable volume"
-    echo "- create : Create database and load dump from readable volume"
-    echo "- delete : Delete the database"
-    echo "- reset  : Delete database and re-create it"
+cat <<EOF
+= action    : NOT FOUND
+==================================
+You must run 'sx-dbtools $1 <action>' with an action name
+or docker run ≤tool_image>  $1 <action> with an action name
+Four actions are available for $1 :
+- dump   : Dump database data into readable volume
+- create : Create database and load dump from readable volume
+- delete : Delete the database
+- reset  : Delete database and re-create it
+EOF
     exit 0;
 }
 
@@ -403,7 +417,7 @@ function runDumpMysqlDatabaseData {
             --host $MYSQL_HOST --user $MYSQL_USER -p$MYSQL_PASSWORD \
             $1 > $MYSQL_DUMP_DIR/dd.sql
             echo -e "SET names 'utf8';\n$(cat $MYSQL_DUMP_DIR/dd.sql)" > $MYSQL_DUMP_DIR/dd2.sql
-            if(/bin/startx_dbtools-process-mysqldump $MYSQL_DUMP_DIR/dd2.sql >  $MYSQL_DUMP_DIR/dd3.sql == 0) then 
+            if(/bin/sx-dbtools-process-mysqldump $MYSQL_DUMP_DIR/dd2.sql >  $MYSQL_DUMP_DIR/dd3.sql == 0) then 
                 echo "OK mysql extended worked fine. Get a multiple line dump"
                 mv $MYSQL_DUMP_DIR/dd3.sql $2
             else
@@ -451,8 +465,8 @@ function doMysqlCreate {
     echo "host        : $MYSQL_HOST"
     if checkMysqlDatabaseExist; then
         echo "! Database already exist"
-        echo "You must run 'startx_dbtools mysql delete' before this action"
-        echo "You can also run 'startx_dbtools mysql reset' to perform delete a create all in one"
+        echo "You must run 'sx-dbtools mysql delete' before this action"
+        echo "You can also run 'sx-dbtools mysql reset' to perform delete a create all in one"
         exit 1;
     else
         echo "source dir  : $MYSQL_DUMP_DIR"
@@ -734,8 +748,8 @@ function doCouchbaseCreate {
     fi
     if $(checkCouchbaseBucketExist); then
         echo "! Bucket already exist"
-        echo "You must run 'startx_dbtools couchbase delete' before this action"
-        echo "You can also run 'startx_dbtools couchbase reset' to perform delete a create all in one"
+        echo "You must run 'sx-dbtools couchbase delete' before this action"
+        echo "You can also run 'sx-dbtools couchbase reset' to perform delete a create all in one"
         exit 1;
     else
         echo "source dir  : $COUCHBASE_DUMP_DIR"

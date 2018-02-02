@@ -44,12 +44,12 @@ docker run -d --link db-couchbase:dbc startx/db-tools couchbase reset
 
 Dump a mysql database
 ```bash
-docker run -d --link db-mysql:dbm -v ./:/data/mysql:rw startx/db-tools mysql dump
+docker run -d --link db-mysql:dbm -v ./:/dump/mysql:rw startx/db-tools mysql dump
 ```
 
 Dump a couchbase bucket
 ```bash
-docker run -d --link db-couchbase:dbc -v ./:/data/couchbase:rw startx/db-tools couchbase dump
+docker run -d --link db-couchbase:dbc -v ./:/dump/couchbase:rw startx/db-tools couchbase dump
 ```
 
 ## Connected services
@@ -73,16 +73,33 @@ loaded or dumped properly.
 
 | Container volume   | Description
 |--------------------|:------------
-| `/data/mysql`      | volume containing a `schema.sql` file + a `data.sql` file
-| `/data/couchbase`  | volume containing one `data.json` file
+| `/dump`            | volume containing a `mysql` directory and/or a `couchbase` directory
+| `/backup`          | volume containing backup files
 
 Dump mysql linked database into local directory
 ```bash
-docker run -d --link db-mysql:dbm -v ./:/data/mysql:rw startx/db-tools mysql dump
+docker run -d --link db-mysql:dbm -v ./:/dump/mysql:rw startx/db-tools mysql dump
 ```
 Dump couchbase linked bucket into local directory
 ```bash
-docker run -d --link db-couchbase:dbc -v ./:/data/couchbase:rw startx/db-tools couchbase dump
+docker run -d --link db-couchbase:dbc -v ./:/dump/couchbase:rw startx/db-tools couchbase dump
+```
+Dump couchbase and mysql into local directory
+```bash
+docker run -d \
+--link db-couchbase:dbc -v ./:/dump/couchbase:rw \
+--link db-mysql:dbm -v ./:/dump/mysql:rw \
+startx/db-tools \
+couchbase dump
+```
+Backup couchbase and mysql into local directory
+```bash
+docker run -d \
+--link db-couchbase:dbc \
+--link db-mysql:dbm \
+-v ./:/backup:rw \
+startx/db-tools \
+backup
 ```
 
 ## Environement variables
@@ -92,15 +109,15 @@ various kind of backend infrastructure (container, host, remote, IaaS, DBaaS)
 
 | Variable                 | Default         | Description
 |--------------------------|:---------------:|:---------------
-| MYSQL_DUMP_DIR           | /data/mysql     | Directory used for save and restore mysql dump (container internal path)
-| MYSQL_DUMP_DATAFILE      | data.sql        | Filename of the sql data dump file
-| MYSQL_DUMP_SCHEMAFILE    | schema.sql      | Filename of the sql schema dump file
+| MYSQL_DUMP_DIR           | /dump/mysql     | Directory used for save and restore mysql dump (container internal path)
+| MYSQL_DUMP_DATAFILE      | data.sql        | Filename of the default sql data dump file 
+| MYSQL_DUMP_SCHEMAFILE    | schema.sql      | Filename of the default sql schema dump file
 | MYSQL_DUMP_ISEXTENDED    | true            | Enable smart extended dump for fast load, readibility and versioning
 | MYSQL_HOST               | dbm             | Hostname of the mysql database. Could use whatever public IP or DSN.
 | MYSQL_ADMIN              | [linked user]   | Mysql admin user and password (ex: user:password). Default will use root and MYSQL_ROOT_PASSWORD found into the linked container
 | MYSQL_DATABASE           | dev             | Mysql database name to use or create
 | MYSQL_USERS              | dev             | Mysql list of users to the database "," is separator between users and ":" between user and his password. ex : user:password,user2:user2Password,user3,user4
-| COUCHBASE_DUMP_DIR       | /data/couchbase | Directory used for save and restore couchbase dump (container internal path)
+| COUCHBASE_DUMP_DIR       | /dump/couchbase | Directory used for save and restore couchbase dump (container internal path)
 | COUCHBASE_DUMP_DATAFILE  | data.json       | Filename of the json data dump file
 | COUCHBASE_HOST           | dbc             | Hostname of the couchbase database. Could use whatever public IP or DSN.
 | COUCHBASE_ADMIN          | dev             | Couchbase admin user and password (ex: user:password)

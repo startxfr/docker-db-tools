@@ -39,7 +39,7 @@ objects:
           livenessProbe:
             exec:
               command:
-                - /bin/startx_dbtools
+                - /bin/sx-dbtools
             initialDelaySeconds: 5
             timeoutSeconds: 1
             periodSeconds: 10
@@ -54,7 +54,7 @@ objects:
             preStop:
               exec:
                 command:
-                - "/bin/startx_dbtools"
+                - "/bin/sx-dbtools"
                 - debug
           resources:
             requests:
@@ -63,11 +63,11 @@ objects:
             limits:
               memory: "${MEMORY_LIMIT_DATA}"
           volumeMounts:
-          - mountPath: "/data"
-            name: data
+          - mountPath: "/dump"
+            name: dump
     volumeClaimTemplates:
     - metadata:
-        name: data
+        name: dump
         annotations:
           volume.beta.kubernetes.io/storage-class: "${STORAGE_CLASS_DATA}"
       spec:
