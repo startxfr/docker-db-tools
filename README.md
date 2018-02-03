@@ -14,18 +14,33 @@ content from one database or one bucket.
 
 ## Actions you can perform
 
-| Service   | Action   | Description
-|-----------|:--------:|:---------------
-| init      |          | create mysql and couchbase environement
-| dump      |          | save mysql and couchbase environement
-| mysql     | create   | create user, database and load schema and data into it
-| mysql     | delete   | delete user and database
-| mysql     | reset    | delete and recreate user and database
-| mysql     | dump     | save database schema and data
-| couchbase | create   | create bucket and load data into it
-| couchbase | delete   | delete bucket
-| couchbase | reset    | delete and recreate bucket
-| couchbase | dump     | save bucket data
+| Command        | database-type/sub-command | options | Description
+|----------------|---------------------------|---------|---------------
+| **User management Commands**
+| create-user    |                           |         | Create database(s) user(s)
+| delete-user    |                           |         | Delete database(s) user(s)
+| recreate-user  |                           |         | Delete and create database(s) user(s)
+| **Backup / Restore Commands**
+| backup         |                           |         | Backup database(s) in backup directory
+| restore        |                           |         | Restore database(s) in backup directory
+| **Database Commands**
+| create-db      |                           |         | Create database(s)
+| delete-db    |                           |         | Delete database(s)
+| recreate-db  |                           |         | Delete and create database(s)
+| **Data Commands**
+| dump    |                           |         | Dump database(s) in dump directory
+| import    |                           |         | import database(s) from dump directory
+| create-data  |                           |         | alias of import command
+| **Global Commands**
+| create    |                           |         | Create user(s) + database(s) + data
+| delete    |                           |         | Delete user(s) + database(s) + data
+| recreate  |                           |         | Delete and create user(s) + database(s) + data
+| **sx-dbtools Commands**
+| usage    |                           |         | this message
+| <cmd>     | help                     |         | display information about a command
+| info  |                           |         | give information about the running sx-dbtools
+| version  |                           |         | give the version of the running sx_dbtools
+
 
 Initialize mysql and couchbase backend
 ```bash
