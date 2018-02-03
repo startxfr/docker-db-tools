@@ -126,14 +126,13 @@ function createMysqlUsers {
     fi 
 }
 function createMysqlUser {
-    if [ ! -z "$1" &&  ! -z "$2" ]; then
+    if [[ ! -z "$1" &&  ! -z "$2" ]]; then
         runCreateMysqlUser $USER $PWD
     fi 
 }
 function runCreateMysqlUser {
     USER=$1
     PWD=$2
-    DB=""
     export RANDFILE=/tmp/.rnd
     echo "  - create user : $USER"
     if [ -z "$PWD" ]; then
@@ -143,12 +142,6 @@ function runCreateMysqlUser {
     else 
         echo "    - with pwd    : [user given]"
     fi
-    if [ ! -z "$MYSQL_DATABASE" ]; then
-        for DATABASE in $(echo $MYSQL_DATABASE | tr "," "\n")
-        do
-            DB=$DATABASE
-        done
-    fi 
     mysql -h $MYSQL_HOST -u $MYSQL_USER --password=$MYSQL_PASSWORD \
     -e "CREATE USER '$USER'@'%' IDENTIFIED BY '$PWD';"
     if [ ! -z "$MYSQL_DATABASE" ]; then

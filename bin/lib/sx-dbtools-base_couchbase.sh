@@ -100,14 +100,14 @@ function checkCouchbaseBucketsExist {
     if [ ! -z "$COUCHBASE_BUCKET" ]; then
         for BUCKET in $(echo $COUCHBASE_BUCKET | tr "," "\n")
         do
-            echo runCheckCouchbaseBucketExist $BUCKET
+            echo $(runCheckCouchbaseBucketExist $BUCKET)
             return;
         done
     fi 
 }
 function checkCouchbaseBucketExist {
     if [ ! -z "$1" ]; then
-        echo runCheckCouchbaseBucketExist $1
+        echo $(runCheckCouchbaseBucketExist $1)
         return;
     fi 
 }
@@ -171,15 +171,72 @@ function runCreateCouchbaseBucket {
     fi;
 }
 
-function loadCouchbaseBucketData {
-    if [ ! -z "$COUCHBASE_BUCKET" ]; then
-        for BUCKET in $(echo $COUCHBASE_BUCKET | tr "," "\n")
+function createCouchbaseUsers {
+    if [ ! -z "$COUCHBASE_USERS" ]; then
+        for userInfo in $(echo $COUCHBASE_USERS | tr "," "\n")
         do
-            runLoadCouchbaseBucketData $BUCKET
+            echo "-------------------"  $userInfo
+            set -f; IFS=':'; set -- $userInfo
+            USER=$1; PWD=$2; set +f; unset IFS
+            createCouchbaseUser $USER $PWD
         done
     fi 
 }
-function runLoadCouchbaseBucketData {
+function createCouchbaseUser {
+    if [[ ! -z "$1" ]]; then
+        runCreateCouchbaseUser $1 $2
+    fi 
+}
+function runCreateCouchbaseUser {
+    USER=$1
+    PWD=$2
+    export RANDFILE=/tmp/.rnd
+    echo "  - create couchbase user $USER"
+    if [ -z "$PWD" ]; then
+        PWD=$(openssl rand -base64 32 | sha256sum | base64 | head -c 16 ; echo)
+        echo "    - with pwd    : [generated]"
+        echo "    - password    : $PWD (! NOTICE : display only once)"
+    else 
+        echo "    - with pwd    : [user given]"
+    fi
+    if couchbase-cli user-manage \
+    -c couchbase://$COUCHBASE_HOST:$COUCHBASE_PORT \
+    -u $COUCHBASE_ADMIN \
+    -p $COUCHBASE_PASSWORD \
+    --set --auth-domain local \
+    --rbac-username $USER \
+    --rbac-password $PWD \
+    --rbac-name $USER \
+    --roles bucket_admin[*] ; then
+        displayDebugMessage "user : $USER created"
+    else
+        displayErrorMessage "Could not create user $USER"
+    fi;
+}
+
+
+
+
+
+
+
+
+
+function importCouchbaseBuckets {
+    if [ ! -z "$COUCHBASE_BUCKET" ]; then
+        for BUCKET in $(echo $COUCHBASE_BUCKET | tr "," "\n")
+        do
+            runImportCouchbaseBucketData $BUCKET
+        done
+    fi 
+}
+function importCouchbaseBucket {
+    if [ ! -z "$1" ]; then
+        runImportCouchbaseBucketData $1
+    fi 
+}
+
+function runImportCouchbaseBucketData {
     if [[ -r $COUCHBASE_DUMP_DIR/$1.$COUCHBASE_DUMP_DATAFILE ]]; then
         FILE=$1.$COUCHBASE_DUMP_DATAFILE
     elif [[ -r $COUCHBASE_DUMP_DIR/$COUCHBASE_DUMP_DATAFILE ]]; then
@@ -227,6 +284,42 @@ function runDeleteCouchbaseBucket {
     fi;
 }
 
+
+function deleteCouchbaseUsers {
+    if [ ! -z "$COUCHBASE_USERS" ]; then
+        for userInfo in $(echo $COUCHBASE_USERS | tr "," "\n")
+        do
+            set -f; IFS=':'; set -- $userInfo
+            USER=$1; PWD=$2; set +f; unset IFS
+            echo "  - delete couchbase user $USER"
+            runDeleteCouchbaseUser $USER
+        done
+    fi 
+}
+function deleteCouchbaseUser {
+    if [ ! -z "$1" ]; then
+        echo "  - delete couchbase user $1"
+        runDeleteCouchbaseUser $1
+    fi 
+}
+function runDeleteCouchbaseUser {
+    if couchbase-cli user-manage \
+    -c couchbase://$COUCHBASE_HOST:$COUCHBASE_PORT \
+    -u $COUCHBASE_ADMIN \
+    -p $COUCHBASE_PASSWORD \
+    --delete --auth-domain local \
+    --rbac-username $1 ; then
+        displayDebugMessage "user : $1 deleted"
+    else
+        displayErrorMessage "Could not deleted user $1"
+    fi;
+}
+
+
+
+
+
+
 function doCouchbaseDump { 
     checkCouchbaseEnv
     echo "=             Dumping couchbase database"
@@ -256,7 +349,7 @@ function doCouchbaseCreate {
     else
         echo "source dir  : $COUCHBASE_DUMP_DIR"
         createCouchbaseBuckets $COUCHBASE_BUCKET
-        loadCouchbaseBucketData $COUCHBASE_BUCKET
+        importCouchbaseBuckets $COUCHBASE_BUCKET
         echo "result      : terminated"
         exit 0;
     fi
@@ -295,13 +388,13 @@ function doCouchbaseReset {
         echo "source dir  : $COUCHBASE_DUMP_DIR"
         deleteCouchbaseBucket $COUCHBASE_BUCKET
         createCouchbaseBuckets $COUCHBASE_BUCKET
-        loadCouchbaseBucketData $COUCHBASE_BUCKET
+        importCouchbaseBuckets $COUCHBASE_BUCKET
         echo "result      : terminated"
         exit 0;
     else
         echo "source dir  : $COUCHBASE_DUMP_DIR"
         createCouchbaseBuckets $COUCHBASE_BUCKET
-        loadCouchbaseBucketData $COUCHBASE_BUCKET
+        importCouchbaseBuckets $COUCHBASE_BUCKET
         echo "result      : terminated"
         exit 0;
     fi

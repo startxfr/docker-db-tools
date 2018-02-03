@@ -82,7 +82,7 @@ function doImportCouchbaseAll {
         displayCouchbaseTabInfoBlock
         echo "  - bucket(s) : $COUCHBASE_BUCKET"
         echo "  - source : $COUCHBASE_DUMP_DIR"
-        importCouchbaseBucketAll
+        importCouchbaseBuckets
     else
         echo "  - Couchbase bucket $COUCHBASE_BUCKET doesn't exist. Nothing to import"
     fi

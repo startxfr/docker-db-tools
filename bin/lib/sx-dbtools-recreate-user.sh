@@ -45,8 +45,8 @@ function doRecreateUserMysqlAll {
     checkMysqlEnv
     displayMysqlTabInfoBlock
     echo "  - user(s) : $MYSQL_DATABASE"
-    deleteMysqlDatabases
-    createMysqlDatabases
+    deleteMysqlUsers
+    createMysqlUsers
 }
 
 #######################################
@@ -57,8 +57,8 @@ function doRecreateUserMysqlOne {
     checkMysqlEnv
     displayMysqlTabInfoBlock
     echo "  - user : $1"
-    deleteMysqlDatabase $1
-    createMysqlDatabase $1
+    deleteMysqlUser $1
+    createMysqlUser $1
 }
 
 
@@ -70,8 +70,8 @@ function doRecreateUserCouchbaseAll {
     checkCouchbaseEnv
     displayCouchbaseTabInfoBlock
     echo "  - user(s) : $COUCHBASE_USERS"
-    deleteCouchbaseBuckets
-    createCouchbaseBuckets
+    deleteCouchbaseUsers
+    createCouchbaseUsers
 }
 
 #######################################
@@ -82,8 +82,8 @@ function doRecreateUserCouchbaseOne {
     checkCouchbaseEnv
     displayCouchbaseTabInfoBlock
     echo "  - user : $1"
-    deleteCouchbaseBucket $1
-    createCouchbaseBucket $1
+    deleteCouchbaseUser $1
+    createCouchbaseUser $1
 }
 
 

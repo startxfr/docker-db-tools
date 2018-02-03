@@ -41,23 +41,27 @@ function doDeleteGlobal {
 # Execute delete for all mysql database(s), user(s) and data
 #######################################
 function doDeleteMysqlAll {
-    echo "- Delete all mysql user(s)"
+    echo "- Delete all mysql database(s) and user(s)"
     checkMysqlEnv
     displayMysqlTabInfoBlock
+    echo "  - database(s) : $MYSQL_DATABASE"
     echo "  - user(s) : $MYSQL_USERS"
     deleteMysqlDatabases
+    deleteMysqlUsers
 }
 
 
 #######################################
-# Execute delete for all couchbase database(s), user(s) and data
+# Execute delete for all couchbase bucket(s), user(s) and data
 #######################################
 function doDeleteCouchbaseAll {
-    echo "- Delete all couchbase user(s)"
+    echo "- Delete all couchbase bucket(s) and user(s)"
     checkCouchbaseEnv
     displayCouchbaseTabInfoBlock
+    echo "  - bucket(s) : $COUCHBASE_BUCKET"
     echo "  - user(s) : $COUCHBASE_USERS"
     deleteCouchbaseBuckets
+    deleteCouchbaseUsers
 }
 
 

@@ -45,7 +45,7 @@ function doDeleteUserMysqlAll {
     checkMysqlEnv
     displayMysqlTabInfoBlock
     echo "  - user(s) : $MYSQL_USERS"
-    deleteMysqlDatabases
+    deleteMysqlUsers
 }
 
 #######################################
@@ -56,7 +56,7 @@ function doDeleteUserMysqlOne {
     checkMysqlEnv
     displayMysqlTabInfoBlock
     echo "  - user : $1"
-    deleteMysqlDatabase $1
+    deleteMysqlUser $1
 }
 
 

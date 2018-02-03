@@ -38,26 +38,34 @@ function doCreateGlobal {
 
 
 #######################################
-# Execute create for all mysql udatabase(s), user(s) and data
+# Execute create for all mysql database(s), user(s) and data
 #######################################
 function doCreateMysqlAll {
     echo "- Create all mysql database(s), user(s) and data"
     checkMysqlEnv
     displayMysqlTabInfoBlock
+    echo "  - database(s) : $MYSQL_DATABASE"
     echo "  - user(s) : $MYSQL_USERS"
-    createMysqls
+    echo "  - source : $MYSQL_DUMP_DIR"
+    createMysqlDatabases
+    createMysqlUsers
+    importMysqlDatabases
 }
 
 
 #######################################
-# Execute create for all couchbase user(s)
+# Execute create for all couchbase bucket(s), user(s) and data
 #######################################
 function doCreateCouchbaseAll {
-    echo "- Create all couchbase database(s), user(s) and data"
+    echo "- Create all couchbase bucket(s), user(s) and data"
     checkCouchbaseEnv
     displayCouchbaseTabInfoBlock
+    echo "  - bucket(s) : $COUCHBASE_BUCKET"
     echo "  - user(s) : $COUCHBASE_USERS"
+    echo "  - source : $COUCHBASE_DUMP_DIR"
     createCouchbaseBuckets
+    createCouchbaseUsers
+    importCouchbaseBuckets
 }
 
 

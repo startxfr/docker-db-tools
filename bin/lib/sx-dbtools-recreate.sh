@@ -41,25 +41,35 @@ function doRecreateGlobal {
 # Execute recreate for all mysql database(s), user(s) and data
 #######################################
 function doRecreateMysqlAll {
-    echo "- Recreate all mysql user(s)"
+    echo "- Recreate all mysql database(s), user(s) and data"
     checkMysqlEnv
     displayMysqlTabInfoBlock
-    echo "  - user(s) : $MYSQL_DATABASE"
+    echo "  - database(s) : $MYSQL_DATABASE"
+    echo "  - user(s) : $MYSQL_USERS"
+    echo "  - source : $MYSQL_DUMP_DIR"
     deleteMysqlDatabases
+    deleteMysqlUsers
     createMysqlDatabases
+    createMysqlUsers
+    importMysqlDatabases
 }
 
 
 #######################################
-# Execute recreate for all couchbase user(s)
+# Execute recreate for all couchbase bucket(s), user(s) and data
 #######################################
 function doRecreateCouchbaseAll {
-    echo "- Recreate all couchbase user(s)"
+    echo "- Recreate all couchbase bucket(s), user(s) and data"
     checkCouchbaseEnv
     displayCouchbaseTabInfoBlock
+    echo "  - bucket(s) : $COUCHBASE_BUCKET"
     echo "  - user(s) : $COUCHBASE_USERS"
+    echo "  - source : $COUCHBASE_DUMP_DIR"
     deleteCouchbaseBuckets
+    deleteCouchbaseUsers
     createCouchbaseBuckets
+    createCouchbaseUsers
+    importCouchbaseBuckets
 }
 
 
