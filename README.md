@@ -35,27 +35,28 @@ content from one database or one bucket.
 docker run -d \
 --link db-mysql:dbm \
 --link db-couchbase:dbc \
--e MYSQL_DATABASE=demo,demo2,demo3
--e MYSQL_ADMIN=root:rootPassword
--e MYSQL_USERS=demo:pwd,user3:pwd3,test
--e COUCHBASE_ADMIN=demo:password
--e COUCHBASE_BUCKET=demo,demo2
--e COUCHBASE_USERS=demo1:password1,demo2
-startx/db-tools create
-```
-
-##### Recreate full stack (mysql + couchbase user, database and data)
-```bash
-docker run -d \
---link db-mysql:dbm \
---link db-couchbase:dbc \
 -e MYSQL_DATABASE=demo,demo2,demo3 \
 -e MYSQL_ADMIN=root:rootPassword \
 -e MYSQL_USERS=demo:pwd,user3:pwd3,test \
 -e COUCHBASE_ADMIN=demo:password \
 -e COUCHBASE_BUCKET=demo,demo2 \
 -e COUCHBASE_USERS=demo1:password1,demo2 \
-startx/db-tools recreate
+startx/db-tools create
+```
+
+##### Recreate full stack (mysql + couchbase user, database and data)
+```bash
+docker run -d \
+--link db-mysql:dbm \  # Linked mysql service
+--link db-couchbase:dbc \  # Linked couchbase service
+-e MYSQL_DATABASE=demo,demo2,demo3 \  # List of mysql database to manipulate
+-e MYSQL_ADMIN=root:rootPassword \  # mysql administrator username and password
+-e MYSQL_USERS=demo:pwd,user3:pwd3,test \  # List of mysql user (password optional) to manipulate
+-e COUCHBASE_ADMIN=demo:password \  # couchbase administrator username and password
+-e COUCHBASE_BUCKET=demo,demo2 \  # List of couchbase bucket to manipulate
+-e COUCHBASE_USERS=demo1:password1,demo2 \  # List of couchbase user (password optional) to manipulate
+startx/db-tools # sx-dbtools docker image 
+recreate  # sx-dbtools command
 ```
 
 ##### create one mysql database + data (if available)
