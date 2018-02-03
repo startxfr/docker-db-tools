@@ -7,18 +7,16 @@ app:
     - db-mysql:dbm
     - db-couchbase:dbc
   environment:
-   - MYSQL_DATABASE=demo,demo2,demo3
+   - MYSQL_DATABASE=dbtest1;dbtest2;dbtest3
    - MYSQL_ADMIN=root:rootPassword
-   - MYSQL_USERS=demo:pwd,user3:pwd3,test
-   - COUCHBASE_ADMIN=demo:password
-   - COUCHBASE_BUCKET=demo,demo2
-   - COUCHBASE_USERS=demo1:password1,demo2
+   - MYSQL_USERS=dbuser1:pwdtest1,dbuser2:pwdtest2,dbuser3
+   - COUCHBASE_ADMIN=root:rootPassword
+   - COUCHBASE_BUCKET=cbtest1;cbtest2
+   - COUCHBASE_USERS=cbuser1:pwdtest1,cbuser2
   volumes:
     - "./sample/dump:/dump:z"
     - "./sample/backup:/backup:z"
-    - "./bin/sx-dbtools:/bin/sx-dbtools:z"
-    - "./bin/lib:/bin/sx-dbtools-lib:z"
-  command: ["recreate"]
+  command: ["info"]
 
 db-mysql:
   extends:
@@ -33,15 +31,3 @@ db-couchbase:
     file: docker-compose-abstract.yml
     service: db-couchbase
   container_name: "sx-dbtools_couchbase"
-
-pma:
-  extends:
-    file: docker-compose-abstract.yml
-    service: pma
-  container_name: "sx-dbtools_pma"
-  links:
-    - db-mysql:db
-  environment:
-   - PMA_HOST=db
-   - PMA_USER=root
-   - PMA_PASSWORD=rootPassword
