@@ -7,16 +7,16 @@ app:
     - db-mysql:dbm
     - db-couchbase:dbc
   environment:
-   - MYSQL_DATABASE=dbtest1;dbtest2;dbtest3
+   - MYSQL_DATABASE=dbDemo1;dbDemo2;dbDemo3
    - MYSQL_ADMIN=root:rootPassword
-   - MYSQL_USERS=dbuser1:pwdtest1,dbuser2:pwdtest2,dbuser3
+   - MYSQL_USERS=dbDemoUser1:pwdtest1,dbDemoUser2:pwdtest2,dbDemoUser3
    - COUCHBASE_ADMIN=root:rootPassword
-   - COUCHBASE_BUCKET=cbtest1;cbtest2
-   - COUCHBASE_USERS=cbuser1:pwdtest1,cbuser2
+   - COUCHBASE_BUCKET=cbDemo1;cbDemo2
+   - COUCHBASE_USERS=cbDemoUser1:pwdtest1,cbDemoUser2
   volumes:
-    - "./sample/dump:/dump:z"
-    - "./sample/backup:/backup:z"
-  command: ["info"]
+    - "./sample/dump:/dump:rw"
+    - "./sample/backup:/backup:rw"
+  command: ["usage"]
 
 db-mysql:
   extends:
