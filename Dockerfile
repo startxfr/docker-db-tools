@@ -5,7 +5,7 @@ RUN apt-get update -y && \
     apt-get install -y mariadb-server-5.5 mariadb-client-5.5 tar gzip && \
     apt-get clean
 
-ENV SXDBTOOLS_VERSION="0.1.8" \
+ENV SXDBTOOLS_VERSION="0.1.9" \
     SXDBTOOLS_DEBUG=false \
     SXDBTOOLS_BACKUP_DIR=/backup \
     SXDBTOOLS_DUMP_DIR=/dump \

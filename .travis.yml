@@ -19,6 +19,6 @@ script: ./travis-test.sh
 
 after_success:
   - docker login -u $DOCKER_USER -p $DOCKER_PASS
-  - export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; elif [ "$TRAVIS_BRANCH" == "docker" ]; then echo "stable"; else echo $TRAVIS_BRANCH ; fi`
+  - export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; elif [ "$TRAVIS_BRANCH" == "docker" ]; then echo "stable"; elif [ "$TRAVIS_BRANCH" == "s2i" ]; then echo "stable-s2i"; else echo ${TRAVIS_BRANCH:1} ; fi`
   - docker build -f Dockerfile --squash -t $REPO:$TAG .
   - docker push $REPO
