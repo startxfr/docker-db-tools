@@ -30,15 +30,16 @@ LABEL summary="$SUMMARY" \
       release="1" \
       maintainer="startx.fr <dev@startx.fr>"
 
-COPY ./bin/* /bin/
-COPY ./.s2i/bin/* /usr/libexec/s2i/
-RUN mkdir -p $MYSQL_DUMP_DIR && \
+COPY ./bin /tmp/sxbin
+RUN mv /tmp/sxbin/* /bin/ && \
+    rm -rf /tmp/sxbin && \
+    mkdir -p $MYSQL_DUMP_DIR && \
     mkdir -p $COUCHBASE_DUMP_DIR && \
     mkdir -p $SXDBTOOLS_BACKUP_DIR && \
     chmod -R ug+x /bin/sx-dbtools* && \
     rm -f /bin/sx-dbtools*.c && \
-    adduser couchbase mysql && \
-    adduser mysql couchbase  && \
+    adduser couchbase mysql > /dev/null && \
+    adduser mysql couchbase > /dev/null  && \
     chmod -R ugo+rw $SXDBTOOLS_BACKUP_DIR $SXDBTOOLS_BACKUP_DIR 
 
 WORKDIR /
