@@ -14,32 +14,127 @@ content from one database or one bucket.
 
 ## Actions you can perform
 
-| Command        | database-type/sub-command | options | Description
-|----------------|---------------------------|---------|---------------
-| **User management Commands**
-| create-user    |                           |         | Create database(s) user(s)
-| delete-user    |                           |         | Delete database(s) user(s)
-| recreate-user  |                           |         | Delete and create database(s) user(s)
-| **Backup / Restore Commands**
-| backup         |                           |         | Backup database(s) in backup directory
-| restore        |                           |         | Restore database(s) in backup directory
-| **Database Commands**
-| create-db      |                           |         | Create database(s)
-| delete-db    |                           |         | Delete database(s)
-| recreate-db  |                           |         | Delete and create database(s)
-| **Data Commands**
-| dump    |                           |         | Dump database(s) in dump directory
-| import    |                           |         | import database(s) from dump directory
-| create-data  |                           |         | alias of import command
-| **Global Commands**
-| create    |                           |         | Create user(s) + database(s) + data
-| delete    |                           |         | Delete user(s) + database(s) + data
-| recreate  |                           |         | Delete and create user(s) + database(s) + data
-| **sx-dbtools Commands**
-| usage    |                           |         | this message
-| <cmd>     | help                     |         | display information about a command
-| info  |                           |         | give information about the running sx-dbtools
-| version  |                           |         | give the version of the running sx_dbtools
+### Global Commands
+
+| Command        | database-type   | options  | Description
+|----------------|-----------------|----------|---------------
+| create         |                 |          | Create all user(s) + database(s) + data for all database type
+| create         | mysql/couchbase |          | Create all user(s) + database(s) + data for one database type (mysql or couchbase)
+| create         | mysql/couchbase | database | Create one database + data for one database type (mysql or couchbase)
+| delete         |                 |          | Delete all user(s) + database(s) + data for all database type
+| delete         | mysql/couchbase |          | Delete all user(s) + database(s) + data for one database type (mysql or couchbase)
+| delete         | mysql/couchbase | database | Delete one database + data for one database type (mysql or couchbase)
+| recreate       |                 |          | Delete and create all user(s) + database(s) + data for all database type
+| recreate       | mysql/couchbase |          | Delete and create all user(s) + database(s) + data for one database type (mysql or couchbase)
+| recreate       | mysql/couchbase | database | Delete and create one database + data for one database type (mysql or couchbase)
+
+#### Examples
+
+##### Initialize full stack (mysql + couchbase user, database and data)
+```bash
+docker run -d \
+--link db-mysql:dbm \
+--link db-couchbase:dbc \
+-e MYSQL_DATABASE=demo,demo2,demo3
+-e MYSQL_ADMIN=root:rootPassword
+-e MYSQL_USERS=demo:pwd,user3:pwd3,test
+-e COUCHBASE_ADMIN=demo:password
+-e COUCHBASE_BUCKET=demo,demo2
+-e COUCHBASE_USERS=demo1:password1,demo2
+startx/db-tools create
+```
+
+##### Recreate full stack (mysql + couchbase user, database and data)
+```bash
+docker run -d \
+--link db-mysql:dbm \
+--link db-couchbase:dbc \
+-e MYSQL_DATABASE=demo,demo2,demo3 \
+-e MYSQL_ADMIN=root:rootPassword \
+-e MYSQL_USERS=demo:pwd,user3:pwd3,test \
+-e COUCHBASE_ADMIN=demo:password \
+-e COUCHBASE_BUCKET=demo,demo2 \
+-e COUCHBASE_USERS=demo1:password1,demo2 \
+startx/db-tools recreate
+```
+
+##### create one mysql database + data (if available)
+```bash
+docker run -d \
+--link db-mysql:dbm \
+-e MYSQL_DATABASE=demo,demo2,demo3 \
+-e MYSQL_ADMIN=root:rootPassword \
+-e MYSQL_USERS=demo:pwd,user3:pwd3,test \
+startx/db-tools create mysql demo2
+```
+
+##### Delete all couchbase bucket(s) and user(s)
+```bash
+docker run -d \
+--link db-mysql:dbm \
+--link db-couchbase:dbc \
+-e COUCHBASE_ADMIN=demo:password \
+-e COUCHBASE_BUCKET=demo,demo2 \
+-e COUCHBASE_USERS=demo1:password1,demo2 \
+startx/db-tools delete couchbase
+```
+
+
+### Data Commands
+
+| Command        | database-type   | options  | Description
+|----------------|-----------------|----------|---------------
+| dump           |                 |          | Dump database(s) in dump directory
+| import         |                 |          | import database(s) from dump directory
+| create-data    |                 |          | alias of import command
+
+
+### Backup / Restore Commands
+
+| Command        | database-type   | options  | Description
+|----------------|-----------------|----------|---------------
+| backup         |                 |          | Backup database(s) in backup directory (not implemented)
+| restore        |                 |          | Restore database(s) in backup directory (not implemented)
+
+
+### Database Commands
+
+| Command        | database-type   | options  | Description
+|----------------|-----------------|----------|---------------
+| create-db      |                 |          | Create all database(s) for all database type
+| create-db      | mysql/couchbase |          | Create all database(s) for one database type (mysql or couchbase)
+| create-db      | mysql/couchbase | database | Create one database for one database type (mysql or couchbase)
+| delete-db      |                 |          | Delete all database(s) for all database type
+| delete-db      | mysql/couchbase |          | Delete all database(s) for one database type (mysql or couchbase)
+| delete-db      | mysql/couchbase | database | Delete one database for one database type (mysql or couchbase)
+| recreate-db    |                 |          | Delete and create all database(s) for all database type
+| recreate-db    | mysql/couchbase |          | Delete and create all database(s) for one database type (mysql or couchbase)
+| recreate-db    | mysql/couchbase | database | Delete and create one database for one database type (mysql or couchbase)
+
+
+### User management Commands
+
+| Command        | database-type   | options  | Description
+|----------------|-----------------|----------|---------------
+| create-user    |                 |          | Create all user(s) for all database type
+| create-user    | mysql/couchbase |          | Create all user(s) for one database type (mysql or couchbase)
+| create-user    | mysql/couchbase | user     | Create one user for one database type (mysql or couchbase)
+| delete-user    |                 |          | Delete all user(s) for all database type
+| delete-user    | mysql/couchbase |          | Delete all user(s) for one database type (mysql or couchbase)
+| delete-user    | mysql/couchbase | user     | Delete one user for one database type (mysql or couchbase)
+| recreate-user  |                 |          | Delete and create all user(s) for all database type
+| recreate-user  | mysql/couchbase |          | Delete and create all user(s) for one database type (mysql or couchbase)
+| recreate-user  | mysql/couchbase | user     | Delete and create one user for one database type (mysql or couchbase)
+
+
+### sx-dbtools Commands
+
+| Command        | database-type   | options  | Description
+|----------------|-----------------|----------|---------------
+| usage          |                 |          | usage message
+| <cmd>          | help            |          | display information about a command
+| info           |                 |          | give information about the running sx-dbtools
+| version        |                 |          | give the version of the running sx_dbtools
 
 
 Initialize mysql and couchbase backend
