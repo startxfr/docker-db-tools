@@ -1,6 +1,14 @@
 #!/bin/bash
 
 
+#######################################
+# Display small repetitive information in tabulated information block
+#######################################
+function displayCouchbaseTabInfoBlock {
+    echo "  - server : $COUCHBASE_HOST"
+}
+
+
 function checkCouchbaseEnv {
     if [ ! -z "$DBC_PORT_8091_TCP_START" ]; then
         if [ -z "$DBC_PORT_8091_TCP_ADDR" ]; then

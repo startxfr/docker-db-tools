@@ -45,8 +45,7 @@ function doDumpMysqlAll {
     echo "- Dump all mysql database"
     checkMysqlEnv
     if checkMysqlDatabasesExist; then
-        echo "  - mysql version : $DBM_ENV_MARIADB_VERSION"
-        echo "  - server : $MYSQL_HOST"
+        displayMysqlTabInfoBlock
         echo "  - database(s) : $MYSQL_DATABASE"
         echo "  - destination : $MYSQL_DUMP_DIR"
         dumpMysqlDatabaseAll
@@ -62,8 +61,7 @@ function doDumpMysqlOne {
     echo "- Dump '$1' mysql database"
     checkMysqlEnv
     if checkMysqlDatabaseExist $1; then
-        echo "  - mysql version : $DBM_ENV_MARIADB_VERSION"
-        echo "  - server : $MYSQL_HOST"
+        displayMysqlTabInfoBlock
         echo "  - database : $1"
         echo "  - destination : $MYSQL_DUMP_DIR"
         dumpMysqlDatabaseOne $1
@@ -82,7 +80,7 @@ function doDumpCouchbaseAll {
     if checkCouchbaseIsNotInitialized; then
         echo "  - Couchbase host $COUCHBASE_HOST is not initialized. Nothing to dump"
     elif $(checkCouchbaseBucketsExist); then
-        echo "  - server : $COUCHBASE_HOST"
+        displayCouchbaseTabInfoBlock
         echo "  - bucket(s) : $COUCHBASE_BUCKET"
         echo "  - destination : $COUCHBASE_DUMP_DIR"
         dumpCouchbaseBucketAll
@@ -100,7 +98,7 @@ function doDumpCouchbaseOne {
     if checkCouchbaseIsNotInitialized; then
         echo "  - Couchbase host $COUCHBASE_HOST is not initialized. Nothing to dump"
     elif $(checkCouchbaseBucketsExist); then
-        echo "  - server : $COUCHBASE_HOST"
+        displayCouchbaseTabInfoBlock
         echo "  - bucket : $1"
         echo "  - destination : $COUCHBASE_DUMP_DIR"
         dumpCouchbaseBucketOne $1

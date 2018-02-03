@@ -45,8 +45,7 @@ function doImportMysqlAll {
     echo "- Import all mysql database"
     checkMysqlEnv
     if checkMysqlDatabasesExist; then
-        echo "  - mysql version : $DBM_ENV_MARIADB_VERSION"
-        echo "  - server : $MYSQL_HOST"
+        displayMysqlTabInfoBlock
         echo "  - database(s) : $MYSQL_DATABASE"
         echo "  - source : $MYSQL_DUMP_DIR"
         importMysqlDatabaseAll
@@ -62,8 +61,7 @@ function doImportMysqlOne {
     echo "- Import '$1' mysql database"
     checkMysqlEnv
     if checkMysqlDatabaseExist $1; then
-        echo "  - mysql version : $DBM_ENV_MARIADB_VERSION"
-        echo "  - server : $MYSQL_HOST"
+        displayMysqlTabInfoBlock
         echo "  - database : $1"
         echo "  - source : $MYSQL_DUMP_DIR"
         importMysqlDatabaseOne $1
@@ -82,7 +80,7 @@ function doImportCouchbaseAll {
     if checkCouchbaseIsNotInitialized; then
         echo "  - Couchbase host $COUCHBASE_HOST is not initialized. Nothing to import"
     elif $(checkCouchbaseBucketsExist); then
-        echo "  - server : $COUCHBASE_HOST"
+        displayCouchbaseTabInfoBlock
         echo "  - bucket(s) : $COUCHBASE_BUCKET"
         echo "  - source : $COUCHBASE_DUMP_DIR"
         importCouchbaseBucketAll
@@ -100,7 +98,7 @@ function doImportCouchbaseOne {
     if checkCouchbaseIsNotInitialized; then
         echo "  - Couchbase host $COUCHBASE_HOST is not initialized. Nothing to import"
     elif $(checkCouchbaseBucketsExist); then
-        echo "  - server : $COUCHBASE_HOST"
+        displayCouchbaseTabInfoBlock
         echo "  - bucket : $1"
         echo "  - source : $COUCHBASE_DUMP_DIR"
         importCouchbaseBucketOne $1

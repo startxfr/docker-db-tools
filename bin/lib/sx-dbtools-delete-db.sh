@@ -45,8 +45,7 @@ function doDeleteDbMysqlAll {
     echo "- Delete all mysql database"
     checkMysqlEnv
     if checkMysqlDatabasesExist; then
-        echo "  - mysql version : $DBM_ENV_MARIADB_VERSION"
-        echo "  - server : $MYSQL_HOST"
+        displayMysqlTabInfoBlock
         echo "  - database(s) : $MYSQL_DATABASE"
         deleteMysqlDatabases
     else
@@ -61,8 +60,7 @@ function doDeleteDbMysqlOne {
     echo "- Delete '$1' mysql database"
     checkMysqlEnv
     if checkMysqlDatabaseExist $1; then
-        echo "  - mysql version : $DBM_ENV_MARIADB_VERSION"
-        echo "  - server : $MYSQL_HOST"
+        displayMysqlTabInfoBlock
         echo "  - database : $1"
         deleteMysqlDatabase $1
     else
@@ -78,7 +76,7 @@ function doDeleteDbCouchbaseAll {
     echo "- Delete all couchbase buckets"
     checkCouchbaseEnv
     if $(checkCouchbaseBucketsExist); then
-        echo "  - server : $COUCHBASE_HOST"
+        displayCouchbaseTabInfoBlock
         echo "  - bucket(s) : $COUCHBASE_BUCKET"
         deleteCouchbaseBuckets
     else
@@ -93,7 +91,7 @@ function doDeleteDbCouchbaseOne {
     echo "- Delete '$1' couchbase bucket"
     checkCouchbaseEnv
     if $(checkCouchbaseBucketExist $1); then
-        echo "  - server : $COUCHBASE_HOST"
+        displayCouchbaseTabInfoBlock
         echo "  - bucket : $1"
         deleteCouchbaseBucket $1
     else

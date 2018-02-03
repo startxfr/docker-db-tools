@@ -1,6 +1,15 @@
 #!/bin/bash
 
 
+#######################################
+# Display small repetitive information in tabulated information block
+#######################################
+function displayMysqlTabInfoBlock {
+    echo "  - mysql version : $DBM_ENV_MARIADB_VERSION"
+    echo "  - server : $MYSQL_HOST
+}
+
+
 function checkMysqlEnv {
     if [ ! -z "$DBM_ENV_MARIADB_VERSION" ]; then
         if [ -z "$DBM_PORT_3306_TCP_ADDR" ]; then
@@ -105,28 +114,33 @@ function runCreateMysqlDatabase {
     -e "CREATE DATABASE $1 DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;"
 }
 
-function createMysqlDatabasesUser {
+function createMysqlUsers {
     if [ ! -z "$MYSQL_USERS" ]; then
         for userInfo in $(echo $MYSQL_USERS | tr "," "\n")
         do
             set -f; IFS=':'; set -- $userInfo
             USER=$1; PWD=$2; set +f; unset IFS
-            runCreateMysqlDatabaseUser $USER $PWD
+            createMysqlUser $USER $PWD
         done
     fi 
 }
-function runCreateMysqlDatabaseUser {
+function createMysqlUser {
+    if [ ! -z "$1" &&  ! -z "$2" ]; then
+        runCreateMysqlUser $USER $PWD
+    fi 
+}
+function runCreateMysqlUser {
     USER=$1
     PWD=$2
     DB=""
     export RANDFILE=/tmp/.rnd
-    echo "create user : $USER"
+    echo "  - create user : $USER"
     if [ -z "$PWD" ]; then
         PWD=$(openssl rand -base64 32 | sha256sum | base64 | head -c 16 ; echo)
-        echo "with pwd    : [generated]"
-        echo "password    : $PWD (! NOTICE : display only once)"
+        echo "  - with pwd    : [generated]"
+        echo "  - password    : $PWD (! NOTICE : display only once)"
     else 
-        echo "with pwd    : [user given]"
+        echo "  - with pwd    : [user given]"
     fi
     if [ ! -z "$MYSQL_DATABASE" ]; then
         for DATABASE in $(echo $MYSQL_DATABASE | tr "," "\n")
@@ -139,7 +153,7 @@ function runCreateMysqlDatabaseUser {
     if [ ! -z "$MYSQL_DATABASE" ]; then
         for DATABASE in $(echo $MYSQL_DATABASE | tr "," "\n")
         do
-            echo "grant       : $USER access to $DATABASE"
+            echo "  - grant       : $USER access to $DATABASE"
             mysql -h $MYSQL_HOST -u $MYSQL_USER --password=$MYSQL_PASSWORD \
             -e "GRANT ALL PRIVILEGES ON $DATABASE.* TO '$USER' WITH GRANT OPTION;"
         done
@@ -338,7 +352,7 @@ function doMysqlCreate {
     else
         echo "source dir  : $MYSQL_DUMP_DIR"
         createMysqlDatabases
-        createMysqlDatabasesUser
+        createMysqlUsers
         importMysqlDatabasesSchema
         echo "schema file : $MYSQL_DUMP_SCHEMAFILE loaded"
         importMysqlDatabasesData
@@ -350,7 +364,7 @@ function doMysqlCreate {
 
 function doMysqlCreateUser { 
     checkMysqlEnv
-    createMysqlDatabasesUser
+    createMysqlUsers
     exit 0;
 }
 
@@ -381,7 +395,7 @@ function doMysqlReset {
         deleteMysqlDatabase
         deleteMysqlDatabaseUser
         createMysqlDatabases
-        createMysqlDatabasesUser
+        createMysqlUsers
         importMysqlDatabasesSchema
         echo "schema file : $MYSQL_DUMP_SCHEMAFILE loaded"
         importMysqlDatabasesData

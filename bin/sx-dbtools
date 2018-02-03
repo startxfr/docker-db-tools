@@ -19,6 +19,12 @@ source $LIBDIR/sx-dbtools-create-db.sh
 source $LIBDIR/sx-dbtools-delete-db.sh
 # Load recreate-db sub-command library
 source $LIBDIR/sx-dbtools-recreate-db.sh
+# Load create-user sub-command library
+source $LIBDIR/sx-dbtools-create-user.sh
+# Load delete-user sub-command library
+source $LIBDIR/sx-dbtools-delete-user.sh
+# Load recreate-user sub-command library
+source $LIBDIR/sx-dbtools-recreate-user.sh
 
 
 case $1 in

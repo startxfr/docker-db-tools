@@ -45,8 +45,7 @@ function doCreateDbMysqlAll {
     echo "- Create all mysql database"
     checkMysqlEnv
     if ! checkMysqlDatabasesExist; then
-        echo "  - mysql version : $DBM_ENV_MARIADB_VERSION"
-        echo "  - server : $MYSQL_HOST"
+        displayMysqlTabInfoBlock
         echo "  - database(s) : $MYSQL_DATABASE"
         createMysqlDatabases
     else
@@ -61,8 +60,7 @@ function doCreateDbMysqlOne {
     echo "- Create '$1' mysql database"
     checkMysqlEnv
     if ! checkMysqlDatabaseExist $1; then
-        echo "  - mysql version : $DBM_ENV_MARIADB_VERSION"
-        echo "  - server : $MYSQL_HOST"
+        displayMysqlTabInfoBlock
         echo "  - database : $1"
         createMysqlDatabase $1
     else
@@ -80,7 +78,7 @@ function doCreateDbCouchbaseAll {
     if $(checkCouchbaseBucketsExist); then
         echo "  - Couchbase host $COUCHBASE_HOST has bucket(s), try to recreate instead."
     else
-        echo "  - server : $COUCHBASE_HOST"
+        displayCouchbaseTabInfoBlock
         echo "  - bucket(s) : $COUCHBASE_BUCKET"
         createCouchbaseBuckets
     fi
@@ -95,7 +93,7 @@ function doCreateDbCouchbaseOne {
     if $(checkCouchbaseBucketExist $1); then
         echo "  - Couchbase host $COUCHBASE_HOST already has bucket $1, try to recreate instead."
     else
-        echo "  - server : $COUCHBASE_HOST"
+        displayCouchbaseTabInfoBlock
         echo "  - bucket : $1"
         createCouchbaseBucket $1
     fi
