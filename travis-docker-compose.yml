@@ -1,4 +1,6 @@
 app:
   build: ./
   container_name: "sx-dbtools-travis"
+  environment:
+   - SXDBTOOLS_DEBUG=true
   command: ["info"]
