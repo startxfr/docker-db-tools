@@ -13,25 +13,30 @@ source $LIBDIR/sx-dbtools-base_couchbase.sh
 source $LIBDIR/sx-dbtools-dump.sh
 # Load import sub-command library
 source $LIBDIR/sx-dbtools-import.sh
+# Load create-db sub-command library
+source $LIBDIR/sx-dbtools-create-db.sh
+# Load delete-db sub-command library
+source $LIBDIR/sx-dbtools-delete-db.sh
+# Load recreate-db sub-command library
+source $LIBDIR/sx-dbtools-recreate-db.sh
 
 
 case $1 in
-dump)           dispatcherDump $@ ;;
-import)         dispatcherImport $@ ;;
-create-data)    dispatcherImport $@ ;;
-create)         dispatcherCreate $@ ;;
-delete)         dispatcherDelete $@ ;;
-recreate)       dispatcherRecreate $@ ;;
-backup)         dispatcherBackup $@ ;;
-restore)        dispatcherRestore $@ ;;
-create-user)    dispatcherCreateUser $@ ;;
-delete-user)    dispatcherDeleteUser $@ ;;
-recreate-user)  dispatcherRecreateUser $@ ;;
-create-db)      dispatcherCreateDb $@ ;;
-delete-db)      dispatcherDeleteDb $@ ;;
-recreate-db)    dispatcherRecreateDb $@ ;;
-usage)          displayUsage $@ ;;
-info)           displayInformation $@ ;;
-version)        displayVersion $@ ;;
-*)              displayUsage $@ ;;
+    dump)                   dispatcherDump $@ ;;
+    import|create-data)     dispatcherImport $@ ;;
+    create)                 dispatcherCreate $@ ;;
+    delete)                 dispatcherDelete $@ ;;
+    recreate)               dispatcherRecreate $@ ;;
+    backup)                 dispatcherBackup $@ ;;
+    restore)                dispatcherRestore $@ ;;
+    create-user)            dispatcherCreateUser $@ ;;
+    delete-user)            dispatcherDeleteUser $@ ;;
+    recreate-user)          dispatcherRecreateUser $@ ;;
+    create-db)              dispatcherCreateDb $@ ;;
+    delete-db)              dispatcherDeleteDb $@ ;;
+    recreate-db)            dispatcherRecreateDb $@ ;;
+    usage)                  displayUsage $@ ;;
+    info)                   displayInformation $@ ;;
+    version|--version)      displayVersion $@ ;;
+    *)                      displayUsage $@ ;;
 esac

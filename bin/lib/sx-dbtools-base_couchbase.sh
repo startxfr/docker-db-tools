@@ -4,15 +4,15 @@
 function checkCouchbaseEnv {
     if [ ! -z "$DBC_PORT_8091_TCP_START" ]; then
         if [ -z "$DBC_PORT_8091_TCP_ADDR" ]; then
-            echo "Need to expose port 8091 from your couchbase container"
+            displayErrorMessage "Need to expose port 8091 from your couchbase container"
             exit 128;
         fi 
         COUCHBASE_HOST="$DBC_PORT_8091_TCP_ADDR"
         COUCHBASE_PORT="$DBC_PORT_8091_TCP_PORT_START"
     else
-        echo "No mysql linked container labeled 'dbc'"
+        displayDebugMessage "No mysql linked container labeled 'dbc'"
         if [ -z "$COUCHBASE_HOST" ]; then
-            echo "Need to set COUCHBASE_HOST"
+            displayErrorMessage "Need to set COUCHBASE_HOST"
             exit 128;
         fi 
         if [ -z "$COUCHBASE_PORT" ]; then
@@ -20,11 +20,11 @@ function checkCouchbaseEnv {
         fi 
     fi
     if [ -z "$COUCHBASE_BUCKET" ]; then
-        echo "Need to set COUCHBASE_BUCKET"
+        displayErrorMessage "Need to set COUCHBASE_BUCKET"
         exit 128;
     fi
     if [ -z "$COUCHBASE_ADMIN" ]; then
-        echo "Need to set COUCHBASE_ADMIN"
+        displayErrorMessage "Need to set COUCHBASE_ADMIN"
         exit 128;
     else
         if [ -z "$COUCHBASE_PASSWORD" ]; then
@@ -40,9 +40,13 @@ function checkCouchbaseEnv {
         fi
     fi 
     if [ -z "$COUCHBASE_DUMP_DIR" ]; then
-        echo "Need to set COUCHBASE_DUMP_DIR"
+        displayErrorMessage "Need to set COUCHBASE_DUMP_DIR"
         exit 128;
     fi 
+    if checkCouchbaseIsNotInitialized; then
+        echo "  - initialize cluster $COUCHBASE_HOST"
+        initializeCouchbase
+    fi
 }
 
 function dumpCouchbaseBucketAll {
@@ -83,13 +87,19 @@ function checkCouchbaseIsNotInitialized {
     fi
 }
 
-function checkCouchbaseBucketExist {
+function checkCouchbaseBucketsExist {
     if [ ! -z "$COUCHBASE_BUCKET" ]; then
         for BUCKET in $(echo $COUCHBASE_BUCKET | tr "," "\n")
         do
             echo runCheckCouchbaseBucketExist $BUCKET
             return;
         done
+    fi 
+}
+function checkCouchbaseBucketExist {
+    if [ ! -z "$1" ]; then
+        echo runCheckCouchbaseBucketExist $1
+        return;
     fi 
 }
 function runCheckCouchbaseBucketExist {
@@ -122,12 +132,18 @@ function initializeCouchbase {
     fi
 }
 
-function createCouchbaseBucket {
+function createCouchbaseBuckets {
     if [ ! -z "$COUCHBASE_BUCKET" ]; then
         for BUCKET in $(echo $COUCHBASE_BUCKET | tr "," "\n")
         do
-            runCreateCouchbaseBucket $BUCKET
+            createCouchbaseBucket $BUCKET
         done
+    fi 
+}
+function createCouchbaseBucket {
+    if [ ! -z "$1" ]; then
+        echo "  - create bucket $1"
+        runCreateCouchbaseBucket $1
     fi 
 }
 function runCreateCouchbaseBucket {
@@ -141,7 +157,7 @@ function runCreateCouchbaseBucket {
     --wait; then
         echo "bucket      : $1 created"
     else
-        echo "bucket      ! Could not create bucket $1"
+        displayErrorMessage "Could not create bucket $1"
     fi;
 }
 
@@ -169,7 +185,7 @@ function runLoadCouchbaseBucketData {
     --generate-key %_id%; then
         echo "data file   : $FILE loaded in bucket $1"
     else
-        echo "data file   ! Could not load $FILE in bucket $1"
+        displayErrorMessage "Could not load data file $FILE in bucket $1"
     fi;
 }
 
@@ -189,7 +205,7 @@ function runDeleteCouchbaseBucket {
     --bucket $1; then
         echo "bucket      : $1 deleted"
     else
-        echo "bucket      ! Could not delete bucket $1"
+        displayErrorMessage "Could not delete bucket $1"
     fi;
 }
 
@@ -214,18 +230,14 @@ function doCouchbaseCreate {
     echo "=             Create couchbase database"
     echo "==================================" 
     echo "host        : $COUCHBASE_HOST"
-    if checkCouchbaseIsNotInitialized; then
-        initializeCouchbase
-        echo "cluster : $COUCHBASE_HOST initialized"
-    fi
-    if $(checkCouchbaseBucketExist); then
+    if $(checkCouchbaseBucketsExist); then
         echo "! Bucket already exist"
         echo "You must run 'sx-dbtools couchbase delete' before this action"
         echo "You can also run 'sx-dbtools couchbase reset' to perform delete a create all in one"
         exit 1;
     else
         echo "source dir  : $COUCHBASE_DUMP_DIR"
-        createCouchbaseBucket $COUCHBASE_BUCKET
+        createCouchbaseBuckets $COUCHBASE_BUCKET
         loadCouchbaseBucketData $COUCHBASE_BUCKET
         echo "result      : terminated"
         exit 0;
@@ -241,7 +253,7 @@ function doCouchbaseDelete {
         initializeCouchbase
         echo "cluster : $COUCHBASE_HOST initialized"
     fi
-    if $(checkCouchbaseBucketExist); then
+    if $(checkCouchbaseBucketsExist); then
         deleteCouchbaseBucket $COUCHBASE_BUCKET
         echo "result      : terminated"
         exit 0;
@@ -261,16 +273,16 @@ function doCouchbaseReset {
         initializeCouchbase
         echo "cluster : $COUCHBASE_HOST initialized"
     fi
-    if $(checkCouchbaseBucketExist); then
+    if $(checkCouchbaseBucketsExist); then
         echo "source dir  : $COUCHBASE_DUMP_DIR"
         deleteCouchbaseBucket $COUCHBASE_BUCKET
-        createCouchbaseBucket $COUCHBASE_BUCKET
+        createCouchbaseBuckets $COUCHBASE_BUCKET
         loadCouchbaseBucketData $COUCHBASE_BUCKET
         echo "result      : terminated"
         exit 0;
     else
         echo "source dir  : $COUCHBASE_DUMP_DIR"
-        createCouchbaseBucket $COUCHBASE_BUCKET
+        createCouchbaseBuckets $COUCHBASE_BUCKET
         loadCouchbaseBucketData $COUCHBASE_BUCKET
         echo "result      : terminated"
         exit 0;

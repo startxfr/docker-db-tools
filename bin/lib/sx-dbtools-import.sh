@@ -81,7 +81,7 @@ function doImportCouchbaseAll {
     checkCouchbaseEnv
     if checkCouchbaseIsNotInitialized; then
         echo "  - Couchbase host $COUCHBASE_HOST is not initialized. Nothing to import"
-    elif $(checkCouchbaseBucketExist); then
+    elif $(checkCouchbaseBucketsExist); then
         echo "  - server : $COUCHBASE_HOST"
         echo "  - bucket(s) : $COUCHBASE_BUCKET"
         echo "  - source : $COUCHBASE_DUMP_DIR"
@@ -99,7 +99,7 @@ function doImportCouchbaseOne {
     checkCouchbaseEnv
     if checkCouchbaseIsNotInitialized; then
         echo "  - Couchbase host $COUCHBASE_HOST is not initialized. Nothing to import"
-    elif $(checkCouchbaseBucketExist); then
+    elif $(checkCouchbaseBucketsExist); then
         echo "  - server : $COUCHBASE_HOST"
         echo "  - bucket : $1"
         echo "  - source : $COUCHBASE_DUMP_DIR"

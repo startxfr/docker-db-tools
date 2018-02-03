@@ -4,15 +4,14 @@
 function checkMysqlEnv {
     if [ ! -z "$DBM_ENV_MARIADB_VERSION" ]; then
         if [ -z "$DBM_PORT_3306_TCP_ADDR" ]; then
-            echo "Need to expose port 3306 in your mysql container"
+            displayErrorMessage "Need to expose port 3306 in your mysql container"
             exit 128;
         fi 
         MYSQL_HOST="$DBM_PORT_3306_TCP_ADDR"
         if [ -z "$MYSQL_ADMIN" ]; then
             MYSQL_USER="root"
             if [ -z "$DBM_ENV_MYSQL_ROOT_PASSWORD" ]; then
-                echo "Need to set MYSQL_ROOT_PASSWORD environment var in your mysql container"
-                echo "or set MYSQL_ADMIN environment var in your db-tools container"
+                displayErrorMessage "Need to set MYSQL_ROOT_PASSWORD environment var in your mysql container"
                 exit 128;
             fi 
             MYSQL_PASSWORD="$DBM_ENV_MYSQL_ROOT_PASSWORD"
@@ -22,18 +21,18 @@ function checkMysqlEnv {
             MYSQL_PASSWORD=$2; 
             set +f; unset IFS;
             if [ -z "$MYSQL_PASSWORD" ]; then
-                echo "Need to set MYSQL_ADMIN with username:password"
+                displayErrorMessage "Need to set MYSQL_ADMIN with username:password"
                 exit 128;
             fi 
         fi 
     else
-        echo "No mysql linked container labeled 'dbm'"
+        displayDebugMessage "No mysql linked container labeled 'dbm'"
         if [ -z "$MYSQL_HOST" ]; then
-            echo "Need to set MYSQL_HOST"
+            displayErrorMessage "Need to set MYSQL_HOST"
             exit 128;
         fi 
         if [ -z "$MYSQL_ADMIN" ]; then
-            echo "Need to set MYSQL_ADMIN"
+            displayErrorMessage "Need to set MYSQL_ADMIN"
             exit 128;
         else
             set -f; IFS=':'; set -- $MYSQL_ADMIN
@@ -41,25 +40,25 @@ function checkMysqlEnv {
             MYSQL_PASSWORD=$2; 
             set +f; unset IFS;
             if [ -z "$MYSQL_PASSWORD" ]; then
-                echo "Need to set MYSQL_ADMIN with username:password"
+                displayErrorMessage "Need to set MYSQL_ADMIN with username:password"
                 exit 128;
             fi 
         fi 
         if [ -z "$MYSQL_PASSWORD" ]; then
-            echo "Need to set MYSQL_PASSWORD"
+            displayErrorMessage "Need to set MYSQL_PASSWORD"
             exit 128;
         fi 
     fi 
     if [ -z "$MYSQL_DATABASE" ]; then
-        echo "Need to set MYSQL_DATABASE"
+        displayErrorMessage "Need to set MYSQL_DATABASE"
         exit 128;
     fi 
     if [ -z "$MYSQL_DUMP_DIR" ]; then
-        echo "Need to set MYSQL_DUMP_DIR"
+        displayErrorMessage "Need to set MYSQL_DUMP_DIR"
         exit 128;
     fi 
     if [ -z "$MYSQL_USERS" ]; then
-        echo "Need to set MYSQL_USERS"
+        displayErrorMessage "Need to set MYSQL_USERS"
         exit 128;
     fi 
 }
@@ -87,21 +86,26 @@ function checkMysqlDatabaseExist {
     fi
 }
 
-function createMysqlDatabase {
+function createMysqlDatabases {
     if [ ! -z "$MYSQL_DATABASE" ]; then
         for DATABASE in $(echo $MYSQL_DATABASE | tr "," "\n")
         do
-            runCreateMysqlDatabase $DATABASE
+            createMysqlDatabase $DATABASE
         done
     fi 
 }
+function createMysqlDatabase {
+    if [ ! -z "$1" ]; then
+        echo "  - create database $1"
+        runCreateMysqlDatabase $1
+    fi 
+}
 function runCreateMysqlDatabase {
-    echo "create db   : $1"
     mysql -h $MYSQL_HOST -u $MYSQL_USER --password=$MYSQL_PASSWORD \
     -e "CREATE DATABASE $1 DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;"
 }
 
-function createMysqlDatabaseUser {
+function createMysqlDatabasesUser {
     if [ ! -z "$MYSQL_USERS" ]; then
         for userInfo in $(echo $MYSQL_USERS | tr "," "\n")
         do
@@ -202,11 +206,11 @@ function importMysqlDatabasesSchema {
 function importMysqlDatabaseSchema {
     if [ ! -z "$1" ]; then
         if [[ -r $MYSQL_DUMP_DIR/$1.$MYSQL_DUMP_SCHEMAFILE ]]; then
+            echo "  - importing schema $1.$MYSQL_DUMP_SCHEMAFILE > $1"
             runImportMysqlDatabaseSqlDump $1 $MYSQL_DUMP_DIR/$1.$MYSQL_DUMP_SCHEMAFILE
-            echo "  - schema $1.$MYSQL_DUMP_SCHEMAFILE > $1 LOADED"
         elif [[ -r $MYSQL_DUMP_DIR/$MYSQL_DUMP_SCHEMAFILE ]]; then
+            echo "  - importing schema $MYSQL_DUMP_SCHEMAFILE > $1 LOADED"
             runImportMysqlDatabaseSqlDump $1 $MYSQL_DUMP_DIR/$MYSQL_DUMP_SCHEMAFILE
-            echo "  - schema $MYSQL_DUMP_SCHEMAFILE > $1 LOADED"
         fi 
     fi 
 }
@@ -225,11 +229,11 @@ function importMysqlDatabasesData {
 function importMysqlDatabaseData {
     if [ ! -z "$1" ]; then
         if [[ -r $MYSQL_DUMP_DIR/$1.$MYSQL_DUMP_DATAFILE ]]; then
+            echo "  - importing data $1.$MYSQL_DUMP_DATAFILE > $1 LOADED"
             runImportMysqlDatabaseSqlDump $1 $MYSQL_DUMP_DIR/$1.$MYSQL_DUMP_DATAFILE
-            echo "  - data $1.$MYSQL_DUMP_DATAFILE > $1 LOADED"
         elif [[ -r $MYSQL_DUMP_DIR/$MYSQL_DUMP_DATAFILE ]]; then
+            echo "  - importing data $MYSQL_DUMP_DATAFILE > $1 LOADED"
             runImportMysqlDatabaseSqlDump $1 $MYSQL_DUMP_DIR/$MYSQL_DUMP_DATAFILE
-            echo "  - data $MYSQL_DUMP_DATAFILE > $1 LOADED"
         fi 
     fi 
 }
@@ -244,17 +248,17 @@ function dumpMysqlDatabaseAll {
     fi 
 }
 function dumpMysqlDatabaseOne {
+    echo "  - dump schema $1 > $1.$MYSQL_DUMP_SCHEMAFILE"
     runDumpMysqlDatabaseSchema $1 $MYSQL_DUMP_DIR/$1.$MYSQL_DUMP_SCHEMAFILE
-    echo "  - schema $1 > $1.$MYSQL_DUMP_SCHEMAFILE SAVED"
+    echo "  - dump data $1 > $1.$MYSQL_DUMP_SCHEMAFILE"
     runDumpMysqlDatabaseData $1 $MYSQL_DUMP_DIR/$1.$MYSQL_DUMP_DATAFILE
-    echo "  - data $1 > $1.$MYSQL_DUMP_SCHEMAFILE SAVED"
 }
 
 function dumpMysqlDatabaseSchema {
     if [ ! -z "$MYSQL_DATABASE" ]; then
         for DATABASE in $(echo $MYSQL_DATABASE | tr "," "\n")
         do
-            echo "  - schema $DATABASE > $DATABASE.$MYSQL_DUMP_SCHEMAFILE SAVED"
+            echo "  - dump schema $DATABASE > $DATABASE.$MYSQL_DUMP_SCHEMAFILE"
             runDumpMysqlDatabaseSchema $DATABASE $MYSQL_DUMP_DIR/$DATABASE.$MYSQL_DUMP_SCHEMAFILE
         done
     fi 
@@ -268,7 +272,7 @@ function dumpMysqlDatabaseData {
     if [ ! -z "$MYSQL_DATABASE" ]; then
         for DATABASE in $(echo $MYSQL_DATABASE | tr "," "\n")
         do
-            echo "  - data $DATABASE > $DATABASE.$MYSQL_DUMP_SCHEMAFILE SAVED"
+            echo "  - dump data $DATABASE > $DATABASE.$MYSQL_DUMP_SCHEMAFILE"
             runDumpMysqlDatabaseData $DATABASE $MYSQL_DUMP_DIR/$DATABASE.$MYSQL_DUMP_DATAFILE
         done
     fi 
@@ -333,8 +337,8 @@ function doMysqlCreate {
         exit 1;
     else
         echo "source dir  : $MYSQL_DUMP_DIR"
-        createMysqlDatabase
-        createMysqlDatabaseUser
+        createMysqlDatabases
+        createMysqlDatabasesUser
         importMysqlDatabasesSchema
         echo "schema file : $MYSQL_DUMP_SCHEMAFILE loaded"
         importMysqlDatabasesData
@@ -346,7 +350,7 @@ function doMysqlCreate {
 
 function doMysqlCreateUser { 
     checkMysqlEnv
-    createMysqlDatabaseUser
+    createMysqlDatabasesUser
     exit 0;
 }
 
@@ -376,8 +380,8 @@ function doMysqlReset {
         echo "source dir  : $MYSQL_DUMP_DIR"
         deleteMysqlDatabase
         deleteMysqlDatabaseUser
-        createMysqlDatabase
-        createMysqlDatabaseUser
+        createMysqlDatabases
+        createMysqlDatabasesUser
         importMysqlDatabasesSchema
         echo "schema file : $MYSQL_DUMP_SCHEMAFILE loaded"
         importMysqlDatabasesData
@@ -386,7 +390,7 @@ function doMysqlReset {
         exit 0;
     else
         echo "source dir  : $MYSQL_DUMP_DIR"
-        createMysqlDatabase
+        createMysqlDatabases
         importMysqlDatabasesSchema
         echo "schema file : $MYSQL_DUMP_SCHEMAFILE loaded"
         importMysqlDatabasesData

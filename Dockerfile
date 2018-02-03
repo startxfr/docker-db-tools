@@ -19,7 +19,7 @@ VOLUME /backup
 
 USER couchbase
 
-ENV SXDBTOOLS_VERSION="0.1.1" \
+ENV SXDBTOOLS_VERSION="0.1.2" \
     SXDBTOOLS_DEBUG=true \
     MYSQL_DUMP_DIR=/dump/mysql \
     MYSQL_DUMP_DATAFILE="data.sql" \

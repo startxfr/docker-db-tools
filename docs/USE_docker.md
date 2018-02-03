@@ -75,7 +75,7 @@ UNLOCK TABLES;
 Example for `dump/couchbase/data.json`
 ```javascript
 [
-    {"_id":"app::version","app":"startx-db-tools","stage":"dev","version":"0.1.1"}
+    {"_id":"app::version","app":"startx-db-tools","stage":"dev","version":"0.1.2"}
 ]
 ```
 

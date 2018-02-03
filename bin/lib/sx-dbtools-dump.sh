@@ -81,7 +81,7 @@ function doDumpCouchbaseAll {
     checkCouchbaseEnv
     if checkCouchbaseIsNotInitialized; then
         echo "  - Couchbase host $COUCHBASE_HOST is not initialized. Nothing to dump"
-    elif $(checkCouchbaseBucketExist); then
+    elif $(checkCouchbaseBucketsExist); then
         echo "  - server : $COUCHBASE_HOST"
         echo "  - bucket(s) : $COUCHBASE_BUCKET"
         echo "  - destination : $COUCHBASE_DUMP_DIR"
@@ -99,7 +99,7 @@ function doDumpCouchbaseOne {
     checkCouchbaseEnv
     if checkCouchbaseIsNotInitialized; then
         echo "  - Couchbase host $COUCHBASE_HOST is not initialized. Nothing to dump"
-    elif $(checkCouchbaseBucketExist); then
+    elif $(checkCouchbaseBucketsExist); then
         echo "  - server : $COUCHBASE_HOST"
         echo "  - bucket : $1"
         echo "  - destination : $COUCHBASE_DUMP_DIR"
