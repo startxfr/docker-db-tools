@@ -1,0 +1,52 @@
+{
+    "kind": "ImageStreamList",
+    "apiVersion": "v1",
+    "metadata": {},
+    "items": [
+        {
+            "kind": "ImageStream",
+            "apiVersion": "v1",
+            "metadata": {
+                "name": "sx-dbtools",
+                "annotations": {
+                    "openshift.io/display-name": "SX DBtools"
+                }
+            },
+            "spec": {
+                "tags": [
+                    {
+                        "name": "latest",
+                        "annotations": {
+                            "openshift.io/display-name": "sx-dbtools S2I (latest)",
+                            "description": "Database tools for manipulating couchbase and mariadb container. For more information about using this builder image, including OpenShift considerations, see https://github.com/startxfr/docker-db-tools-example.git",
+                            "iconClass": "icon-mysql-database",
+                            "tags": "builder,mysql,couchbase",
+                            "supports": "mysql,couchbase",
+                            "sampleRepo": "https://github.com/startxfr/docker-db-tools-example.git"
+                        },
+                        "from": {
+                            "kind": "ImageStreamTag",
+                            "name": "stable"
+                        }
+                    },
+                    {
+                        "name": "stable",
+                        "annotations": {
+                            "openshift.io/display-name": "sx-dbtools S2I (stable)",
+                            "description": "Database tools for manipulating couchbase and mariadb container. For more information about using this builder image, including OpenShift considerations, see https://github.com/startxfr/docker-db-tools-example.git",
+                            "iconClass": "icon-mysql-database",
+                            "tags": "builder,mysql,couchbase",
+                            "supports": "mysql,couchbase",
+                            "version": "stable",
+                            "sampleRepo": "https://github.com/startxfr/docker-db-tools-example.git"
+                        },
+                        "from": {
+                            "kind": "DockerImage",
+                            "name": "startx/db-tools:stable-s2i"
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}
