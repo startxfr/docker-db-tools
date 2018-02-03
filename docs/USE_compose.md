@@ -82,7 +82,7 @@ UNLOCK TABLES;
 Example for `dump/couchbase/data.json`
 ```javascript
 [
-    {"_id":"app::version","app":"sx-dbtools","stage":"dev","version":"0.1.9"}
+    {"_id":"app::version","app":"sx-dbtools","stage":"dev","version":"0.1.10"}
 ]
 ```
 
@@ -123,25 +123,40 @@ You can connect to your database backend to see created database or look at volu
 
 ## Container environement
 
-### Linked services
 
-Only 2 backend are actually supported
+## Connected services
 
-| Backend   | Description
+you must tag properly the database service when you link your containers. 
+
+| Link tag  | Description
 |-----------|:------------
-| mysql     | mysql container running offical `mariadb:5.5` image
-| couchbase | couchbase container running offical `couchbase:couchbase:enterprise-5.0.1` image
+| dbm       | mysql container running offical `mariadb:5.5` image
+| dbc       | couchbase container running offical `couchbase:couchbase:enterprise-5.0.1` image
 
+Initialize mysql and couchbase linked database
+```bash
+docker run -d
+--link db-mysql:dbm \                       # Linked mysql service
+--link db-couchbase:dbc \                   # Linked couchbase service
+-v ./backup:/backup:rw \                    # mounted volume with *schema.sql and *data.sql files
+-v ./couchbase-data:/dump/couchbase:rw \    # mounted volume with *data.json files
+-e MYSQL_DATABASE=demo \                    # List of mysql database to manipulate
+-e MYSQL_ADMIN=root:rootPassword \          # mysql administrator username and password
+-e COUCHBASE_ADMIN=demo:password \          # couchbase administrator username and password
+-e COUCHBASE_BUCKET=demo,demo2 \            # List of couchbase bucket to manipulate
+startx/db-tools                             # sx-dbtools docker image 
+recreate                                    # sx-dbtools command
+```
 
-### Data volumes
+## Data volumes
 
 you must use the appropriate data volumes and fill them with appropriate file to get your data
 loaded or dumped properly.
 
 | Container volume   | Description
 |--------------------|:------------
-| `/dump/mysql`      | volume containing a `schema.sql` file + a `data.sql` file
-| `/dump/couchbase`  | volume containing one `data.json` file
+| `/dump`            | volume containing a `mysql` directory and/or a `couchbase` directory
+| `/backup`          | volume containing backup files
 
 Dump mysql linked database into local directory
 ```yaml
@@ -152,7 +167,7 @@ app:
     - db-mysql:dbm
   volumes:
     - "./:/dump/mysql:Z"
-  command: ["mysql" , "dump"]
+  command: ["dump", "mysql"]
 ```
 Dump couchbase linked bucket into local directory
 ```yaml
@@ -163,30 +178,33 @@ app:
     - db-couchbase:dbc
   volumes:
     - "./:/dump/couchbase:Z"
-  command: ["couchbase" , "dump"]
+  command: ["dump" , "couchbase"]
 ```
 
-### Environement variables
+## Environement variables
 
 Using environement variable you can customize this tools and use it to interact with
 various kind of backend infrastructure (container, host, remote, IaaS, DBaaS)
 
 | Variable                 | Default         | Description
 |--------------------------|:---------------:|:---------------
+| SXDBTOOLS_DEBUG          | true            | Activate debugging display
+| SXDBTOOLS_BACKUP_DIR     | /backup         | The final destination directory for backup
+| SXDBTOOLS_DUMP_DIR       | /dump           | The final destination directory for dump
 | MYSQL_DUMP_DIR           | /dump/mysql     | Directory used for save and restore mysql dump (container internal path)
-| MYSQL_DUMP_DATAFILE      | data.sql        | Filename of the sql data dump file
-| MYSQL_DUMP_SCHEMAFILE    | schema.sql      | Filename of the sql schema dump file
+| MYSQL_DUMP_DATAFILE      | data.sql        | Filename of the default sql data dump file 
+| MYSQL_DUMP_SCHEMAFILE    | schema.sql      | Filename of the default sql schema dump file
 | MYSQL_DUMP_ISEXTENDED    | true            | Enable smart extended dump for fast load, readibility and versioning
 | MYSQL_HOST               | dbm             | Hostname of the mysql database. Could use whatever public IP or DSN.
 | MYSQL_ADMIN              | [linked user]   | Mysql admin user and password (ex: user:password). Default will use root and MYSQL_ROOT_PASSWORD found into the linked container
-| MYSQL_DATABASE           | dev             | Mysql database name to use or create
-| MYSQL_USERS              | dev             | Mysql list of users to the database "," is separator between users and ":" between user and his password. ex : user:password,user2:user2Password,user3,user4
+| MYSQL_DATABASE           |                 | Mysql database name to use or create
+| MYSQL_USERS              |                 | Mysql list of users to the database "," is separator between users and ":" between user and his password. ex : user:password,user2:user2Password,user3,user4
 | COUCHBASE_DUMP_DIR       | /dump/couchbase | Directory used for save and restore couchbase dump (container internal path)
 | COUCHBASE_DUMP_DATAFILE  | data.json       | Filename of the json data dump file
 | COUCHBASE_HOST           | dbc             | Hostname of the couchbase database. Could use whatever public IP or DSN.
-| COUCHBASE_ADMIN          | dev             | Couchbase admin user and password (ex: user:password)
-| COUCHBASE_PASSWORD       | dev             | Password for the couchbase admin user
-| COUCHBASE_BUCKET         | dev             | Couchbase bucket name to use or create
+| COUCHBASE_ADMIN          | dev:dev         | Couchbase admin user and password (ex: user:password)
+| COUCHBASE_USERS          |                 | Mysql list of users to the cluster "," is separator between users and ":" between user and his password. ex : user:password,user2:user2Password,user3,user4
+| COUCHBASE_BUCKET         |                 | Couchbase bucket name to use or create
 
 Create a database `demo` + user `demo_user`. Load sample schema and data into database
 and allow `demo_user` to access this database only.
@@ -199,7 +217,7 @@ app:
   environment:
    - MYSQL_DATABASE=demo
    - MYSQL_USERS=demo_user:demo_pwd123,demo_user2
-  command: ["mysql" , "create"]
+  command: ["create" , "mysql"]
 ```
 
 Create a bucket `demo` and load sample data into bucket. If couchbase cluster is not initialized,
@@ -211,8 +229,7 @@ app:
   links:
     - db-couchbase:dbc
   environment:
-   - COUCHBASE_ADMIN=cbAdmin
-   - COUCHBASE_PASSWORD=cbAdmin123
+   - COUCHBASE_ADMIN=cbAdmin:cbAdmin123
    - COUCHBASE_BUCKET=demo
-  command: ["couchbase" , "create"]
+  command: ["create" , "couchbase"]
 ```
