@@ -2,12 +2,11 @@ app:
   image: startx/db-tools:latest
   environment:
    - MYSQL_HOST=mydb.mydomain.com
-   - MYSQL_ADMIN=admin:password
-   - MYSQL_PASSWORD=my_admin_pwd
-   - MYSQL_DATABASE=demo
-   - MYSQL_USERS=demo_user:demo_pwd
+   - MYSQL_DATABASE=demo,demo2,demo3
+   - MYSQL_ADMIN=root:rootPassword
+   - MYSQL_USERS=demo:pwd,user3:pwd3,test
    - COUCHBASE_HOST=cluster.couchbase.mydomain.com
-   - COUCHBASE_ADMIN=admin
-   - COUCHBASE_PASSWORD=admin_pwd
-   - COUCHBASE_BUCKET=demo
-  command: ["init"]
+   - COUCHBASE_ADMIN=demo:password
+   - COUCHBASE_BUCKET=demo,demo2
+   - COUCHBASE_USERS=demo1:password1,demo2
+  command: ["create"]

@@ -3,10 +3,10 @@ app:
   links:
     - db-couchbase:dbc
   environment:
-   - COUCHBASE_ADMIN=admin
-   - COUCHBASE_PASSWORD=admin_pwd
-   - COUCHBASE_BUCKET=demo
-  command: ["couchbase" , "create"]
+   - COUCHBASE_ADMIN=demo:password
+   - COUCHBASE_BUCKET=demo,demo2
+   - COUCHBASE_USERS=demo1:password1,demo2
+  command: ["create" , "couchbase"]
    
 db-couchbase:
   image: couchbase:enterprise-5.0.1

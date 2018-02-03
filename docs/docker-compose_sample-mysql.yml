@@ -3,15 +3,16 @@ app:
   links:
     - db-mysql:dbm
   environment:
-   - MYSQL_DATABASE=demo
-   - MYSQL_USERS=my_user:my_pwd
-  command: ["mysql" , "create"]
+   - MYSQL_DATABASE=demo,demo2,demo3
+   - MYSQL_ADMIN=root:rootPassword
+   - MYSQL_USERS=demo:pwd,user3:pwd3,test
+  command: ["create" , "mysql"]
 
 db-mysql:
   image: mariadb:5.5
   container_name: "sx-dbtools_mysql"
   environment:
-   - MYSQL_ROOT_PASSWORD=root_pwd
+   - MYSQL_ROOT_PASSWORD=rootPassword
 
 pma:
   image: phpmyadmin/phpmyadmin
@@ -21,7 +22,7 @@ pma:
   environment:
    - PMA_HOST=db
    - PMA_USER=root
-   - PMA_PASSWORD=root_pwd
+   - PMA_PASSWORD=rootPassword
    - PMA_ABSOLUTE_URI=http://localhost:1901
   ports:
     - "1901:80"
