@@ -13,6 +13,7 @@ app-info:
    - COUCHBASE_ADMIN=demo:password
    - COUCHBASE_BUCKET=demo,demo2
    - COUCHBASE_USERS=demo1:password1,demo2
+   - SXDBTOOLS_DEBUG=true
   volumes:
     - "./sample/dump:/dump:z"
     - "./sample/backup:/backup:z"
@@ -33,6 +34,7 @@ app-create:
    - COUCHBASE_ADMIN=demo:password
    - COUCHBASE_BUCKET=demo,demo2
    - COUCHBASE_USERS=demo1:password1,demo2
+   - SXDBTOOLS_DEBUG=true
   volumes:
     - "./sample/dump:/dump:z"
     - "./sample/backup:/backup:z"
@@ -53,6 +55,7 @@ app-delete:
    - COUCHBASE_ADMIN=demo:password
    - COUCHBASE_BUCKET=demo,demo2
    - COUCHBASE_USERS=demo1:password1,demo2
+   - SXDBTOOLS_DEBUG=true
   volumes:
     - "./sample/dump:/dump:z"
     - "./sample/backup:/backup:z"
