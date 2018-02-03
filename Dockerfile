@@ -5,7 +5,7 @@ RUN apt-get update -y && \
     apt-get install -y mariadb-server-5.5 mariadb-client-5.5 tar gzip && \
     apt-get clean
 
-ENV SXDBTOOLS_VERSION="0.1.7" \
+ENV SXDBTOOLS_VERSION="0.1.8" \
     SXDBTOOLS_DEBUG=false \
     SXDBTOOLS_BACKUP_DIR=/backup \
     SXDBTOOLS_DUMP_DIR=/dump \
@@ -24,25 +24,25 @@ backup and restore, deleting and recreating both mysql and / or couchbase linked
 LABEL summary="$SUMMARY" \
       description="$DESCRIPTION" \
       io.k8s.description="$DESCRIPTION" \
-      io.k8s.display-name="s2i dbtools" \
+      io.k8s.display-name="s2i-dbtools" \
       fr.startx.component="s2i-sx-dbtools" \
       io.openshift.tags="builder,db,mysql,couchbase" \
       io.s2i.scripts-url=image:///usr/libexec/s2i \
       io.openshift.s2i.scripts-url=image:///usr/libexec/s2i \
       io.openshift.s2i.assemble-input-files=image:///usr/libexec/s2i \
-      name="startx/db-tools" \
+      name="startx/s2i-dbtools" \
       version="1" \
       release="1" \
-      usage="s2i build https://github.com/youruser/yourapp.git --context-dir=sample/ startx/db-tools test-dbtools" \
+      usage="s2i build https://github.com/youruser/yourapp.git --context-dir=sample/ startx/s2i-dbtools test-dbtools" \
       maintainer="startx.fr <dev@startx.fr>"
 
-COPY ./bin/lib /bin/sx-dbtools-lib
-COPY ./bin/sx-dbtools /bin/
+COPY ./bin/* /bin/
 COPY ./.s2i/bin/* /usr/libexec/s2i/
 RUN mkdir -p $MYSQL_DUMP_DIR && \
     mkdir -p $COUCHBASE_DUMP_DIR && \
     mkdir -p $SXDBTOOLS_BACKUP_DIR && \
-    chmod ug+x /bin/sx-dbtools && \
+    chmod -R ug+x /bin/sx-dbtools* && \
+    rm -f /bin/sx-dbtools*.c && \
     adduser couchbase mysql && \
     adduser mysql couchbase  && \
     chgrp -R 0 $SXDBTOOLS_BACKUP_DIR $SXDBTOOLS_BACKUP_DIR  && \
