@@ -1,8 +1,8 @@
-app:
+app-info:
   extends:
     file: docker-compose-abstract.yml
     service: app
-  container_name: "sx-dbtools-travis"
+  container_name: "sx-dbtools-info-travis"
   links:
     - db-mysql:dbm
     - db-couchbase:dbc
