@@ -102,8 +102,12 @@ delete couchbase                            # sx-dbtools command
 
 | Command        | database-type   | options  | Description
 |----------------|-----------------|----------|---------------
-| dump           |                 |          | Dump database(s) in dump directory
-| import         |                 |          | import database(s) from dump directory
+| dump           |                 |          | Dump all database(s) AND all bucket(s) in dump directory
+| dump           | mysql/couchbase |          | Dump all database(s) OR all bucket(s) in dump directory
+| dump           | mysql/couchbase | database | Dump only one database or bucket in dump directory
+| import         |                 |          | import all database(s) AND all bucket(s) from dump directory
+| import         | mysql/couchbase |          | import all database(s) OR all bucket(s) from dump directory
+| import         | mysql/couchbase | database | import database(s) from dump directory
 | create-data    |                 |          | alias of import command
 
 #### Examples
@@ -158,7 +162,9 @@ import mysql demo2                          # sx-dbtools command
 | Command        | database-type   | options  | Description
 |----------------|-----------------|----------|---------------
 | backup         |                 |          | Backup database(s) in backup directory (not implemented)
-| restore        |                 |          | Restore database(s) in backup directory (not implemented)
+| backup         | mysql/couchbase |          | Backup all database(s) or all bucket(s) in backup directory (not implemented)
+| backup         | mysql/couchbase | database | Backup one database or bucket in backup directory (not implemented)
+| restore        | archivename.tgz |          | Restore database(s) in backup directory (not implemented)
 
 #### Examples
 

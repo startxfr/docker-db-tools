@@ -100,29 +100,29 @@ sx-dbtools v$SXDBTOOLS_VERSION $HOSTNAME ($OS)
 Usage:
   sx-dbtools command [database-type/sub-command]
 
-User management Commands:
-  create-user      Create database(s) user(s)
-  delete-user      Delete database(s) user(s)
-  recreate-user    Delete and create database(s) user(s)
-
-Backup / Restore Commands:
-  backup           Backup database(s) in backup directory
-  restore          Restore database(s) in backup directory
-
-Database Commands:
-  create-db        Create database(s)
-  delete-db        Delete database(s)
-  recreate-db      Delete and create database(s)
+Global Commands:
+  create           Create user(s) + database(s) + data
+  delete           Delete user(s) + database(s) + data
+  recreate         Delete and create user(s) + database(s) + data
 
 Data Commands:
   dump             Dump database(s) in dump directory
   import           import database(s) from dump directory
   create-data      alias of import command
 
-Global Commands:
-  create           Create user(s) + database(s) + data
-  delete           Delete user(s) + database(s) + data
-  recreate         Delete and create user(s) + database(s) + data
+Backup / Restore Commands:
+  backup           Backup database(s) in backup directory
+  restore          Restore database(s) in backup directory
+
+User management Commands:
+  create-user      Create database(s) user(s)
+  delete-user      Delete database(s) user(s)
+  recreate-user    Delete and create database(s) user(s)
+
+Database Commands:
+  create-db        Create database(s)
+  delete-db        Delete database(s)
+  recreate-db      Delete and create database(s)
 
 sx-dbtools Commands:
   usage            this message
