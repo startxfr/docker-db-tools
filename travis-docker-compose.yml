@@ -12,6 +12,7 @@ app:
    - MYSQL_USERS=demo:pwd,user3:pwd3,test
    - COUCHBASE_ADMIN=demo:password
    - COUCHBASE_BUCKET=demo,demo2
+   - COUCHBASE_USERS=demo1:password1,demo2
   volumes:
     - "./sample/dump:/dump:z"
     - "./sample/backup:/backup:z"
@@ -31,6 +32,7 @@ app-create:
    - MYSQL_USERS=demo:pwd,user3:pwd3,test
    - COUCHBASE_ADMIN=demo:password
    - COUCHBASE_BUCKET=demo,demo2
+   - COUCHBASE_USERS=demo1:password1,demo2
   volumes:
     - "./sample/dump:/dump:z"
     - "./sample/backup:/backup:z"
@@ -50,6 +52,7 @@ app-delete:
    - MYSQL_USERS=demo:pwd,user3:pwd3,test
    - COUCHBASE_ADMIN=demo:password
    - COUCHBASE_BUCKET=demo,demo2
+   - COUCHBASE_USERS=demo1:password1,demo2
   volumes:
     - "./sample/dump:/dump:z"
     - "./sample/backup:/backup:z"
