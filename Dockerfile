@@ -19,7 +19,7 @@ ENV SXDBTOOLS_VERSION="0.1.10" \
     COUCHBASE_HOST=dbc \
     SUMMARY="Database tools for manipulating couchbase and mariadb container" \
     DESCRIPTION="The s2i-dbtools image, provides any command for creating, import and export \
-backup and restore, deleting and recreating both mysql and / or couchbase linked container 
+backup and restore, deleting and recreating both mysql and / or couchbase linked container"
 
 LABEL summary="$SUMMARY" \
       description="$DESCRIPTION" \
