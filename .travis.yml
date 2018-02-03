@@ -14,7 +14,6 @@ services:
 before_install:
 - docker pull couchbase:enterprise-5.0.1
 - docker pull mariadb:5.5
-- docker pull phpmyadmin/phpmyadmin
 - docker images
 
 script: ./travis-test.sh
