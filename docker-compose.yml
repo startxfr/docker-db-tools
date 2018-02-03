@@ -13,10 +13,11 @@ app:
    - COUCHBASE_ADMIN=demo:password
    - COUCHBASE_BUCKET=demo,demo2
   volumes:
-    - "./sample/dump/couchbase:/sample/dump/couchbase:z"
-    - "./sample/dump/mysql:/sample/dump/mysql:z"
-    - "./tools.sh:/bin/sx-dbtools:z"
-  command: ["mysql"]
+    - "./sample/dump:/dump:z"
+    - "./sample/backup:/backup:z"
+    - "./bin/sx-dbtools:/bin/sx-dbtools:z"
+    - "./bin/lib:/bin/sx-dbtools-lib:z"
+  command: ["import","mysql"]
 
 db-mysql:
   extends:

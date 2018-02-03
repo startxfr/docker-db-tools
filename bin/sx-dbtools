@@ -1,0 +1,37 @@
+#!/bin/bash
+
+LIBDIR="/bin/sx-dbtools-lib"
+
+# Load base library
+source $LIBDIR/sx-dbtools-base.sh
+# Load mysql base library
+source $LIBDIR/sx-dbtools-base_mysql.sh
+# Load couchbase base library
+source $LIBDIR/sx-dbtools-base_couchbase.sh
+
+# Load dump sub-command library
+source $LIBDIR/sx-dbtools-dump.sh
+# Load import sub-command library
+source $LIBDIR/sx-dbtools-import.sh
+
+
+case $1 in
+dump)           dispatcherDump $@ ;;
+import)         dispatcherImport $@ ;;
+create-data)    dispatcherImport $@ ;;
+create)         dispatcherCreate $@ ;;
+delete)         dispatcherDelete $@ ;;
+recreate)       dispatcherRecreate $@ ;;
+backup)         dispatcherBackup $@ ;;
+restore)        dispatcherRestore $@ ;;
+create-user)    dispatcherCreateUser $@ ;;
+delete-user)    dispatcherDeleteUser $@ ;;
+recreate-user)  dispatcherRecreateUser $@ ;;
+create-db)      dispatcherCreateDb $@ ;;
+delete-db)      dispatcherDeleteDb $@ ;;
+recreate-db)    dispatcherRecreateDb $@ ;;
+usage)          displayUsage $@ ;;
+info)           displayInformation $@ ;;
+version)        displayVersion $@ ;;
+*)              displayUsage $@ ;;
+esac

@@ -2,10 +2,10 @@ FROM couchbase:enterprise-5.0.1
 
 RUN apt-get update -y && \
     apt-get dist-upgrade -y && \
-    apt-get install -y mariadb-server-5.5 mariadb-client-5.5 && \
+    apt-get install -y mariadb-server-5.5 mariadb-client-5.5 tar gzip && \
     apt-get clean
-COPY process-mysqldump /bin/sx-dbtools-process-mysqldump
-COPY tools.sh /bin/sx-dbtools
+COPY ./bin/lib /bin/sx-dbtools-lib
+COPY ./bin/sx-dbtools /bin/
 RUN mkdir -p /dump/mysql && \
     mkdir -p /dump/couchbase && \
     mkdir -p /backup && \
@@ -19,7 +19,7 @@ VOLUME /backup
 
 USER couchbase
 
-ENV SXDBTOOLS_VERSION="0.1.0" \
+ENV SXDBTOOLS_VERSION="0.1.1" \
     SXDBTOOLS_DEBUG=true \
     MYSQL_DUMP_DIR=/dump/mysql \
     MYSQL_DUMP_DATAFILE="data.sql" \
