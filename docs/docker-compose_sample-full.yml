@@ -4,18 +4,19 @@ app:
     - db-mysql:dbm
     - db-couchbase:dbc
   environment:
-   - MYSQL_DATABASE=demo
-   - MYSQL_USERS=my_user:my_pwd
-   - COUCHBASE_ADMIN=admin
-   - COUCHBASE_PASSWORD=admin_pwd
-   - COUCHBASE_BUCKET=demo
-  command: ["init"]
+   - MYSQL_DATABASE=demo,demo2,demo3
+   - MYSQL_ADMIN=root:rootPassword
+   - MYSQL_USERS=demo:pwd,user3:pwd3,test
+   - COUCHBASE_ADMIN=demo:password
+   - COUCHBASE_BUCKET=demo,demo2
+   - COUCHBASE_USERS=demo1:password1,demo2
+  command: ["create"]
 
 db-mysql:
   image: mariadb:5.5
   container_name: "sx-dbtools_mysql"
   environment:
-   - MYSQL_ROOT_PASSWORD=root_pwd
+   - MYSQL_ROOT_PASSWORD=rootPassword
    
 db-couchbase:
   image: couchbase:enterprise-5.0.1
@@ -32,7 +33,7 @@ pma:
   environment:
    - PMA_HOST=db
    - PMA_USER=root
-   - PMA_PASSWORD=root_pwd
+   - PMA_PASSWORD=rootPassword
    - PMA_ABSOLUTE_URI=http://localhost:1901
   ports:
     - "1901:80"

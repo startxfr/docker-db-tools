@@ -100,8 +100,7 @@ docker run -d \
     -v ./dump/couchbase:/dump/couchbase:Z \
     --env MYSQL_DATABASE=dev \
     --env MYSQL_USERS=dev:dev,dev2 \
-    --env COUCHBASE_ADMIN=dev \
-    --env COUCHBASE_PASSWORD=dev \
+    --env COUCHBASE_ADMIN=dev:dev \
     --env COUCHBASE_BUCKET=dev \
     startx/db-tools \
     init

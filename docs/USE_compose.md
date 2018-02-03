@@ -54,6 +54,7 @@ touch dump/mysql/schema.sql
 touch dump/mysql/data.sql
 mkdir dump/couchbase
 touch dump/couchbase/data.json
+mkdir backup
 ```
 
 Example for `dump/mysql/schema.sql`
@@ -94,13 +95,13 @@ app:
   links:
     - db-mysql:dbm
     - db-couchbase:dbc
-  command: ["init"]
+  command: ["create"]
 
 db-mysql:
   image: mariadb:5.5
   container_name: "sx-dbtools_mysql"
   environment:
-   - MYSQL_ROOT_PASSWORD=root
+   - MYSQL_ROOT_PASSWORD=rootPassword
    
 db-couchbase:
   image: couchbase:enterprise-5.0.1
