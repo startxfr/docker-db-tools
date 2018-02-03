@@ -175,7 +175,6 @@ function createCouchbaseUsers {
     if [ ! -z "$COUCHBASE_USERS" ]; then
         for userInfo in $(echo $COUCHBASE_USERS | tr "," "\n")
         do
-            echo "-------------------"  $userInfo
             set -f; IFS=':'; set -- $userInfo
             USER=$1; PWD=$2; set +f; unset IFS
             createCouchbaseUser $USER $PWD
@@ -213,13 +212,6 @@ function runCreateCouchbaseUser {
         displayErrorMessage "Could not create user $USER"
     fi;
 }
-
-
-
-
-
-
-
 
 
 function importCouchbaseBuckets {
@@ -313,89 +305,4 @@ function runDeleteCouchbaseUser {
     else
         displayErrorMessage "Could not deleted user $1"
     fi;
-}
-
-
-
-
-
-
-function doCouchbaseDump { 
-    checkCouchbaseEnv
-    echo "=             Dumping couchbase database"
-    echo "==================================" 
-    echo "host        : $COUCHBASE_HOST"
-    echo "bucket      : $COUCHBASE_BUCKET"
-    echo "destination : $COUCHBASE_DUMP_DIR"
-    if checkCouchbaseIsNotInitialized; then
-        initializeCouchbase
-        echo "cluster : $COUCHBASE_HOST initialized"
-    fi
-    dumpCouchbaseBucketAll
-    echo "result      : terminated"
-    exit 0;
-}
-
-function doCouchbaseCreate { 
-    checkCouchbaseEnv
-    echo "=             Create couchbase database"
-    echo "==================================" 
-    echo "host        : $COUCHBASE_HOST"
-    if $(checkCouchbaseBucketsExist); then
-        echo "! Bucket already exist"
-        echo "You must run 'sx-dbtools couchbase delete' before this action"
-        echo "You can also run 'sx-dbtools couchbase reset' to perform delete a create all in one"
-        exit 1;
-    else
-        echo "source dir  : $COUCHBASE_DUMP_DIR"
-        createCouchbaseBuckets $COUCHBASE_BUCKET
-        importCouchbaseBuckets $COUCHBASE_BUCKET
-        echo "result      : terminated"
-        exit 0;
-    fi
-}
-
-function doCouchbaseDelete { 
-    checkCouchbaseEnv
-    echo "=             Delete couchbase database"
-    echo "==================================" 
-    echo "host        : $COUCHBASE_HOST"
-    if checkCouchbaseIsNotInitialized; then
-        initializeCouchbase
-        echo "cluster : $COUCHBASE_HOST initialized"
-    fi
-    if $(checkCouchbaseBucketsExist); then
-        deleteCouchbaseBucket $COUCHBASE_BUCKET
-        echo "result      : terminated"
-        exit 0;
-    else
-        echo "! Bucket doesn't exist"
-        echo "nothing to delete. Action is terminated"
-        exit 1;
-    fi
-}
-
-function doCouchbaseReset { 
-    checkCouchbaseEnv
-    echo "=             Reset couchbase database"
-    echo "==================================" 
-    echo "host        : $COUCHBASE_HOST"
-    if checkCouchbaseIsNotInitialized; then
-        initializeCouchbase
-        echo "cluster : $COUCHBASE_HOST initialized"
-    fi
-    if $(checkCouchbaseBucketsExist); then
-        echo "source dir  : $COUCHBASE_DUMP_DIR"
-        deleteCouchbaseBucket $COUCHBASE_BUCKET
-        createCouchbaseBuckets $COUCHBASE_BUCKET
-        importCouchbaseBuckets $COUCHBASE_BUCKET
-        echo "result      : terminated"
-        exit 0;
-    else
-        echo "source dir  : $COUCHBASE_DUMP_DIR"
-        createCouchbaseBuckets $COUCHBASE_BUCKET
-        importCouchbaseBuckets $COUCHBASE_BUCKET
-        echo "result      : terminated"
-        exit 0;
-    fi
 }

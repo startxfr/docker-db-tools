@@ -19,7 +19,7 @@ VOLUME /backup
 
 USER couchbase
 
-ENV SXDBTOOLS_VERSION="0.1.6" \
+ENV SXDBTOOLS_VERSION="0.1.7" \
     SXDBTOOLS_DEBUG=true \
     SXDBTOOLS_BACKUP_DIR=/backup \
     MYSQL_DUMP_DIR=/dump/mysql \
@@ -27,15 +27,8 @@ ENV SXDBTOOLS_VERSION="0.1.6" \
     MYSQL_DUMP_SCHEMAFILE="schema.sql" \
     MYSQL_DUMP_ISEXTENDED=true \
     MYSQL_HOST=dbm \
-    MYSQL_DATABASE=dev \
-    MYSQL_USERS=dev:pwd \
     COUCHBASE_DUMP_DIR=/dump/couchbase \
     COUCHBASE_DUMP_DATAFILE="data.json" \
-    COUCHBASE_HOST=dbc \
-    COUCHBASE_ADMIN=dev:dev \
-    COUCHBASE_BUCKET=dev \
-    COUCHBASE_USERS=dev:password
-
-#ONBUILD COPY data /data
+    COUCHBASE_HOST=dbc 
 
 ENTRYPOINT ["/bin/sx-dbtools"]
