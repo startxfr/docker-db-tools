@@ -4,31 +4,57 @@ RUN apt-get update -y && \
     apt-get dist-upgrade -y && \
     apt-get install -y mariadb-server-5.5 mariadb-client-5.5 tar gzip && \
     apt-get clean
-COPY ./bin/lib /bin/sx-dbtools-lib
-COPY ./bin/sx-dbtools /bin/
-RUN mkdir -p /dump/mysql && \
-    mkdir -p /dump/couchbase && \
-    mkdir -p /backup && \
-    chmod ug+x /bin/sx-dbtools && \
-    adduser couchbase mysql && \
-    adduser mysql couchbase  && \
-    chmod -R ugo+rw /dump /backup
-
-VOLUME /dump
-VOLUME /backup
-
-USER couchbase
 
 ENV SXDBTOOLS_VERSION="0.1.7" \
     SXDBTOOLS_DEBUG=false \
     SXDBTOOLS_BACKUP_DIR=/backup \
-    MYSQL_DUMP_DIR=/dump/mysql \
+    SXDBTOOLS_DUMP_DIR=/dump \
+    MYSQL_DUMP_DIR=$SXDBTOOLS_DUMP_DIR/mysql \
     MYSQL_DUMP_DATAFILE="data.sql" \
     MYSQL_DUMP_SCHEMAFILE="schema.sql" \
     MYSQL_DUMP_ISEXTENDED=true \
     MYSQL_HOST=dbm \
-    COUCHBASE_DUMP_DIR=/dump/couchbase \
+    COUCHBASE_DUMP_DIR=$SXDBTOOLS_DUMP_DIR/couchbase \
     COUCHBASE_DUMP_DATAFILE="data.json" \
-    COUCHBASE_HOST=dbc 
+    COUCHBASE_HOST=dbc \
+    SUMMARY="Database tools for manipulating couchbase and mariadb container" \
+    DESCRIPTION="The s2i-dbtools image, provides any command for creating, import and export \
+backup and restore, deleting and recreating both mysql and / or couchbase linked container 
+
+LABEL summary="$SUMMARY" \
+      description="$DESCRIPTION" \
+      io.k8s.description="$DESCRIPTION" \
+      io.k8s.display-name="s2i dbtools" \
+      fr.startx.component="s2i-sx-dbtools" \
+      io.openshift.tags="builder,db,mysql,couchbase" \
+      io.s2i.scripts-url=image:///usr/libexec/s2i \
+      io.openshift.s2i.scripts-url=image:///usr/libexec/s2i \
+      io.openshift.s2i.assemble-input-files=image:///usr/libexec/s2i \
+      name="startx/db-tools" \
+      version="1" \
+      release="1" \
+      usage="s2i build https://github.com/youruser/yourapp.git --context-dir=sample/ startx/db-tools test-dbtools" \
+      maintainer="startx.fr <dev@startx.fr>"
+
+COPY ./bin/lib /bin/sx-dbtools-lib
+COPY ./bin/sx-dbtools /bin/
+COPY ./.s2i/bin/* /usr/libexec/s2i/
+RUN mkdir -p $MYSQL_DUMP_DIR && \
+    mkdir -p $COUCHBASE_DUMP_DIR && \
+    mkdir -p $SXDBTOOLS_BACKUP_DIR && \
+    chmod ug+x /bin/sx-dbtools && \
+    adduser couchbase mysql && \
+    adduser mysql couchbase  && \
+    chgrp -R 0 $SXDBTOOLS_BACKUP_DIR $SXDBTOOLS_BACKUP_DIR  && \
+    chmod -R g=u $SXDBTOOLS_BACKUP_DIR $SXDBTOOLS_BACKUP_DIR 
+
+WORKDIR /
+
+USER 1001
+
+VOLUME $SXDBTOOLS_DUMP_DIR
+VOLUME $SXDBTOOLS_BACKUP_DIR
+
 
 ENTRYPOINT ["/bin/sx-dbtools"]
+CMD ["usage"]

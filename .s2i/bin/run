@@ -1,0 +1,4 @@
+#!/bin/bash
+
+# run the application
+exec /bin/sx-dbtools info

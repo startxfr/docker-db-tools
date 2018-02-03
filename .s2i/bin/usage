@@ -1,0 +1,4 @@
+#!/bin/bash
+
+# inform the user how to use the image
+exec /bin/sx-dbtools usage
