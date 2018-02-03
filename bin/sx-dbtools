@@ -9,16 +9,30 @@ source $LIBDIR/sx-dbtools-base_mysql.sh
 # Load couchbase base library
 source $LIBDIR/sx-dbtools-base_couchbase.sh
 
+# Load backup sub-command library
+source $LIBDIR/sx-dbtools-backup.sh
+# Load restore sub-command library
+source $LIBDIR/sx-dbtools-restore.sh
+
 # Load dump sub-command library
 source $LIBDIR/sx-dbtools-dump.sh
 # Load import sub-command library
 source $LIBDIR/sx-dbtools-import.sh
+
+# Load create sub-command library
+source $LIBDIR/sx-dbtools-create.sh
+# Load delete sub-command library
+source $LIBDIR/sx-dbtools-delete.sh
+# Load recreate sub-command library
+source $LIBDIR/sx-dbtools-recreate.sh
+
 # Load create-db sub-command library
 source $LIBDIR/sx-dbtools-create-db.sh
 # Load delete-db sub-command library
 source $LIBDIR/sx-dbtools-delete-db.sh
 # Load recreate-db sub-command library
 source $LIBDIR/sx-dbtools-recreate-db.sh
+
 # Load create-user sub-command library
 source $LIBDIR/sx-dbtools-create-user.sh
 # Load delete-user sub-command library
@@ -26,7 +40,7 @@ source $LIBDIR/sx-dbtools-delete-user.sh
 # Load recreate-user sub-command library
 source $LIBDIR/sx-dbtools-recreate-user.sh
 
-
+# Dispatch input arguments
 case $1 in
     dump)                   dispatcherDump $@ ;;
     import|create-data)     dispatcherImport $@ ;;
