@@ -32,7 +32,6 @@ exit 0;
 # Execute create for all database(s), user(s) and data
 #######################################
 function doCreateGlobal {
-    displayCommandMessage create close
     doCreateMysqlAll
     doCreateCouchbaseAll
 }
@@ -67,12 +66,13 @@ function doCreateCouchbaseAll {
 #######################################
 function dispatcherCreate {
     displayStartupMessage
-    displayCommandMessage $1
     case $2 in
         "") 
+            displayCommandMessage $1 close
             doCreateGlobal; 
             displayEndMessage "creating all mysql and couchbase database(s), user(s) and data" ;;
         mysql)
+            displayCommandMessage $1
             displayDbtypeMessage $2 close;
             case $3 in
                 "")
@@ -83,6 +83,7 @@ function dispatcherCreate {
             esac
         ;;
         couchbase)  
+            displayCommandMessage $1
             displayDbtypeMessage $2 close;
             case $3 in
                 "")
@@ -93,9 +94,11 @@ function dispatcherCreate {
             esac
         ;;
         help|--help)
+            displayCommandMessage help close
             displayCreateHelp 
         ;;
         *)
+            displayCommandMessage unknown close
             displayCreateHelp $2 
         ;;
     esac

@@ -17,7 +17,7 @@ app:
     - "./sample/backup:/backup:z"
     - "./bin/sx-dbtools:/bin/sx-dbtools:z"
     - "./bin/lib:/bin/sx-dbtools-lib:z"
-  command: ["info"]
+  command: ["restore"]
 
 db-mysql:
   extends:

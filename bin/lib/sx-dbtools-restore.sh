@@ -32,9 +32,17 @@ exit 0;
 # Execute restore for all databases
 #######################################
 function doRestoreGlobal {
-    displayCommandMessage restore close
-    doRestoreMysqlAll
-    doRestoreCouchbaseAll
+    checkMysqlEnv
+    displayMysqlTabInfoBlock
+    echo "  - database(s) : $MYSQL_DATABASE"
+    echo "  - source : $SXDBTOOLS_BACKUP_DIR"
+    checkCouchbaseEnv
+    displayCouchbaseTabInfoBlock
+    echo "  - bucket(s) : $COUCHBASE_BUCKET"
+    echo "  - source : $SXDBTOOLS_BACKUP_DIR"
+    displayNotImplementedMessage
+#    doRestoreMysqlAll
+#    doRestoreCouchbaseAll
 }
 
 
@@ -44,14 +52,10 @@ function doRestoreGlobal {
 function doRestoreMysqlAll {
     echo "- Restore all mysql database"
     checkMysqlEnv
-    if checkMysqlDatabasesExist; then
-        displayMysqlTabInfoBlock
-        echo "  - database(s) : $MYSQL_DATABASE"
-        echo "  - source : $MYSQL_DUMP_DIR"
-        restoreMysqlDatabaseAll
-    else
-        echo "  - mysql database(s) $MYSQL_DATABASE doesn't exist. Nothing to restore"
-    fi
+    displayMysqlTabInfoBlock
+    echo "  - database(s) : $MYSQL_DATABASE"
+    echo "  - source : $SXDBTOOLS_BACKUP_DIR"
+    displayNotImplementedMessage
 }
 
 #######################################
@@ -60,14 +64,10 @@ function doRestoreMysqlAll {
 function doRestoreMysqlOne {
     echo "- Restore '$1' mysql database"
     checkMysqlEnv
-    if checkMysqlDatabaseExist $1; then
-        displayMysqlTabInfoBlock
-        echo "  - database : $1"
-        echo "  - source : $MYSQL_DUMP_DIR"
-        restoreMysqlDatabaseOne $1
-    else
-        echo "  - mysql database $1 doesn't exist. Nothing to restore"
-    fi
+    displayMysqlTabInfoBlock
+    echo "  - database(s) : $1"
+    echo "  - source : $SXDBTOOLS_BACKUP_DIR"
+    displayNotImplementedMessage
 }
 
 
@@ -77,16 +77,10 @@ function doRestoreMysqlOne {
 function doRestoreCouchbaseAll {
     echo "- Restore all couchbase buckets"
     checkCouchbaseEnv
-    if checkCouchbaseIsNotInitialized; then
-        echo "  - Couchbase host $COUCHBASE_HOST is not initialized. Nothing to restore"
-    elif $(checkCouchbaseBucketsExist); then
-        displayCouchbaseTabInfoBlock
-        echo "  - bucket(s) : $COUCHBASE_BUCKET"
-        echo "  - source : $COUCHBASE_DUMP_DIR"
-        restoreCouchbaseBucketAll
-    else
-        echo "  - Couchbase bucket $COUCHBASE_BUCKET doesn't exist. Nothing to restore"
-    fi
+    displayCouchbaseTabInfoBlock
+    echo "  - bucket(s) : $COUCHBASE_BUCKET"
+    echo "  - source : $SXDBTOOLS_BACKUP_DIR"
+    displayNotImplementedMessage
 }
 
 #######################################
@@ -95,16 +89,10 @@ function doRestoreCouchbaseAll {
 function doRestoreCouchbaseOne {
     echo "- Restore '$1' couchbase bucket"
     checkCouchbaseEnv
-    if checkCouchbaseIsNotInitialized; then
-        echo "  - Couchbase host $COUCHBASE_HOST is not initialized. Nothing to restore"
-    elif $(checkCouchbaseBucketsExist); then
-        displayCouchbaseTabInfoBlock
-        echo "  - bucket : $1"
-        echo "  - source : $COUCHBASE_DUMP_DIR"
-        restoreCouchbaseBucketOne $1
-    else
-        echo "  - Couchbase bucket $COUCHBASE_BUCKET doesn't exist. Nothing to restore"
-    fi
+    displayCouchbaseTabInfoBlock
+    echo "  - bucket(s) : $1"
+    echo "  - source : $SXDBTOOLS_BACKUP_DIR"
+    displayNotImplementedMessage
 }
 
 
@@ -113,12 +101,13 @@ function doRestoreCouchbaseOne {
 #######################################
 function dispatcherRestore {
     displayStartupMessage
-    displayCommandMessage $1
     case $2 in
         "") 
+            displayCommandMessage $1 close
             doRestoreGlobal; 
             displayEndMessage "restoring all mysql and couchbase database(s)" ;;
         mysql)
+            displayCommandMessage $1
             displayDbtypeMessage $2 close;
             case $3 in
                 "")
@@ -130,6 +119,7 @@ function dispatcherRestore {
             esac
         ;;
         couchbase)  
+            displayCommandMessage $1
             displayDbtypeMessage $2 close;
             case $3 in
                 "")
@@ -141,9 +131,11 @@ function dispatcherRestore {
             esac
         ;;
         help|--help)
+            displayCommandMessage help close
             displayRestoreHelp
         ;;
         *)
+            displayCommandMessage unknown close
             displayRestoreHelp $2 
         ;;
     esac

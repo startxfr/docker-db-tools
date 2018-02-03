@@ -32,7 +32,6 @@ exit 0;
 # Execute delete for all database(s), user(s) and data
 #######################################
 function doDeleteGlobal {
-    displayCommandMessage delete close
     doDeleteMysqlAll
     doDeleteCouchbaseAll
 }
@@ -67,12 +66,13 @@ function doDeleteCouchbaseAll {
 #######################################
 function dispatcherDelete {
     displayStartupMessage
-    displayCommandMessage $1
     case $2 in
         "") 
+            displayCommandMessage $1 close
             doDeleteGlobal; 
             displayEndMessage "deleting all mysql and couchbase database(s), user(s) and data" ;;
         mysql)
+            displayCommandMessage $1
             displayDbtypeMessage $2 close;
             case $3 in
                 "")
@@ -83,6 +83,7 @@ function dispatcherDelete {
             esac
         ;;
         couchbase)  
+            displayCommandMessage $1
             displayDbtypeMessage $2 close;
             case $3 in
                 "")
@@ -93,9 +94,11 @@ function dispatcherDelete {
             esac
         ;;
         help|--help)
+            displayCommandMessage help close
             displayDeleteHelp
         ;;
         *)
+            displayCommandMessage unknown close
             displayDeleteHelp $2 
         ;;
     esac

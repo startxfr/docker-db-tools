@@ -32,7 +32,6 @@ exit 0;
 # Execute delete-user for all database(s) user(s)
 #######################################
 function doDeleteUserGlobal {
-    displayCommandMessage delete-user close
     doDeleteUserMysqlAll
     doDeleteUserCouchbaseAll
 }
@@ -89,12 +88,13 @@ function doDeleteUserCouchbaseOne {
 #######################################
 function dispatcherDeleteUser {
     displayStartupMessage
-    displayCommandMessage $1
     case $2 in
         "") 
+            displayCommandMessage $1 close
             doDeleteUserGlobal; 
             displayEndMessage "deleting all mysql and couchbase user(s)" ;;
         mysql)
+            displayCommandMessage $1
             displayDbtypeMessage $2 close;
             case $3 in
                 "")
@@ -106,6 +106,7 @@ function dispatcherDeleteUser {
             esac
         ;;
         couchbase)  
+            displayCommandMessage $1
             displayDbtypeMessage $2 close;
             case $3 in
                 "")
@@ -117,9 +118,11 @@ function dispatcherDeleteUser {
             esac
         ;;
         help|--help)
+            displayCommandMessage help close
             displayDeleteUserHelp
         ;;
         *)
+            displayCommandMessage unknown close
             displayDeleteUserHelp $2 
         ;;
     esac

@@ -6,7 +6,7 @@
 #######################################
 function displayMysqlTabInfoBlock {
     echo "  - mysql version : $DBM_ENV_MARIADB_VERSION"
-    echo "  - server : $MYSQL_HOST
+    echo "  - server : $MYSQL_HOST"
 }
 
 
@@ -138,7 +138,7 @@ function runCreateMysqlUser {
     if [ -z "$PWD" ]; then
         PWD=$(openssl rand -base64 32 | sha256sum | base64 | head -c 16 ; echo)
         echo "  - with pwd    : [generated]"
-        echo "  - password    : $PWD (! NOTICE : display only once)"
+        echo "  - password    : $PWD \( \! NOTICE : display only once\)"
     else 
         echo "  - with pwd    : [user given]"
     fi

@@ -32,7 +32,6 @@ exit 0;
 # Execute dump for all databases
 #######################################
 function doDumpGlobal {
-    displayCommandMessage dump close
     doDumpMysqlAll
     doDumpCouchbaseAll
 }
@@ -113,12 +112,13 @@ function doDumpCouchbaseOne {
 #######################################
 function dispatcherDump {
     displayStartupMessage
-    displayCommandMessage $1
     case $2 in
         "") 
+            displayCommandMessage $1 close
             doDumpGlobal; 
             displayEndMessage "dumping all mysql and couchbase database(s)" ;;
         mysql)
+            displayCommandMessage $1
             displayDbtypeMessage $2 close;
             case $3 in
                 "")
@@ -130,6 +130,7 @@ function dispatcherDump {
             esac
         ;;
         couchbase)  
+            displayCommandMessage $1
             displayDbtypeMessage $2 close;
             case $3 in
                 "")
@@ -141,9 +142,11 @@ function dispatcherDump {
             esac
         ;;
         help|--help)
+            displayCommandMessage help close
             displayDumpHelp
         ;;
         *)
+            displayCommandMessage unknown close
             displayDumpHelp $2 
         ;;
     esac

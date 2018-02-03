@@ -32,9 +32,18 @@ exit 0;
 # Execute backup for all databases
 #######################################
 function doBackupGlobal {
-    displayCommandMessage backup close
-    doBackupMysqlAll
-    doBackupCouchbaseAll
+    echo "- Backup all database"
+    checkMysqlEnv
+    displayMysqlTabInfoBlock
+    echo "  - database(s) : $MYSQL_DATABASE"
+    echo "  - destination : $SXDBTOOLS_BACKUP_DIR"
+    checkCouchbaseEnv
+    displayCouchbaseTabInfoBlock
+    echo "  - bucket(s) : $COUCHBASE_BUCKET"
+    echo "  - destination : $SXDBTOOLS_BACKUP_DIR"
+    displayNotImplementedMessage
+#    doBackupMysqlAll
+#    doBackupCouchbaseAll
 }
 
 
@@ -44,14 +53,10 @@ function doBackupGlobal {
 function doBackupMysqlAll {
     echo "- Backup all mysql database"
     checkMysqlEnv
-    if checkMysqlDatabasesExist; then
-        displayMysqlTabInfoBlock
-        echo "  - database(s) : $MYSQL_DATABASE"
-        echo "  - destination : $MYSQL_DUMP_DIR"
-        backupMysqlDatabaseAll
-    else
-        echo "  - mysql database(s) $MYSQL_DATABASE doesn't exist. Nothing to backup"
-    fi
+    displayMysqlTabInfoBlock
+    echo "  - database(s) : $MYSQL_DATABASE"
+    echo "  - destination : $SXDBTOOLS_BACKUP_DIR"
+    displayNotImplementedMessage
 }
 
 #######################################
@@ -60,14 +65,10 @@ function doBackupMysqlAll {
 function doBackupMysqlOne {
     echo "- Backup '$1' mysql database"
     checkMysqlEnv
-    if checkMysqlDatabaseExist $1; then
-        displayMysqlTabInfoBlock
-        echo "  - database : $1"
-        echo "  - destination : $MYSQL_DUMP_DIR"
-        backupMysqlDatabaseOne $1
-    else
-        echo "  - mysql database $1 doesn't exist. Nothing to backup"
-    fi
+    displayMysqlTabInfoBlock
+    echo "  - database(s) : $1"
+    echo "  - destination : $SXDBTOOLS_BACKUP_DIR"
+    displayNotImplementedMessage
 }
 
 
@@ -77,16 +78,10 @@ function doBackupMysqlOne {
 function doBackupCouchbaseAll {
     echo "- Backup all couchbase buckets"
     checkCouchbaseEnv
-    if checkCouchbaseIsNotInitialized; then
-        echo "  - Couchbase host $COUCHBASE_HOST is not initialized. Nothing to backup"
-    elif $(checkCouchbaseBucketsExist); then
-        displayCouchbaseTabInfoBlock
-        echo "  - bucket(s) : $COUCHBASE_BUCKET"
-        echo "  - destination : $COUCHBASE_DUMP_DIR"
-        backupCouchbaseBucketAll
-    else
-        echo "  - Couchbase bucket $COUCHBASE_BUCKET doesn't exist. Nothing to backup"
-    fi
+    displayCouchbaseTabInfoBlock
+    echo "  - bucket(s) : $COUCHBASE_BUCKET"
+    echo "  - destination : $SXDBTOOLS_BACKUP_DIR"
+    displayNotImplementedMessage
 }
 
 #######################################
@@ -95,16 +90,10 @@ function doBackupCouchbaseAll {
 function doBackupCouchbaseOne {
     echo "- Backup '$1' couchbase bucket"
     checkCouchbaseEnv
-    if checkCouchbaseIsNotInitialized; then
-        echo "  - Couchbase host $COUCHBASE_HOST is not initialized. Nothing to backup"
-    elif $(checkCouchbaseBucketsExist); then
-        displayCouchbaseTabInfoBlock
-        echo "  - bucket : $1"
-        echo "  - destination : $COUCHBASE_DUMP_DIR"
-        backupCouchbaseBucketOne $1
-    else
-        echo "  - Couchbase bucket $COUCHBASE_BUCKET doesn't exist. Nothing to backup"
-    fi
+    displayCouchbaseTabInfoBlock
+    echo "  - bucket(s) : $1"
+    echo "  - destination : $SXDBTOOLS_BACKUP_DIR"
+    displayNotImplementedMessage
 }
 
 
@@ -113,13 +102,14 @@ function doBackupCouchbaseOne {
 #######################################
 function dispatcherBackup {
     displayStartupMessage
-    displayCommandMessage $1
     case $2 in
         "") 
+            displayCommandMessage $1 close
             doBackupGlobal; 
             displayEndMessage "backuping all mysql and couchbase database(s)" ;;
         mysql)
-            displayDbtypeMessage $2 close;
+            displayCommandMessage $1
+            displayDbtypeMessage $2 close
             case $3 in
                 "")
                     doBackupMysqlAll; 
@@ -130,6 +120,7 @@ function dispatcherBackup {
             esac
         ;;
         couchbase)  
+            displayCommandMessage $1
             displayDbtypeMessage $2 close;
             case $3 in
                 "")
@@ -141,9 +132,11 @@ function dispatcherBackup {
             esac
         ;;
         help|--help)
+            displayCommandMessage help close
             displayBackupHelp
         ;;
         *)
+            displayCommandMessage unknown close
             displayBackupHelp $2 
         ;;
     esac

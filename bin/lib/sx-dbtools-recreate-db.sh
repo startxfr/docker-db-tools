@@ -32,7 +32,6 @@ exit 0;
 # Execute recreate-db for all databases
 #######################################
 function doRecreateDbGlobal {
-    displayCommandMessage recreate-db close
     doRecreateDbMysqlAll
     doRecreateDbCouchbaseAll
 }
@@ -109,12 +108,13 @@ function doRecreateDbCouchbaseOne {
 #######################################
 function dispatcherRecreateDb {
     displayStartupMessage
-    displayCommandMessage $1
     case $2 in
         "") 
+            displayCommandMessage $1 close
             doRecreateDbGlobal; 
             displayEndMessage "recreating all mysql and couchbase database(s)" ;;
         mysql)
+            displayCommandMessage $1
             displayDbtypeMessage $2 close;
             case $3 in
                 "")
@@ -126,6 +126,7 @@ function dispatcherRecreateDb {
             esac
         ;;
         couchbase)  
+            displayCommandMessage $1
             displayDbtypeMessage $2 close;
             case $3 in
                 "")
@@ -137,9 +138,11 @@ function dispatcherRecreateDb {
             esac
         ;;
         help|--help)
+            displayCommandMessage help close
             displayRecreateDbHelp
         ;;
         *)
+            displayCommandMessage unknown close
             displayRecreateDbHelp $2 
         ;;
     esac

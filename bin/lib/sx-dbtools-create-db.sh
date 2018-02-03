@@ -32,7 +32,6 @@ exit 0;
 # Execute create-db for all databases
 #######################################
 function doCreateDbGlobal {
-    displayCommandMessage create-db close
     doCreateDbMysqlAll
     doCreateDbCouchbaseAll
 }
@@ -105,12 +104,13 @@ function doCreateDbCouchbaseOne {
 #######################################
 function dispatcherCreateDb {
     displayStartupMessage
-    displayCommandMessage $1
     case $2 in
         "") 
+            displayCommandMessage $1 close
             doCreateDbGlobal; 
             displayEndMessage "creating all mysql and couchbase database(s)" ;;
         mysql)
+            displayCommandMessage $1
             displayDbtypeMessage $2 close;
             case $3 in
                 "")
@@ -122,6 +122,7 @@ function dispatcherCreateDb {
             esac
         ;;
         couchbase)  
+            displayCommandMessage $1
             displayDbtypeMessage $2 close;
             case $3 in
                 "")
@@ -133,9 +134,11 @@ function dispatcherCreateDb {
             esac
         ;;
         help|--help)
+            displayCommandMessage help close
             displayCreateDbHelp
         ;;
         *)
+            displayCommandMessage unknown close
             displayCreateDbHelp $2 
         ;;
     esac

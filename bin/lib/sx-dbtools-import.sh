@@ -32,7 +32,6 @@ exit 0;
 # Execute import for all databases
 #######################################
 function doImportGlobal {
-    displayCommandMessage import close
     doImportMysqlAll
     doImportCouchbaseAll
 }
@@ -113,12 +112,13 @@ function doImportCouchbaseOne {
 #######################################
 function dispatcherImport {
     displayStartupMessage
-    displayCommandMessage $1
     case $2 in
         "") 
+            displayCommandMessage $1 close
             doImportGlobal; 
             displayEndMessage "importing all mysql and couchbase database(s)" ;;
         mysql)
+            displayCommandMessage $1
             displayDbtypeMessage $2 close;
             case $3 in
                 "")
@@ -130,6 +130,7 @@ function dispatcherImport {
             esac
         ;;
         couchbase)  
+            displayCommandMessage $1
             displayDbtypeMessage $2 close;
             case $3 in
                 "")
@@ -141,9 +142,11 @@ function dispatcherImport {
             esac
         ;;
         help|--help)
+            displayCommandMessage help close
             displayImportHelp
         ;;
         *)
+            displayCommandMessage unknown close
             displayImportHelp $2 
         ;;
     esac

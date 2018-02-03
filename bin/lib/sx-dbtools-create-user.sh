@@ -32,7 +32,6 @@ exit 0;
 # Execute create-user for all database(s) user(s)
 #######################################
 function doCreateUserGlobal {
-    displayCommandMessage create-user close
     doCreateUserMysqlAll
     doCreateUserCouchbaseAll
 }
@@ -89,12 +88,13 @@ function doCreateUserCouchbaseOne {
 #######################################
 function dispatcherCreateUser {
     displayStartupMessage
-    displayCommandMessage $1
     case $2 in
         "") 
+            displayCommandMessage $1 close
             doCreateUserGlobal; 
             displayEndMessage "creating all mysql and couchbase user(s)" ;;
         mysql)
+            displayCommandMessage $1
             displayDbtypeMessage $2 close;
             case $3 in
                 "")
@@ -106,6 +106,7 @@ function dispatcherCreateUser {
             esac
         ;;
         couchbase)  
+            displayCommandMessage $1
             displayDbtypeMessage $2 close;
             case $3 in
                 "")
@@ -117,9 +118,11 @@ function dispatcherCreateUser {
             esac
         ;;
         help|--help)
+            displayCommandMessage help close
             displayCreateUserHelp
         ;;
         *)
+            displayCommandMessage unknown close
             displayCreateUserHelp $2 
         ;;
     esac

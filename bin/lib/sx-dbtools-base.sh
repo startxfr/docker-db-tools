@@ -32,6 +32,17 @@ function displayEndMessage {
 }
 
 #######################################
+# Display not implemented message
+#######################################
+function displayNotImplementedMessage {
+    echo ""
+    echo "! This section is not yet implemented"
+    echo "! see https://github.com/startxfr/docker-db-tools/"
+    echo "! for more informations on next releases"
+    echo ""
+}
+
+#######################################
 # Display startup message
 #######################################
 function displayStartupMessage {

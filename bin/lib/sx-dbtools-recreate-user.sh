@@ -32,7 +32,6 @@ exit 0;
 # Execute recreate-user for all database(s) user(s)
 #######################################
 function doRecreateUserGlobal {
-    displayCommandMessage recreate-user close
     doRecreateUserMysqlAll
     doRecreateUserCouchbaseAll
 }
@@ -93,12 +92,13 @@ function doRecreateUserCouchbaseOne {
 #######################################
 function dispatcherRecreateUser {
     displayStartupMessage
-    displayCommandMessage $1
     case $2 in
         "") 
+            displayCommandMessage $1 close
             doRecreateUserGlobal; 
             displayEndMessage "recreating all mysql and couchbase user(s)" ;;
         mysql)
+            displayCommandMessage $1
             displayDbtypeMessage $2 close;
             case $3 in
                 "")
@@ -110,6 +110,7 @@ function dispatcherRecreateUser {
             esac
         ;;
         couchbase)  
+            displayCommandMessage $1
             displayDbtypeMessage $2 close;
             case $3 in
                 "")
@@ -121,9 +122,11 @@ function dispatcherRecreateUser {
             esac
         ;;
         help|--help)
+            displayCommandMessage help close
             displayRecreateUserHelp
         ;;
         *)
+            displayCommandMessage unknown close
             displayRecreateUserHelp $2 
         ;;
     esac
