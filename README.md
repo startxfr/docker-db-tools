@@ -1,4 +1,4 @@
-# docker-db-tools ![sxapi](https://img.shields.io/badge/latest-v0.1.9-blue.svg)
+# docker-db-tools ![sxapi](https://img.shields.io/badge/latest-v0.1.10-blue.svg)
 
 Container for managing data from and to a mysql and/or a couchbase backend. 
 All command work with a couchbase cluser and / or a mysql server the same way.
@@ -394,20 +394,23 @@ various kind of backend infrastructure (container, host, remote, IaaS, DBaaS)
 
 | Variable                 | Default         | Description
 |--------------------------|:---------------:|:---------------
+| SXDBTOOLS_DEBUG          | true            | Activate debugging display
+| SXDBTOOLS_BACKUP_DIR     | /backup         | The final destination directory for backup
+| SXDBTOOLS_DUMP_DIR       | /dump           | The final destination directory for dump
 | MYSQL_DUMP_DIR           | /dump/mysql     | Directory used for save and restore mysql dump (container internal path)
 | MYSQL_DUMP_DATAFILE      | data.sql        | Filename of the default sql data dump file 
 | MYSQL_DUMP_SCHEMAFILE    | schema.sql      | Filename of the default sql schema dump file
 | MYSQL_DUMP_ISEXTENDED    | true            | Enable smart extended dump for fast load, readibility and versioning
 | MYSQL_HOST               | dbm             | Hostname of the mysql database. Could use whatever public IP or DSN.
 | MYSQL_ADMIN              | [linked user]   | Mysql admin user and password (ex: user:password). Default will use root and MYSQL_ROOT_PASSWORD found into the linked container
-| MYSQL_DATABASE           | dev             | Mysql database name to use or create
-| MYSQL_USERS              | dev             | Mysql list of users to the database "," is separator between users and ":" between user and his password. ex : user:password,user2:user2Password,user3,user4
+| MYSQL_DATABASE           |                 | Mysql database name to use or create
+| MYSQL_USERS              |                 | Mysql list of users to the database "," is separator between users and ":" between user and his password. ex : user:password,user2:user2Password,user3,user4
 | COUCHBASE_DUMP_DIR       | /dump/couchbase | Directory used for save and restore couchbase dump (container internal path)
 | COUCHBASE_DUMP_DATAFILE  | data.json       | Filename of the json data dump file
 | COUCHBASE_HOST           | dbc             | Hostname of the couchbase database. Could use whatever public IP or DSN.
-| COUCHBASE_ADMIN          | dev             | Couchbase admin user and password (ex: user:password)
-| COUCHBASE_PASSWORD       | dev             | Password for the couchbase admin user
-| COUCHBASE_BUCKET         | dev             | Couchbase bucket name to use or create
+| COUCHBASE_ADMIN          | dev:dev         | Couchbase admin user and password (ex: user:password)
+| COUCHBASE_USERS          |                 | Mysql list of users to the cluster "," is separator between users and ":" between user and his password. ex : user:password,user2:user2Password,user3,user4
+| COUCHBASE_BUCKET         |                 | Couchbase bucket name to use or create
 
 Create a database `demo` + user `demo_user`. Load sample schema and data into database
 and allow `demo_user` to access this database only.
@@ -422,8 +425,7 @@ Create a bucket `demo` and load sample data into bucket. If couchbase cluster is
 initialize it with a user 'cbAdmin'
 ```bash
 docker run -d --link db-couchbase:dbc \
-    --env COUCHBASE_ADMIN=cbAdmin \
-    --env COUCHBASE_PASSWORD=cbAdmin123 \
+    --env COUCHBASE_ADMIN=cbAdmin:cbAdmin123 \
     --env COUCHBASE_BUCKET=demo \
     startx/db-tools couchbase create
 ```
