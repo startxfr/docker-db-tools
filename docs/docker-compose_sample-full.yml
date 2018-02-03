@@ -13,20 +13,20 @@ app:
 
 db-mysql:
   image: mariadb:5.5
-  container_name: "startx-db-tools_mysql"
+  container_name: "sx-dbtools_mysql"
   environment:
    - MYSQL_ROOT_PASSWORD=root_pwd
    
 db-couchbase:
   image: couchbase:enterprise-5.0.1
-  container_name: "startx-db-tools_couchbase"
+  container_name: "sx-dbtools_couchbase"
   ports:
     - 8091-8094:8091-8094
     - 11210:11210
 
 pma:
   image: phpmyadmin/phpmyadmin
-  container_name: "startx-db-tools_pma"
+  container_name: "sx-dbtools_pma"
   links:
     - db-mysql:db
   environment:

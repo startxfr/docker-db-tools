@@ -2,12 +2,12 @@ app:
   extends:
     file: docker-compose-abstract.yml
     service: app
-  container_name: "startx-db-tools"
+  container_name: "sx-dbtools"
   links:
     - db-mysql:dbm
     - db-couchbase:dbc
   environment:
-   - MYSQL_DATABASE=demo,demo2
+   - MYSQL_DATABASE=demo,demo2,demo3
    - MYSQL_ADMIN=root:rootPassword
    - MYSQL_USERS=demo:pwd,user3:pwd3,test
    - COUCHBASE_ADMIN=demo:password
@@ -17,13 +17,13 @@ app:
     - "./sample/backup:/backup:z"
     - "./bin/sx-dbtools:/bin/sx-dbtools:z"
     - "./bin/lib:/bin/sx-dbtools-lib:z"
-  command: ["restore"]
+  command: ["delete-db","couchbase"]
 
 db-mysql:
   extends:
     file: docker-compose-abstract.yml
     service: db-mysql
-  container_name: "startx-db-tools_mysql"
+  container_name: "sx-dbtools_mysql"
   environment:
    - MYSQL_ROOT_PASSWORD=rootPassword
    
@@ -31,13 +31,13 @@ db-couchbase:
   extends:
     file: docker-compose-abstract.yml
     service: db-couchbase
-  container_name: "startx-db-tools_couchbase"
+  container_name: "sx-dbtools_couchbase"
 
 pma:
   extends:
     file: docker-compose-abstract.yml
     service: pma
-  container_name: "startx-db-tools_pma"
+  container_name: "sx-dbtools_pma"
   links:
     - db-mysql:db
   environment:

@@ -61,13 +61,14 @@ function dumpCouchbaseBucketAll {
     if [ ! -z "$COUCHBASE_BUCKET" ]; then
         for BUCKET in $(echo $COUCHBASE_BUCKET | tr "," "\n")
         do
+            echo "  - dump data $BUCKET > $BUCKET.$COUCHBASE_DUMP_DATAFILE"
             runDumpCouchbaseBucket $BUCKET
         done
     fi 
 }
 function dumpCouchbaseBucketOne {
+    echo "  - dump data $1 > $1.$COUCHBASE_DUMP_DATAFILE"
     runDumpCouchbaseBucket $1
-    echo "  - data $1 > $1.$COUCHBASE_DUMP_DATAFILE SAVED"
 }
 function runDumpCouchbaseBucket {
     if cbexport json \
@@ -129,14 +130,14 @@ function initializeCouchbase {
     --cluster-name $COUCHBASE_HOST \
     --services data,index,query \
     --index-storage-setting memopt
-    echo "cluster     : $COUCHBASE_HOST initialized"
+    echo "- cluster $COUCHBASE_HOST initialized"
     if [ ! -z "$COUCHBASE_GENERATED" ]; then
-        echo "user        : $COUCHBASE_ADMIN created"
-        echo "with pwd    : [generated]"
-        echo "password    : $COUCHBASE_PASSWORD (! NOTICE : display only once)"
+        echo "  - user : $COUCHBASE_ADMIN created"
+        echo "  - with pwd : [generated]"
+        echo "  - password : $COUCHBASE_PASSWORD (! NOTICE : display only once)"
     else 
-        echo "user        : $COUCHBASE_ADMIN created"
-        echo "with pwd    : [user given]"
+        echo "  - user : $COUCHBASE_ADMIN created"
+        echo "  - with pwd : [user given]"
     fi
 }
 
@@ -144,7 +145,8 @@ function createCouchbaseBuckets {
     if [ ! -z "$COUCHBASE_BUCKET" ]; then
         for BUCKET in $(echo $COUCHBASE_BUCKET | tr "," "\n")
         do
-            createCouchbaseBucket $BUCKET
+            echo "  - create bucket $1"
+            runCreateCouchbaseBucket $BUCKET
         done
     fi 
 }
@@ -163,7 +165,7 @@ function runCreateCouchbaseBucket {
     --bucket-type couchbase \
     --bucket-ramsize 200 \
     --wait; then
-        echo "bucket      : $1 created"
+        displayDebugMessage "bucket : $1 created"
     else
         displayErrorMessage "Could not create bucket $1"
     fi;
@@ -183,6 +185,7 @@ function runLoadCouchbaseBucketData {
     elif [[ -r $COUCHBASE_DUMP_DIR/$COUCHBASE_DUMP_DATAFILE ]]; then
         FILE=$COUCHBASE_DUMP_DATAFILE
     fi 
+    echo "  - load data $FILE > $1"
     if cbimport json \
     -f list \
     -c couchbase://$COUCHBASE_HOST:$COUCHBASE_PORT \
@@ -191,18 +194,25 @@ function runLoadCouchbaseBucketData {
     -u $COUCHBASE_ADMIN \
     -p $COUCHBASE_PASSWORD \
     --generate-key %_id%; then
-        echo "data file   : $FILE loaded in bucket $1"
+        displayDebugMessage "data file: $FILE loaded in bucket $1"
     else
         displayErrorMessage "Could not load data file $FILE in bucket $1"
     fi;
 }
 
-function deleteCouchbaseBucket {
+function deleteCouchbaseBuckets {
     if [ ! -z "$COUCHBASE_BUCKET" ]; then
         for BUCKET in $(echo $COUCHBASE_BUCKET | tr "," "\n")
         do
+            echo "  - delete bucket $1"
             runDeleteCouchbaseBucket $BUCKET
         done
+    fi 
+}
+function deleteCouchbaseBucket {
+    if [ ! -z "$1" ]; then
+        echo "  - delete bucket $1"
+        runDeleteCouchbaseBucket $1
     fi 
 }
 function runDeleteCouchbaseBucket {
@@ -211,7 +221,7 @@ function runDeleteCouchbaseBucket {
     -u $COUCHBASE_ADMIN \
     -p $COUCHBASE_PASSWORD \
     --bucket $1; then
-        echo "bucket      : $1 deleted"
+        displayDebugMessage "bucket : $1 deleted"
     else
         displayErrorMessage "Could not delete bucket $1"
     fi;

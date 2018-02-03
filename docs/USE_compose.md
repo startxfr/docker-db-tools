@@ -81,7 +81,7 @@ UNLOCK TABLES;
 Example for `dump/couchbase/data.json`
 ```javascript
 [
-    {"_id":"app::version","app":"startx-db-tools","stage":"dev","version":"0.1.4"}
+    {"_id":"app::version","app":"sx-dbtools","stage":"dev","version":"0.1.5"}
 ]
 ```
 
@@ -90,7 +90,7 @@ Example for `dump/couchbase/data.json`
 ```yaml
 app:
   image: startx/db-tools:latest
-  container_name: "startx-db-tools"
+  container_name: "sx-dbtools"
   links:
     - db-mysql:dbm
     - db-couchbase:dbc
@@ -98,13 +98,13 @@ app:
 
 db-mysql:
   image: mariadb:5.5
-  container_name: "startx-db-tools_mysql"
+  container_name: "sx-dbtools_mysql"
   environment:
    - MYSQL_ROOT_PASSWORD=root
    
 db-couchbase:
   image: couchbase:enterprise-5.0.1
-  container_name: "startx-db-tools_couchbase"
+  container_name: "sx-dbtools_couchbase"
 ```
 
 ### 5. Run your application
@@ -146,7 +146,7 @@ Dump mysql linked database into local directory
 ```yaml
 app:
   image: startx/db-tools:latest
-  container_name: "startx-db-tools"
+  container_name: "sx-dbtools"
   links:
     - db-mysql:dbm
   volumes:
@@ -157,7 +157,7 @@ Dump couchbase linked bucket into local directory
 ```yaml
 app:
   image: startx/db-tools:latest
-  container_name: "startx-db-tools"
+  container_name: "sx-dbtools"
   links:
     - db-couchbase:dbc
   volumes:
@@ -192,7 +192,7 @@ and allow `demo_user` to access this database only.
 ```yaml
 app:
   image: startx/db-tools:latest
-  container_name: "startx-db-tools"
+  container_name: "sx-dbtools"
   links:
     - db-mysql:dbm
   environment:
@@ -206,7 +206,7 @@ initialize it with a user 'cbAdmin'
 ```yaml
 app:
   image: startx/db-tools:latest
-  container_name: "startx-db-tools"
+  container_name: "sx-dbtools"
   links:
     - db-couchbase:dbc
   environment:

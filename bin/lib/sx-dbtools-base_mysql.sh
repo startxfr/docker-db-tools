@@ -99,7 +99,8 @@ function createMysqlDatabases {
     if [ ! -z "$MYSQL_DATABASE" ]; then
         for DATABASE in $(echo $MYSQL_DATABASE | tr "," "\n")
         do
-            createMysqlDatabase $DATABASE
+            echo "  - create database $DATABASE"
+            runCreateMysqlDatabase $DATABASE
         done
     fi 
 }
@@ -137,10 +138,10 @@ function runCreateMysqlUser {
     echo "  - create user : $USER"
     if [ -z "$PWD" ]; then
         PWD=$(openssl rand -base64 32 | sha256sum | base64 | head -c 16 ; echo)
-        echo "  - with pwd    : [generated]"
-        echo "  - password    : $PWD \( \! NOTICE : display only once\)"
+        echo "    - with pwd    : [generated]"
+        echo "    - password    : $PWD \( \! NOTICE : display only once\)"
     else 
-        echo "  - with pwd    : [user given]"
+        echo "    - with pwd    : [user given]"
     fi
     if [ ! -z "$MYSQL_DATABASE" ]; then
         for DATABASE in $(echo $MYSQL_DATABASE | tr "," "\n")
@@ -153,60 +154,71 @@ function runCreateMysqlUser {
     if [ ! -z "$MYSQL_DATABASE" ]; then
         for DATABASE in $(echo $MYSQL_DATABASE | tr "," "\n")
         do
-            echo "  - grant       : $USER access to $DATABASE"
+            echo "    - grant       : $USER access to $DATABASE"
             mysql -h $MYSQL_HOST -u $MYSQL_USER --password=$MYSQL_PASSWORD \
             -e "GRANT ALL PRIVILEGES ON $DATABASE.* TO '$USER' WITH GRANT OPTION;"
         done
     fi 
 }
 
-function deleteMysqlDatabase {
+function deleteMysqlDatabases {
     if [ ! -z "$MYSQL_DATABASE" ]; then
         for DATABASE in $(echo $MYSQL_DATABASE | tr "," "\n")
         do
+            echo "  - delete database $DATABASE"
             runDeleteMysqlDatabase $DATABASE
         done
     fi 
 }
+function deleteMysqlDatabase {
+    if [ ! -z "$1" ]; then
+        echo "  - delete database $1"
+        runDeleteMysqlDatabase $1
+    fi 
+}
 function runDeleteMysqlDatabase {
     mysql -h $MYSQL_HOST -u $MYSQL_USER --password=$MYSQL_PASSWORD -D $1 -e "DROP DATABASE $1;"
-    echo "delete db   : $1 DELETED"
+    displayDebugMessage "delete db : $1 DELETED"
 }
 
-function deleteMysqlDatabaseUser {
+function deleteMysqlUsers {
     if [ ! -z "$MYSQL_USERS" ]; then
         for userInfo in $(echo $MYSQL_USERS | tr "," "\n")
         do
             set -f; IFS=':'; set -- $userInfo
             USER=$1; PWD=$2; set +f; unset IFS
-            runDeleteMysqlDatabaseUser $USER
+            echo "  - delete mysql user $1"
+            runDeleteMysqlUser $USER
         done
     fi 
 }
-function runDeleteMysqlDatabaseUser {
+function deleteMysqlUser {
+    if [ ! -z "$1" ]; then
+        echo "  - delete mysql user $1"
+        runDeleteMysqlUser $USER
+    fi 
+}
+function runDeleteMysqlUser {
     mysql -h $MYSQL_HOST -u $MYSQL_USER --password=$MYSQL_PASSWORD -e "DROP USER '$1'@'%';"
-    echo "del user    : $1 DELETED"
+    displayDebugMessage "del user : $1 DELETED"
     mysql -h $MYSQL_HOST -u $MYSQL_USER --password=$MYSQL_PASSWORD -e "FLUSH PRIVILEGES;"
 }
 
 
 
-
-
-
-
-
-function importMysqlDatabaseAll {
+function importMysqlDatabases {
     if [ ! -z "$MYSQL_DATABASE" ]; then
         for DATABASE in $(echo $MYSQL_DATABASE | tr "," "\n")
         do
-            importMysqlDatabaseOne $DATABASE
+            importMysqlDatabase $DATABASE
         done
     fi 
 }
-function importMysqlDatabaseOne {
-    importMysqlDatabaseSchema $1
-    importMysqlDatabaseData $1
+function importMysqlDatabase {
+    if [ ! -z "$1" ]; then
+        importMysqlDatabaseSchema $1
+        importMysqlDatabaseData $1
+    fi 
 }
 
 function importMysqlDatabasesSchema {
@@ -253,22 +265,22 @@ function importMysqlDatabaseData {
 }
 
 
-function dumpMysqlDatabaseAll {
+function dumpMysqlDatabases {
     if [ ! -z "$MYSQL_DATABASE" ]; then
         for DATABASE in $(echo $MYSQL_DATABASE | tr "," "\n")
         do
-            dumpMysqlDatabaseOne $DATABASE
+            dumpMysqlDatabase $DATABASE
         done
     fi 
 }
-function dumpMysqlDatabaseOne {
+function dumpMysqlDatabase {
     echo "  - dump schema $1 > $1.$MYSQL_DUMP_SCHEMAFILE"
     runDumpMysqlDatabaseSchema $1 $MYSQL_DUMP_DIR/$1.$MYSQL_DUMP_SCHEMAFILE
     echo "  - dump data $1 > $1.$MYSQL_DUMP_SCHEMAFILE"
     runDumpMysqlDatabaseData $1 $MYSQL_DUMP_DIR/$1.$MYSQL_DUMP_DATAFILE
 }
 
-function dumpMysqlDatabaseSchema {
+function dumpMysqlDatabasesSchema {
     if [ ! -z "$MYSQL_DATABASE" ]; then
         for DATABASE in $(echo $MYSQL_DATABASE | tr "," "\n")
         do
@@ -282,7 +294,7 @@ function runDumpMysqlDatabaseSchema {
     --host $MYSQL_HOST --user $MYSQL_USER -p$MYSQL_PASSWORD $1 > $2
 }
 
-function dumpMysqlDatabaseData {
+function dumpMysqlDatabasesData {
     if [ ! -z "$MYSQL_DATABASE" ]; then
         for DATABASE in $(echo $MYSQL_DATABASE | tr "," "\n")
         do
@@ -333,8 +345,8 @@ function doMysqlDump {
     echo "host        : $MYSQL_HOST"
     echo "database    : $MYSQL_DATABASE"
     echo "destination : $MYSQL_DUMP_DIR"
-    dumpMysqlDatabaseSchema
-    dumpMysqlDatabaseData
+    dumpMysqlDatabasesSchema
+    dumpMysqlDatabasesData
     echo "result      : terminated"
     exit 0;
 }
@@ -375,7 +387,7 @@ function doMysqlDelete {
     echo "host        : $MYSQL_HOST"
     if checkMysqlDatabasesExist; then
         deleteMysqlDatabase
-        deleteMysqlDatabaseUser
+        deleteMysqlUser
         echo "result      : terminated"
         exit 0;
     else
@@ -393,7 +405,7 @@ function doMysqlReset {
     if checkMysqlDatabasesExist; then
         echo "source dir  : $MYSQL_DUMP_DIR"
         deleteMysqlDatabase
-        deleteMysqlDatabaseUser
+        deleteMysqlUser
         createMysqlDatabases
         createMysqlUsers
         importMysqlDatabasesSchema

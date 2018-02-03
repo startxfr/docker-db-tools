@@ -9,10 +9,10 @@ echo '{ "experimental": true, "storage-driver": "overlay2", "max-concurrent-down
 sudo service docker restart
 
 echo "========> BUILDING APPLICATIONS Containers (dev)"
-sudo docker-compose build
+sudo docker-compose -f travis-docker-compose.yml build
 
 echo "========> STARTING DATABASE Containers (dev)"
-sudo docker-compose up -d db-mysql db-couchbase
+sudo docker-compose -f travis-docker-compose.yml up -d db-mysql db-couchbase
 sudo docker-compose logs --tail=500
 
 echo "========> waiting for database startup (90sec)" && sleep 10
@@ -27,12 +27,14 @@ echo "========> waiting for database startup (10sec)" && sleep 10
 echo "========> waiting for database startup (0sec)"
 
 echo "========> STARTING APPLICATION Containers (dev)"
-sudo docker-compose up -d app pma
-sudo docker-compose logs --tail=500
-
-echo "========> TESTING APPLICATIONS"
-curl -I http://localhost:1901 && echo ""
-curl -I http://localhost:8091 && echo ""
+echo "========> Testing container info"
+sudo docker-compose -f travis-docker-compose.yml up app-info
+sleep 2
+echo "========> Testing container create all database(s), user(s) and data"
+sudo docker-compose -f travis-docker-compose.yml up app-create
+sleep 2
+echo "========> Testing container delete all database(s), user(s) and data"
+sudo docker-compose -f travis-docker-compose.yml up app-delete
 
 echo "========> END TESTING APPLICATIONS"
 exit 0;

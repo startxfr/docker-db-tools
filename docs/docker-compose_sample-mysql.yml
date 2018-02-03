@@ -9,13 +9,13 @@ app:
 
 db-mysql:
   image: mariadb:5.5
-  container_name: "startx-db-tools_mysql"
+  container_name: "sx-dbtools_mysql"
   environment:
    - MYSQL_ROOT_PASSWORD=root_pwd
 
 pma:
   image: phpmyadmin/phpmyadmin
-  container_name: "startx-db-tools_pma"
+  container_name: "sx-dbtools_pma"
   links:
     - db-mysql:db
   environment:

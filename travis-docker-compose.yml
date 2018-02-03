@@ -1,0 +1,70 @@
+app:
+  extends:
+    file: docker-compose-abstract.yml
+    service: app
+  container_name: "sx-dbtools-travis"
+  links:
+    - db-mysql:dbm
+    - db-couchbase:dbc
+  environment:
+   - MYSQL_DATABASE=demo,demo2,demo3
+   - MYSQL_ADMIN=root:rootPassword
+   - MYSQL_USERS=demo:pwd,user3:pwd3,test
+   - COUCHBASE_ADMIN=demo:password
+   - COUCHBASE_BUCKET=demo,demo2
+  volumes:
+    - "./sample/dump:/dump:z"
+    - "./sample/backup:/backup:z"
+  command: ["info"]
+
+app-create:
+  extends:
+    file: docker-compose-abstract.yml
+    service: app
+  container_name: "sx-dbtools-create-travis"
+  links:
+    - db-mysql:dbm
+    - db-couchbase:dbc
+  environment:
+   - MYSQL_DATABASE=demo,demo2,demo3
+   - MYSQL_ADMIN=root:rootPassword
+   - MYSQL_USERS=demo:pwd,user3:pwd3,test
+   - COUCHBASE_ADMIN=demo:password
+   - COUCHBASE_BUCKET=demo,demo2
+  volumes:
+    - "./sample/dump:/dump:z"
+    - "./sample/backup:/backup:z"
+  command: ["create"]
+
+app-delete:
+  extends:
+    file: docker-compose-abstract.yml
+    service: app
+  container_name: "sx-dbtools-delete-travis"
+  links:
+    - db-mysql:dbm
+    - db-couchbase:dbc
+  environment:
+   - MYSQL_DATABASE=demo,demo2,demo3
+   - MYSQL_ADMIN=root:rootPassword
+   - MYSQL_USERS=demo:pwd,user3:pwd3,test
+   - COUCHBASE_ADMIN=demo:password
+   - COUCHBASE_BUCKET=demo,demo2
+  volumes:
+    - "./sample/dump:/dump:z"
+    - "./sample/backup:/backup:z"
+  command: ["delete"]
+
+db-mysql:
+  extends:
+    file: docker-compose-abstract.yml
+    service: db-mysql
+  container_name: "sx-dbtools_mysql-travis"
+  environment:
+   - MYSQL_ROOT_PASSWORD=rootPassword
+   
+db-couchbase:
+  extends:
+    file: docker-compose-abstract.yml
+    service: db-couchbase
+  container_name: "sx-dbtools_couchbase-travis"

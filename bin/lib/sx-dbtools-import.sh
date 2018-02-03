@@ -47,7 +47,7 @@ function doImportMysqlAll {
         displayMysqlTabInfoBlock
         echo "  - database(s) : $MYSQL_DATABASE"
         echo "  - source : $MYSQL_DUMP_DIR"
-        importMysqlDatabaseAll
+        importMysqlDatabases
     else
         echo "  - mysql database(s) $MYSQL_DATABASE doesn't exist. Nothing to import"
     fi
@@ -63,7 +63,7 @@ function doImportMysqlOne {
         displayMysqlTabInfoBlock
         echo "  - database : $1"
         echo "  - source : $MYSQL_DUMP_DIR"
-        importMysqlDatabaseOne $1
+        importMysqlDatabase $1
     else
         echo "  - mysql database $1 doesn't exist. Nothing to import"
     fi

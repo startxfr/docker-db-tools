@@ -47,7 +47,7 @@ function doDumpMysqlAll {
         displayMysqlTabInfoBlock
         echo "  - database(s) : $MYSQL_DATABASE"
         echo "  - destination : $MYSQL_DUMP_DIR"
-        dumpMysqlDatabaseAll
+        dumpMysqlDatabases
     else
         echo "  - mysql database(s) $MYSQL_DATABASE doesn't exist. Nothing to dump"
     fi
@@ -63,7 +63,7 @@ function doDumpMysqlOne {
         displayMysqlTabInfoBlock
         echo "  - database : $1"
         echo "  - destination : $MYSQL_DUMP_DIR"
-        dumpMysqlDatabaseOne $1
+        dumpMysqlDatabase $1
     else
         echo "  - mysql database $1 doesn't exist. Nothing to dump"
     fi
