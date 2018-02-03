@@ -1,6 +1,6 @@
-// gcc -O2 -Wall -pedantic process-mysqldump.c -o process-mysqldump
-// Usage: cat dump.sql | process-mysqldump
-//   Or : process-mysqldump dump.sql
+// gcc -O2 -Wall -pedantic sx-dbtools-process-mysqldump.c -o sx-dbtools-process-mysqldump
+// Usage: cat dump.sql | sx-dbtools-process-mysqldump
+//   Or : sx-dbtools-process-mysqldump dump.sql
 // see http://blog.lavoie.sl/2014/06/split-mysqldump-extended-inserts.html
 
 #include <stdio.h>
