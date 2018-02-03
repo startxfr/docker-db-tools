@@ -1,4 +1,5 @@
 #!/bin/bash
 
 # inform the user how to use the image
+echo "s2i usage : /bin/sx-dbtools usage"
 exec /bin/sx-dbtools usage

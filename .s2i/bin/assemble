@@ -2,16 +2,16 @@
 
 # move the application source
 if [[ -r /tmp/src/backup ]]; then
-    echo "assemble : copy source from /tmp/src/backup > $SXDBTOOLS_BACKUP_DIR"
+    echo "s2i assemble : copy source from /tmp/src/backup > $SXDBTOOLS_BACKUP_DIR"
     cp /tmp/src/backup/. $SXDBTOOLS_BACKUP_DIR/
 else; then
-    echo "assemble : no source backup directory. Create $SXDBTOOLS_BACKUP_DIR"
+    echo "s2i assemble : no source backup directory. Create $SXDBTOOLS_BACKUP_DIR"
     mkdir -p $SXDBTOOLS_BACKUP_DIR
 fi 
 if [[ -r /tmp/src/dump ]]; then
-    echo "assemble : copy source from /tmp/src/dump > $SXDBTOOLS_DUMP_DIR"
+    echo "s2i assemble : copy source from /tmp/src/dump > $SXDBTOOLS_DUMP_DIR"
     cp /tmp/src/dump/. $SXDBTOOLS_DUMP_DIR/
 else; then
-    echo "assemble : no source dump directory. Create $SXDBTOOLS_DUMP_DIR"
+    echo "s2i assemble : no source dump directory. Create $SXDBTOOLS_DUMP_DIR"
     mkdir -p $SXDBTOOLS_DUMP_DIR
 fi 

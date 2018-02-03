@@ -1,4 +1,5 @@
 #!/bin/bash
 
 # run the application
-exec /bin/sx-dbtools info
+echo "s2i run : /bin/sx-dbtools $@"
+exec /bin/sx-dbtools $@
