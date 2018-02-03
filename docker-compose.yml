@@ -16,7 +16,7 @@ app:
   volumes:
     - "./sample/dump:/dump:rw"
     - "./sample/backup:/backup:rw"
-  command: ["usage"]
+  command: ["info"]
 
 db-mysql:
   extends:
