@@ -17,7 +17,8 @@ app:
     - "./sample/dump:/dump:z"
     - "./sample/backup:/backup:z"
     - "./bin/sx-dbtools:/bin/sx-dbtools:z"
-    - "./bin/lib:/bin/sx-dbtools-lib:z"
+    - "./bin/sx-dbtools-lib:/bin/sx-dbtools-lib:z"
+    - "./bin/sx-dbtools-process-mysqldump:/bin/sx-dbtools-process-mysqldump:z"
   command: ["recreate"]
 
 db-mysql:
