@@ -1,7 +1,5 @@
 # docker-db-tools ![sxapi](https://img.shields.io/badge/latest-v0.1.16-blue.svg)
 
-## What-is sx-dbtools
-
 SXDbTools is a container for managing data from and to a mysql and/or a couchbase backend. All command work with a couchbase cluser and / or a mysql server the same way.
 
 Features list :
@@ -23,14 +21,17 @@ Features list :
 
 ## Supported tags and respective Dockerfile links
 
-| Docker tag     | branch / tag | Dockerfile                                                                            | Description
-|----------------|--------------|---------------------------------------------------------------------------------------|---------------
-| `latest`       | master       | [Dockerfile](https://github.com/startxfr/docker-db-tools/blob/master/Dockerfile)      | Docker image with debug activated + local sample volume + local application volume + docker-compose test environment
-| `testing`      | testing      | [Dockerfile](https://github.com/startxfr/docker-db-tools/blob/testing/Dockerfile)     | Docker image with debug activated + local sample volume + docker-compose test environment
-| `stable`       | docker       | [Dockerfile](https://github.com/startxfr/docker-db-tools/blob/docker/Dockerfile)      | Docker image with debug desactivated
-| `stable-s2i`   | s2i          | [Dockerfile](https://github.com/startxfr/docker-db-tools/blob/s2i/Dockerfile)         | Docker image with s2i config + debug desactivated
-| `0.1.16`       | v0.1.16      | [Dockerfile](https://github.com/startxfr/docker-db-tools/blob/v0.1.16/Dockerfile)     | Latest release version coresponding to a fixed in time stable release (full list available on [tag list](https://hub.docker.com/r/startx/db-tools/tags/))
-| `0.1.16-s2i`   | v0.1.16-s2i  | [Dockerfile](https://github.com/startxfr/docker-db-tools/blob/v0.1.16-s2i/Dockerfile) | Latest release version coresponding to a fixed in time stable release (full list available on [tag list](https://hub.docker.com/r/startx/db-tools/tags/))
+sx-dbtools is available from [dockerhub registry](https://hub.docker.com/) under the [startx namespace](https://hub.docker.com/r/startx/). You can use image name [startx/db-tools](https://hub.docker.com/r/startx/db-tools/) to access this image. Add a flavour to get the desired version, for example `docker pull startx/db-tools:latest` for the latest version. <br>
+Here is a list of the various available versions.
+
+| Docker tag     | branch / tag                                                                | Dockerfile                                                                            | Description
+|----------------|-----------------------------------------------------------------------------|---------------------------------------------------------------------------------------|---------------
+| `latest`       | [master](https://github.com/startxfr/docker-db-tools/blob/master)           | [Dockerfile](https://github.com/startxfr/docker-db-tools/blob/master/Dockerfile)      | Docker image with debug activated + local sample volume + local application volume + docker-compose test environment
+| `testing`      | [testing](https://github.com/startxfr/docker-db-tools/blob/testing)         | [Dockerfile](https://github.com/startxfr/docker-db-tools/blob/testing/Dockerfile)     | Docker image with debug activated + local sample volume + docker-compose test environment
+| `stable`       | [docker](https://github.com/startxfr/docker-db-tools/blob/docker)           | [Dockerfile](https://github.com/startxfr/docker-db-tools/blob/docker/Dockerfile)      | Docker image with debug desactivated
+| `stable-s2i`   | [s2i](https://github.com/startxfr/docker-db-tools/blob/s2i)                 | [Dockerfile](https://github.com/startxfr/docker-db-tools/blob/s2i/Dockerfile)         | Docker image with s2i config + debug desactivated
+| `0.1.16`       | [v0.1.16](https://github.com/startxfr/docker-db-tools/blob/v0.1.16)         | [Dockerfile](https://github.com/startxfr/docker-db-tools/blob/v0.1.16/Dockerfile)     | Latest release version coresponding to a fixed in time stable release (full list available on [tag list](https://hub.docker.com/r/startx/db-tools/tags/))
+| `0.1.16-s2i`   | [v0.1.16-s2i](https://github.com/startxfr/docker-db-tools/blob/v0.1.16-s2i) | [Dockerfile](https://github.com/startxfr/docker-db-tools/blob/v0.1.16-s2i/Dockerfile) | Latest release version coresponding to a fixed in time stable release (full list available on [tag list](https://hub.docker.com/r/startx/db-tools/tags/))
 
 ## Getting Started
 

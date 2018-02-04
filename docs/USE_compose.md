@@ -121,10 +121,10 @@ docker-compose logs;
 
 You can connect to your database backend to see created database or look at volumes 
 
+
 ## Container environement
 
-
-## Connected services
+### Linked services
 
 you must tag properly the database service when you link your containers. 
 

@@ -111,7 +111,9 @@ docker run -d \
 You can connect to your database backend to see created database or look at volumes 
 
 
-## Linked services
+## Container environement
+
+### Linked services
 
 you must tag properly the database service when you link your containers. 
 
@@ -134,9 +136,19 @@ docker run -d
 startx/db-tools                             # sx-dbtools docker image 
 recreate                                    # sx-dbtools command
 ```
+```yaml
+  image: startx/db-tools:latest
+  links:
+    - db-couchbase:dbc                      # sx-dbtools command
+  environment:                              // sx-dbtools command
+   - COUCHBASE_ADMIN=demo:password          / sx-dbtools command
+   - COUCHBASE_BUCKET=demo,demo2            \\ sx-dbtools command
+   - COUCHBASE_USERS=demo1:password1,demo2
+  command: ["create" , "couchbase"]
+```
 
 
-## Data volumes
+### Data volumes
 
 you must use the appropriate data volumes and fill them with appropriate file to get your data
 loaded or dumped properly.
@@ -168,7 +180,7 @@ dump couchbase                              # sx-dbtools command
 ```
 
 
-## Environement variables
+### Environement variables
 
 Using environement variable you can customize this tools and use it to interact with
 various kind of backend infrastructure (container, host, remote, IaaS, DBaaS)
