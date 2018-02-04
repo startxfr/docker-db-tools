@@ -79,7 +79,7 @@ UNLOCK TABLES;
 #### Example for `~/dump/couchbase/data.json`
 ```javascript
 [
-    {"_id":"app::version","app":"sx-dbtools","stage":"dev","version":"0.1.16"}
+    {"_id":"app::version","app":"sx-dbtools","stage":"dev","version":"0.1.17"}
 ]
 ```
 
@@ -154,7 +154,7 @@ you must tag properly the database service when you link your containers.
 | Link tag  | Description
 |-----------|:------------
 | dbm       | mysql container running offical `mariadb:5.5` image
-| dbc       | couchbase container running offical `couchbase:couchbase:enterprise-5.0.1` image
+| dbc       | couchbase container running offical `couchbase:5.0.1` image
 
 #### Examples
 

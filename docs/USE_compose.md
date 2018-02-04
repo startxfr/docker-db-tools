@@ -48,16 +48,16 @@ You can skip the `mysql` directory if you don't plan to use this container with 
 You can skip the `couchbase` directory if you don't plan to use this container with a couchbase backend. 
 
 ```bash
-mkdir dump
-mkdir dump/mysql
-touch dump/mysql/schema.sql
-touch dump/mysql/data.sql
-mkdir dump/couchbase
-touch dump/couchbase/data.json
-mkdir backup
+mkdir ~/dump
+mkdir ~/dump/mysql
+touch ~/dump/mysql/schema.sql
+touch ~/dump/mysql/data.sql
+mkdir ~/dump/couchbase
+touch ~/dump/couchbase/data.json
+mkdir ~/backup
 ```
 
-Example for `dump/mysql/schema.sql`
+Example for `~/dump/mysql/schema.sql`
 ```sql
 DROP TABLE IF EXISTS `app`;
 CREATE TABLE `app` (
@@ -70,7 +70,7 @@ CREATE TABLE `app` (
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 ```
 
-Example for `dump/mysql/data.sql`
+Example for `~/dump/mysql/data.sql`
 ```sql
 SET names 'utf8';
 LOCK TABLES `app` WRITE;
@@ -79,33 +79,33 @@ INSERT INTO `app` VALUES
 UNLOCK TABLES;
 ```
 
-Example for `dump/couchbase/data.json`
+Example for `~/dump/couchbase/data.json`
 ```javascript
 [
-    {"_id":"app::version","app":"sx-dbtools","stage":"dev","version":"0.1.16"}
+    {"_id":"app::version","app":"sx-dbtools","stage":"dev","version":"0.1.17"}
 ]
 ```
 
 ### 4. Create your docker-compose.yml
 
 ```yaml
-app:
-  image: startx/db-tools:latest
-  container_name: "sx-dbtools"
-  links:
-    - db-mysql:dbm
-    - db-couchbase:dbc
-  command: ["create"]
+app:                                        # docker-compose service name for application
+  image: startx/db-tools:latest             # sx-dbtools container image for application
+  container_name: "sx-dbtools"              # your running container name
+  links:                                    # enable link to databases services
+    - db-mysql:dbm                          # link to mysql database (named dbm)
+    - db-couchbase:dbc                      # link to couchbase database (named dbc)
+  command: ["create"]                       # sx-dbtools command
 
-db-mysql:
-  image: mariadb:5.5
-  container_name: "sx-dbtools_mysql"
-  environment:
-   - MYSQL_ROOT_PASSWORD=rootPassword
+db-mysql:                                   # docker-compose service name for mysql database
+  image: mariadb:5.5                        # sx-dbtools container image for mysql
+  container_name: "sx-dbtools_mysql"        # mysql container name
+  environment:                              # enable configuration of environment variables
+   - MYSQL_ROOT_PASSWORD=rootPassword       # password of the mysql root user
    
-db-couchbase:
-  image: couchbase:enterprise-5.0.1
-  container_name: "sx-dbtools_couchbase"
+db-couchbase:                               # docker-compose service name for couchbase database
+  image: couchbase:enterprise-5.0.1         # sx-dbtools container image for couchbase
+  container_name: "sx-dbtools_couchbase"    # couchbase container name
 ```
 
 ### 5. Run your application
@@ -132,7 +132,7 @@ you must tag properly the database service when you link your containers.
 | Link tag  | Description
 |-----------|:------------
 | dbm       | mysql container running offical `mariadb:5.5` image
-| dbc       | couchbase container running offical `couchbase:couchbase:enterprise-5.0.1` image
+| dbc       | couchbase container running offical `couchbase:5.0.1` image
 
 #### Examples
 
@@ -145,7 +145,7 @@ app:                                        # docker-compose service name
     - db-mysql:dbm                          # link to mysql database (named dbm)
     - db-couchbase:dbc                      # link to couchbase database (named dbc)
   volumes:                                  # enable volumes for dump and backup
-    - "./:/dump:z"                          # mounted volumes for dump and import mysql (*.sql) and couchbase (*.json)
+    - "~/:/dump:z"                          # mounted volumes for dump and import mysql (*.sql) and couchbase (*.json)
   environment:                              # enable configuration of environment variables
    - MYSQL_DATABASE=demo                    # mysql databases names
    - MYSQL_ADMIN=demo:password              # user and password of the mysql admin user
@@ -175,7 +175,7 @@ app:                                        # docker-compose service name
   links:                                    # enable link to databases services
     - db-mysql:dbm                          # link to mysql database (named dbm)
   volumes:                                  # enable volumes for dump and backup
-    - "./:/dump/mysql:z"                    # volumes for mysql dump (*.sql)
+    - "~/:/dump/mysql:z"                    # volumes for mysql dump (*.sql)
   command: ["dump", "mysql"]                # sx-dbtools command
 ```
 ##### Dump couchbase linked bucket into local directory
@@ -186,7 +186,7 @@ app:                                        # docker-compose service name
   links:                                    # enable link to databases services
     - db-couchbase:dbc                      # link to couchbase database (named dbc)
   volumes:                                  # enable volumes for dump and backup
-    - "./:/dump/couchbase:z"                # volumes for couchbase dump (*.json)
+    - "~/:/dump/couchbase:z"                # volumes for couchbase dump (*.json)
   command: ["dump", "couchbase"]            # sx-dbtools command
 ```
 
@@ -228,7 +228,7 @@ app:                                        # docker-compose service name
   links:                                    # enable link to databases services
     - db-mysql:dbm                          # link to mysql database (named dbm)
   volumes:                                  # enable volumes for dump and backup
-    - "./:/dump/mysql:z"                    # volumes for mysql dump (*.sql)
+    - "~/:/dump/mysql:z"                    # volumes for mysql dump (*.sql)
   environment:                              # enable configuration of environment variables
    - MYSQL_DATABASE=demo                    # mysql databases names
    - MYSQL_ADMIN=demo:password              # user and password of the mysql admin user
@@ -244,7 +244,7 @@ app:                                        # docker-compose service name
   links:                                    # enable link to databases services
     - db-couchbase:dbc                      # link to couchbase database (named dbc)
   volumes:                                  # enable volumes for dump and backup
-    - "./:/dump/mysql:z"                    # volumes for mysql dump (*.sql)
+    - "~/:/dump/mysql:z"                    # volumes for mysql dump (*.sql)
   environment:                              # enable configuration of environment variables
    - COUCHBASE_ADMIN=cbAdmin:password       # user and password of the couchbase admin user
    - COUCHBASE_BUCKET=demo                  # couchbase buckets names
