@@ -136,17 +136,6 @@ docker run -d
 startx/db-tools                             # sx-dbtools docker image 
 recreate                                    # sx-dbtools command
 ```
-```yaml
-  image: startx/db-tools:latest
-  links:
-    - db-couchbase:dbc                      # sx-dbtools command
-  environment:                              // sx-dbtools command
-   - COUCHBASE_ADMIN=demo:password          / sx-dbtools command
-   - COUCHBASE_BUCKET=demo,demo2            \\ sx-dbtools command
-   - COUCHBASE_USERS=demo1:password1,demo2
-  command: ["create" , "couchbase"]
-```
-
 
 ### Data volumes
 
