@@ -21,20 +21,23 @@ ENV SXDBTOOLS_VERSION="0.1.11" \
     DESCRIPTION="The s2i-dbtools image, provides any command for creating, import and export \
 backup and restore, deleting and recreating both mysql and / or couchbase linked container"
 
-LABEL summary="$SUMMARY" \
-      description="$DESCRIPTION" \
-      io.k8s.description="$DESCRIPTION" \
-      io.k8s.display-name="s2i-dbtools" \
-      fr.startx.component="s2i-sx-dbtools" \
+LABEL name="startx/db-tools" \
+      summary="$SUMMARY" \
+      description="$SUMMARY" \
+      version="$SXDBTOOLS_VERSION" \
+      release="1" \
+      maintainer="startx.fr <dev@startx.fr>" \
+      usage="s2i build https://github.com/startxfr/docker-db-tools-example.git startx/sx-dbtools test-dbtools" \
+      io.k8s.description="$SUMMARY" \
+      io.k8s.display-name="sx-dbtools" \
       io.openshift.tags="builder,db,mysql,couchbase" \
-      io.s2i.scripts-url=image:///usr/libexec/s2i \
+      io.openshift.wants="mysql,couchbase" \
+      io.openshift.non-scalable="true" \
+      io.openshift.s2i.destination="/tmp" \
       io.openshift.s2i.scripts-url=image:///usr/libexec/s2i \
       io.openshift.s2i.assemble-input-files=image:///usr/libexec/s2i \
-      name="startx/s2i-dbtools" \
-      version="1" \
-      release="1" \
-      usage="s2i build https://github.com/youruser/yourapp.git --context-dir=sample/ startx/s2i-dbtools test-dbtools" \
-      maintainer="startx.fr <dev@startx.fr>"
+      io.s2i.scripts-url=image:///usr/libexec/s2i \
+      fr.startx.component="sx-dbtools"
 
 COPY ./bin /tmp/sxbin
 COPY ./.s2i/bin/* /usr/libexec/s2i/
