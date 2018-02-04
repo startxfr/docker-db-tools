@@ -6,9 +6,9 @@ RUN apt-get update -y && \
     apt-get clean
 
 ENV SXDBTOOLS_VERSION="0.1.11" \
-    SXDBTOOLS_DEBUG=true \
     SXDBTOOLS_BACKUP_DIR=/backup \
     SXDBTOOLS_DUMP_DIR=/dump \
+    SXDBTOOLS_DEBUG=true \
     MYSQL_DUMP_DIR=$SXDBTOOLS_DUMP_DIR/mysql \
     MYSQL_DUMP_DATAFILE="data.sql" \
     MYSQL_DUMP_SCHEMAFILE="schema.sql" \
@@ -19,16 +19,19 @@ ENV SXDBTOOLS_VERSION="0.1.11" \
     COUCHBASE_HOST=dbc \
     SUMMARY="Database tools for manipulating couchbase and mariadb container"
 
-LABEL summary="$SUMMARY" \
+LABEL name="startx/db-tools" \
+      summary="$SUMMARY" \
       description="$SUMMARY" \
+      version="$SXDBTOOLS_VERSION" \
+      release="1" \
+      maintainer="startx.fr <dev@startx.fr>" \
       io.k8s.description="$SUMMARY" \
       io.k8s.display-name="sx-dbtools" \
-      fr.startx.component="sx-dbtools" \
       io.openshift.tags="db,mysql,couchbase" \
-      name="startx/db-tools" \
-      version="1" \
-      release="1" \
-      maintainer="startx.fr <dev@startx.fr>"
+      io.openshift.wants="mysql,couchbase" \
+      io.openshift.non-scalable="true" \
+      io.openshift.s2i.destination="/tmp" \
+      fr.startx.component="sx-dbtools"
 
 COPY ./bin /tmp/sxbin
 RUN mv /tmp/sxbin/* /bin/ && \

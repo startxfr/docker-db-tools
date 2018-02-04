@@ -172,13 +172,16 @@ function runCreateCouchbaseBucket {
 }
 
 function createCouchbaseUsers {
-    if [ ! -z "$COUCHBASE_USERS" ]; then
-        for userInfo in $(echo $COUCHBASE_USERS | tr "," "\n")
-        do
-            set -f; IFS=':'; set -- $userInfo
-            USER=$1; PWD=$2; set +f; unset IFS
-            createCouchbaseUser $USER $PWD
-        done
+#    if [ ! -z "$COUCHBASE_USERS" ]; then
+#        for userInfo in $(echo $COUCHBASE_USERS | tr "," "\n")
+#        do
+#            set -f; IFS=':'; set -- $userInfo
+#            USER=$1; PWD=$2; set +f; unset IFS
+#            createCouchbaseUser $USER $PWD
+#        done
+#    fi 
+    if [[ -r $MYSQL_DUMP_DIR/USER ]]; then
+        echo $($MYSQL_DUMP_DIR/USER)
     fi 
 }
 function createCouchbaseUser {
