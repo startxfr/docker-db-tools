@@ -61,9 +61,9 @@
                         }
                     },
                     {
-                        "name": "0.1.16",
+                        "name": "0.1.18",
                         "annotations": {
-                            "openshift.io/display-name": "sx-dbtools (v0.1.16)",
+                            "openshift.io/display-name": "sx-dbtools (v0.1.18)",
                             "description": "Database tools for manipulating couchbase and mariadb container. For more information about using this builder image, including OpenShift considerations, see https://github.com/startxfr/docker-db-tools-example.git",
                             "iconClass": "icon-mysql-database",
                             "tags": "database,mysql,couchbase",
@@ -73,65 +73,23 @@
                         },
                         "from": {
                             "kind": "DockerImage",
-                            "name": "startx/db-tools:0.1.16"
-                        }
-                    }
-                ]
-            }
-        },
-        {
-            "kind": "ImageStream",
-            "apiVersion": "v1",
-            "metadata": {
-                "name": "couchbase",
-                "annotations": {
-                    "openshift.io/display-name": "Couchbase Enterprise"
-                }
-            },
-            "spec": {
-                "tags": [
-                    {
-                        "name": "latest",
-                        "annotations": {
-                            "openshift.io/display-name": "Couchbase (latest)",
-                            "description": "Couchbase Server is a NoSQL document database with a distributed architecture. For more information about using this image, see https://hub.docker.com/_/couchbase/",
-                            "iconClass": "icon-mysql-database",
-                            "tags": "database,nosql,couchbase",
-                            "supports": "couchbase"
-                        },
-                        "from": {
-                            "kind": "ImageStreamTag",
-                            "name": "stable"
+                            "name": "startx/db-tools:0.1.18"
                         }
                     },
                     {
-                        "name": "stable",
+                        "name": "0.1.15",
                         "annotations": {
-                            "openshift.io/display-name": "Couchbase (stable)",
-                            "description": "Couchbase Server is a NoSQL document database with a distributed architecture. For more information about using this image, see https://hub.docker.com/_/couchbase/",
+                            "openshift.io/display-name": "sx-dbtools (v0.1.15)",
+                            "description": "Database tools for manipulating couchbase and mariadb container. For more information about using this builder image, including OpenShift considerations, see https://github.com/startxfr/docker-db-tools-example.git",
                             "iconClass": "icon-mysql-database",
-                            "tags": "database,nosql,couchbase",
-                            "supports": "couchbase",
-                            "version": "stable"
-                        },
-                        "from": {
-                            "kind": "ImageStreamTag",
-                            "name": "5.0.1"
-                        }
-                    },
-                    {
-                        "name": "5.0.1",
-                        "annotations": {
-                            "openshift.io/display-name": "Couchbase (v5.0.1)",
-                            "description": "Couchbase Server is a NoSQL document database with a distributed architecture. For more information about using this image, see https://hub.docker.com/_/couchbase/",
-                            "iconClass": "icon-mysql-database",
-                            "tags": "database,nosql,couchbase",
-                            "supports": "couchbase",
-                            "version": "5.0.1"
+                            "tags": "database,mysql,couchbase",
+                            "supports": "mysql,couchbase",
+                            "version": "stable",
+                            "sampleRepo": "https://github.com/startxfr/docker-db-tools-example.git"
                         },
                         "from": {
                             "kind": "DockerImage",
-                            "name": "couchbase:5.0.1"
+                            "name": "startx/db-tools:0.1.15"
                         }
                     }
                 ]

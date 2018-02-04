@@ -46,9 +46,9 @@
                         }
                     },
                     {
-                        "name": "0.1.16",
+                        "name": "0.1.18",
                         "annotations": {
-                            "openshift.io/display-name": "S2I sx-dbtools (v0.1.16)",
+                            "openshift.io/display-name": "S2I sx-dbtools (v0.1.18)",
                             "description": "Database tools for manipulating couchbase and mariadb container. For more information about using this builder image, including OpenShift considerations, see https://github.com/startxfr/docker-db-tools-example.git",
                             "iconClass": "icon-mysql-database",
                             "tags": "builder,mysql,couchbase",
@@ -58,7 +58,23 @@
                         },
                         "from": {
                             "kind": "DockerImage",
-                            "name": "startx/db-tools:0.1.16-s2i"
+                            "name": "startx/db-tools:0.1.18-s2i"
+                        }
+                    },
+                    {
+                        "name": "0.1.15",
+                        "annotations": {
+                            "openshift.io/display-name": "S2I sx-dbtools (v0.1.15)",
+                            "description": "Database tools for manipulating couchbase and mariadb container. For more information about using this builder image, including OpenShift considerations, see https://github.com/startxfr/docker-db-tools-example.git",
+                            "iconClass": "icon-mysql-database",
+                            "tags": "builder,mysql,couchbase",
+                            "supports": "mysql,couchbase",
+                            "version": "stable",
+                            "sampleRepo": "https://github.com/startxfr/docker-db-tools-example.git"
+                        },
+                        "from": {
+                            "kind": "DockerImage",
+                            "name": "startx/db-tools:0.1.15-s2i"
                         }
                     }
                 ]
