@@ -1,51 +1,53 @@
 # USE startx db-tools with docker-compose
 
-You can use startx db-tools within a container by using our public 
-[official sxapi docker image](https://hub.docker.com/r/startx/db-tools/)
+This user guide will help you run [sx-dbtools](https://github.com/startxfr/docker-db-tools) by running the [startx/db-tools](https://hub.docker.com/r/startx/db-tools/) container image using the docker runtime only.
 
-## Want to try ?
+## Requirements
 
-To try this application before working on it, the easiest way 
-is to use the container version. Follow theses steps to run
-a startx dbtools within the next couple of minutes. 
-(You can skip the first step if you already have [docker](https://www.docker.com)
-installed and running)<br>
+This user guide require to have access to a linux system (Red Hat like is recommended). If your system run a docker daemon, you can skip the install server section. Otherwise, you need to install the server environement, and therefore you must have sudo or root access.
+To test if you have docker installed and working, you can execute `docker --version`
 
-If your're experienced with docker and docker-compose, you can read our 
-[full stack example](./docker-compose_sample-full.yml),
-[simple example](./docker-compose_sample-simple.yml), [mysql example](./docker-compose_sample-mysql.yml)
-or [couchbase example](./docker-compose_sample-couchbase.yml) and start reading
-the [linked service section](#linked-services).
+## Install server environement
 
-### 1. Install and start docker + docker-compose
+Theses command are for a Red Hat Linux like environement (Fedora, CentOS, RHEL, Suse). Please adapt `yum` command to the `apt-get` equivalent if you are using a Debian like system (Ubuntu, Debian)
 
-Theses command are for a Red Hat Linux like
-environement (Fedora, CentOS, RHEL, Suse). Please adapt `yum` command to the 
-```apt-get``` equivalent if you are using a Debian like system (Ubuntu, Debian)
-
+### 1. Install docker
 ```bash
-sudo yum install -y docker docker-compose
+sudo yum install -y docker
+```
+
+### 2. Start docker
+```bash
 sudo service docker start
 ```
-For more information on how to install and execute a docker runtime, please see
-the [official docker installation guide](https://docs.docker.com/engine/installation/)
-After installation, pay attention to your user authorisation. Your current user
-must interact with the docker daemon.
 
-### 2. Get the sxapi container image
+### 3. Test docker client
+```bash
+docker --version
+# return : Docker version 1.8.2.fc21, build 3abcea7-dirty
+```
 
-Use docker command to get db-tools container image from the docker hub registry. 
-This will update your local docker image cache.
+### 4. Install docker-compose client
+```bash
+sudo yum install -y docker-compose
+```
+
+For more information on how to install and execute a docker runtime, please see the [official docker installation guide](https://docs.docker.com/engine/installation/)
+After installation, pay attention to your user authorisation. Your current user must interact with the docker daemon.
+
+## Preparing sx-dbtools
+
+### 1. Get the sxapi container image
+
+Use docker command to get db-tools container image from the docker hub registry. This will update your local docker image cache.
 
 ```bash
 docker pull startx/db-tools:latest
 ```
 
-### 3. Create your database's init files 
+### 2. Create your database's init files 
 
-Create the following file structure. 
-You can skip the `mysql` directory if you don't plan to use this container with a mysql backend. 
-You can skip the `couchbase` directory if you don't plan to use this container with a couchbase backend. 
+Create the following file structure. You can skip the `mysql` directory if you don't plan to use this container with a mysql backend. You can skip the `couchbase` directory if you don't plan to use this container with a couchbase backend. 
 
 ```bash
 mkdir ~/dump
@@ -57,7 +59,7 @@ touch ~/dump/couchbase/data.json
 mkdir ~/backup
 ```
 
-Example for `~/dump/mysql/schema.sql`
+#### Example for `~/dump/mysql/schema.sql`
 ```sql
 DROP TABLE IF EXISTS `app`;
 CREATE TABLE `app` (
@@ -70,7 +72,7 @@ CREATE TABLE `app` (
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 ```
 
-Example for `~/dump/mysql/data.sql`
+#### Example for `~/dump/mysql/data.sql`
 ```sql
 SET names 'utf8';
 LOCK TABLES `app` WRITE;
@@ -79,15 +81,14 @@ INSERT INTO `app` VALUES
 UNLOCK TABLES;
 ```
 
-Example for `~/dump/couchbase/data.json`
+#### Example for `~/dump/couchbase/data.json`
 ```javascript
 [
-    {"_id":"app::version","app":"sx-dbtools","stage":"dev","version":"0.1.17"}
+    {"_id":"app::version","app":"sx-dbtools","stage":"dev","version":"0.1.18"}
 ]
 ```
 
-### 4. Create your docker-compose.yml
-
+### 3. Create your docker-compose.yml
 ```yaml
 app:                                        # docker-compose service name for application
   image: startx/db-tools:latest             # sx-dbtools container image for application
@@ -108,16 +109,80 @@ db-couchbase:                               # docker-compose service name for co
   container_name: "sx-dbtools_couchbase"    # couchbase container name
 ```
 
-### 5. Run your application
+## Running sx-dbtools
 
-without action (defined in compose file)
+### 1. Run your database(s) service(s)
 
+#### Start Mysql container
+
+If you want to use sx-dbtools with a mysql database, you can run this command to start a mysql container based on the official mariadb image.
+```yaml
+db-mysql:                                   # docker-compose service name for mysql database
+  image: mariadb:5.5                        # sx-dbtools container image for mysql
+  container_name: "sx-dbtools_mysql"        # mysql container name
+  environment:                              # enable configuration of environment variables
+   - MYSQL_ROOT_PASSWORD=rootPassword       # password of the mysql root user
+```
 ```bash
-docker-compose run -d;
-docker-compose logs;
+docker-compose run -d db-mysql;             # run mysql database service
 ```
 
-### 6. See result
+#### Start Couchbase container
+
+If you want to use sx-dbtools with a couchbase cluster, you can run this command to start a couchbase container based on the official couchbase image.
+```yaml
+db-couchbase:                               # docker-compose service name for couchbase database
+  image: couchbase:enterprise-5.0.1         # sx-dbtools container image for couchbase
+  container_name: "sx-dbtools_couchbase"    # couchbase container name
+```
+```bash
+docker-compose run -d db-couchbase;         # run couchbase database service
+```
+
+### 2. Run your sx-dbtools service
+
+#### without action
+
+```bash
+docker-compose run app;                     # default command defined in docker-compose.yml or default in container image (welcome)
+```
+
+#### get container informations
+```yaml
+app:                                        # docker-compose service name
+  image: startx/db-tools:latest             # sx-dbtools container image
+  environment:                              # enable configuration of environment variables
+   - SXDBTOOLS_DEBUG=true                   # activate debug info
+  command: ["info"]                         # sx-dbtools command
+```
+```bash
+docker-compose run app;                     # run the service
+```
+
+#### Link to databases, create user(s), database(s) and load content from volumes
+```yaml
+app:                                        # docker-compose service name
+  image: startx/db-tools:latest             # sx-dbtools container image
+  links:                                    # enable link to databases services
+    - db-mysql:dbm                          # link to mysql database (named dbm)
+    - db-couchbase:dbc                      # link to couchbase database (named dbc)
+  volumes:                                  # enable volumes for dump and backup
+    - "~/:/dump:z"                          # mounted volumes for dump and import mysql (*.sql) and couchbase (*.json)
+  environment:                              # enable configuration of environment variables
+   - MYSQL_DATABASE=demo,demo2              # mysql databases names
+   - MYSQL_ADMIN=demo:password              # user and password of the mysql admin user
+   - MYSQL_USERS=demo:pwd,user3:pwd3,test   # List of mysql user (password optional) to manipulate
+   - COUCHBASE_ADMIN=cbAdmin:password       # user and password of the couchbase admin user
+   - COUCHBASE_BUCKET=demo,demo2            # couchbase buckets names
+   - COUCHBASE_USERS=demo1:password1,demo2  # List of couchbase user (password optional) to manipulate
+  command: ["recreate"]                     # sx-dbtools command
+```
+```bash
+docker-compose run -d db-mysql db-couchbase;# run databases services
+docker-compose run app;                     # run the service
+```
+
+### 3. See result
 
 You can connect to your database backend to see created database or look at volumes 
 
@@ -219,8 +284,9 @@ various kind of backend infrastructure (container, host, remote, IaaS, DBaaS)
 
 #### Examples
 
-##### Create a database `demo` + user `demo_user`. Load sample schema and data into database
-and allow `demo_user` to access this database only.
+##### Create a database `demo` + user `demo_user`. 
+
+Load sample schema and data into database and allow `demo_user` to access this database.
 ```yaml
 app:                                        # docker-compose service name
   image: startx/db-tools:latest             # sx-dbtools container image
@@ -235,8 +301,9 @@ app:                                        # docker-compose service name
    - MYSQL_USERS=demoUser:demPwd1,demoUser2 # users to create
   command: ["create" , "mysql"]             # sx-dbtools command
 ```
-##### Create a bucket `demo` and load sample data into bucket. If couchbase cluster is not initialized,
-initialize it with a user 'cbAdmin'
+##### Create a bucket `demo` and load sample data into bucket. 
+
+If couchbase cluster is not initialized, initialize it with a user 'cbAdmin'
 ```yaml
 app:                                        # docker-compose service name
   image: startx/db-tools:latest             # sx-dbtools container image
@@ -272,57 +339,66 @@ app:                                        # docker-compose service name
 #### Examples
 
 ##### Initialize full stack (mysql + couchbase user, database and data)
-```bash
-docker run -d \
---link db-mysql:dbm \                       # Linked mysql service
---link db-couchbase:dbc \                   # Linked couchbase service
--v ~/mysql-data:/dump/mysql:z \             # mounted volume with *schema.sql and *data.sql files
--v ~/couchbase-data:/dump/couchbase:z \     # mounted volume with *data.json files
--e MYSQL_DATABASE=demo,demo2,demo3 \        # List of mysql database to manipulate
--e MYSQL_ADMIN=root:rootPassword \          # mysql administrator username and password
--e MYSQL_USERS=demo:pwd,user3:pwd3,test \   # List of mysql user (password optional) to manipulate
--e COUCHBASE_ADMIN=demo:password \          # couchbase administrator username and password
--e COUCHBASE_BUCKET=demo,demo2 \            # List of couchbase bucket to manipulate
--e COUCHBASE_USERS=demo1:password1,demo2 \  # List of couchbase user (password optional) to manipulate
-startx/db-tools                             # sx-dbtools docker image 
-create                                      # sx-dbtools command
+```yaml
+app:                                        # docker-compose service name
+  image: startx/db-tools:latest             # sx-dbtools container image
+  links:                                    # enable link to databases services
+    - db-mysql:dbm                          # link to mysql database (named dbm)
+    - db-couchbase:dbc                      # link to couchbase database (named dbc)
+  volumes:                                  # enable volumes for dump and backup
+    - "~/:/dump:z"                          # mounted volumes for dump and import mysql (*.sql) and couchbase (*.json)
+  environment:                              # enable configuration of environment variables
+   - MYSQL_DATABASE=demo                    # mysql databases names
+   - MYSQL_ADMIN=demo:password              # user and password of the mysql admin user
+   - MYSQL_USERS=demo:pwd,user3:pwd3,test   # List of mysql user (password optional) to manipulate
+   - COUCHBASE_ADMIN=cbAdmin:password       # user and password of the couchbase admin user
+   - COUCHBASE_BUCKET=demo                  # couchbase buckets names
+   - COUCHBASE_USERS=demo1:password1,demo2  # List of couchbase user (password optional) to manipulate
+  command: ["create"]                       # sx-dbtools command
 ```
 ##### Recreate full stack (mysql + couchbase user, database and data)
-```bash
-docker run -d \
---link db-mysql:dbm \                       # Linked mysql service
---link db-couchbase:dbc \                   # Linked couchbase service
--v ~/mysql-data:/dump/mysql:z \             # mounted volume with *schema.sql and *data.sql files
--v ~/couchbase-data:/dump/couchbase:z \     # mounted volume with *data.json files
--e MYSQL_DATABASE=demo,demo2,demo3 \        # List of mysql database to manipulate
--e MYSQL_ADMIN=root:rootPassword \          # mysql administrator username and password
--e MYSQL_USERS=demo:pwd,user3:pwd3,test \   # List of mysql user (password optional) to manipulate
--e COUCHBASE_ADMIN=demo:password \          # couchbase administrator username and password
--e COUCHBASE_BUCKET=demo,demo2 \            # List of couchbase bucket to manipulate
--e COUCHBASE_USERS=demo1:password1,demo2 \  # List of couchbase user (password optional) to manipulate
-startx/db-tools                             # sx-dbtools docker image 
-recreate                                    # sx-dbtools command
+```yaml
+app:                                        # docker-compose service name
+  image: startx/db-tools:latest             # sx-dbtools container image
+  links:                                    # enable link to databases services
+    - db-mysql:dbm                          # link to mysql database (named dbm)
+    - db-couchbase:dbc                      # link to couchbase database (named dbc)
+  volumes:                                  # enable volumes for dump and backup
+    - "~/:/dump:z"                          # mounted volumes for dump and import mysql (*.sql) and couchbase (*.json)
+  environment:                              # enable configuration of environment variables
+   - MYSQL_DATABASE=demo                    # mysql databases names
+   - MYSQL_ADMIN=demo:password              # user and password of the mysql admin user
+   - MYSQL_USERS=demo:pwd,user3:pwd3,test   # List of mysql user (password optional) to manipulate
+   - COUCHBASE_ADMIN=cbAdmin:password       # user and password of the couchbase admin user
+   - COUCHBASE_BUCKET=demo                  # couchbase buckets names
+   - COUCHBASE_USERS=demo1:password1,demo2  # List of couchbase user (password optional) to manipulate
+  command: ["recreate"]                     # sx-dbtools command
 ```
 ##### create one mysql database + data (if available)
-```bash
-docker run -d \
---link db-mysql:dbm \                       # Linked mysql service
--v ~/mysql-data:/dump/mysql:z \             # mounted volume with *schema.sql and *data.sql files
--e MYSQL_DATABASE=demo,demo2,demo3 \        # List of mysql database to manipulate
--e MYSQL_ADMIN=root:rootPassword \          # mysql administrator username and password
--e MYSQL_USERS=demo:pwd,user3:pwd3,test \   # List of mysql user (password optional) to manipulate
-startx/db-tools                             # sx-dbtools docker image 
-create mysql demo2                          # sx-dbtools command
+```yaml
+app:                                        # docker-compose service name
+  image: startx/db-tools:latest             # sx-dbtools container image
+  links:                                    # enable link to databases services
+    - db-mysql:dbm                          # link to mysql database (named dbm)
+  environment:                              # enable configuration of environment variables
+   - MYSQL_DATABASE=demo                    # mysql databases names
+   - MYSQL_ADMIN=demo:password              # user and password of the mysql admin user
+   - MYSQL_USERS=demo:pwd,user3:pwd3,test   # List of mysql user (password optional) to manipulate
+  command: ["create","mysql","demo2"]       # sx-dbtools command
 ```
 ##### Delete all couchbase bucket(s) and user(s)
-```bash
-docker run -d \
---link db-couchbase:dbc \                   # Linked couchbase service
--e COUCHBASE_ADMIN=demo:password \          # couchbase administrator username and password
--e COUCHBASE_BUCKET=demo,demo2 \            # List of couchbase bucket to manipulate
--e COUCHBASE_USERS=demo1:password1,demo2 \  # List of couchbase user (password optional) to manipulate
-startx/db-tools                             # sx-dbtools docker image 
-delete couchbase                            # sx-dbtools command
+```yaml
+app:                                        # docker-compose service name
+  image: startx/db-tools:latest             # sx-dbtools container image
+  links:                                    # enable link to databases services
+    - db-couchbase:dbc                      # link to couchbase database (named dbc)
+  environment:                              # enable configuration of environment variables
+   - MYSQL_DATABASE=demo                    # mysql databases names
+   - MYSQL_ADMIN=demo:password              # user and password of the mysql admin user
+   - COUCHBASE_ADMIN=cbAdmin:password       # user and password of the couchbase admin user
+   - COUCHBASE_BUCKET=demo                  # couchbase buckets names
+   - COUCHBASE_USERS=demo1:password1,demo2  # List of couchbase user (password optional) to manipulate
+  command: ["delete","couchbase"]           # sx-dbtools command
 ```
 
 ### Data Commands
@@ -340,48 +416,59 @@ delete couchbase                            # sx-dbtools command
 #### Examples
 
 ##### Dump all mysql and couchbase database(s)
-```bash
-docker run -d \
---link db-mysql:dbm \                       # Linked mysql service
---link db-couchbase:dbc \                   # Linked couchbase service
--v ~/mysql-data:/dump/mysql:z \             # mounted volume with *schema.sql and *data.sql files
--v ~/couchbase-data:/dump/couchbase:z \     # mounted volume with *data.json files
--e MYSQL_DATABASE=demo,demo2,demo3 \        # List of mysql database to manipulate
--e MYSQL_ADMIN=root:rootPassword \          # mysql administrator username and password
--e COUCHBASE_ADMIN=demo:password \          # couchbase administrator username and password
--e COUCHBASE_BUCKET=demo,demo2 \            # List of couchbase bucket to manipulate
-startx/db-tools                             # sx-dbtools docker image 
-dump                                        # sx-dbtools command
+```yaml
+app:                                        # docker-compose service name
+  image: startx/db-tools:latest             # sx-dbtools container image
+  links:                                    # enable link to databases services
+    - db-mysql:dbm                          # link to mysql database (named dbm)
+    - db-couchbase:dbc                      # link to couchbase database (named dbc)
+  volumes:                                  # enable volumes for dump and backup
+    - "~/:/dump:z"                          # mounted volumes for dump and import mysql (*.sql) and couchbase (*.json)
+  environment:                              # enable configuration of environment variables
+   - MYSQL_DATABASE=demo,demo2,demo3        # mysql databases names
+   - MYSQL_ADMIN=demo:password              # user and password of the mysql admin user
+   - COUCHBASE_ADMIN=cbAdmin:password       # user and password of the couchbase admin user
+   - COUCHBASE_BUCKET=demo,demo2            # couchbase buckets names
+  command: ["dump"]                         # sx-dbtools command
 ```
 ##### Dump all mysql database(s)
-```bash
-docker run -d \
---link db-mysql:dbm \                       # Linked mysql service
--v ~/mysql-data:/dump/mysql:z \             # mounted volume with *schema.sql and *data.sql files
--e MYSQL_DATABASE=demo,demo2,demo3 \        # List of mysql database to manipulate
--e MYSQL_ADMIN=root:rootPassword \          # mysql administrator username and password
-startx/db-tools                             # sx-dbtools docker image 
-dump mysql                                  # sx-dbtools command
+```yaml
+app:                                        # docker-compose service name
+  image: startx/db-tools:latest             # sx-dbtools container image
+  links:                                    # enable link to databases services
+    - db-mysql:dbm                          # link to mysql database (named dbm)
+  volumes:                                  # enable volumes for dump and backup
+    - "~/:/dump:z"                          # mounted volumes for dump and import mysql (*.sql) and couchbase (*.json)
+  environment:                              # enable configuration of environment variables
+   - MYSQL_DATABASE=demo,demo2,demo3        # mysql databases names
+   - MYSQL_ADMIN=demo:password              # user and password of the mysql admin user
+  command: ["dump","mysql"]                 # sx-dbtools command
 ```
 ##### Dump only one couchbase bucket
-```bash
-docker run -d \
---link db-couchbase:dbc \                   # Linked couchbase service
--v ~/couchbase-data:/dump/couchbase:z \     # mounted volume with *data.json files
--e COUCHBASE_ADMIN=demo:password \          # couchbase administrator username and password
--e COUCHBASE_BUCKET=demo,demo2 \            # List of couchbase bucket to manipulate
-startx/db-tools                             # sx-dbtools docker image 
-dump couchbase demo                         # sx-dbtools command
+```yaml
+app:                                        # docker-compose service name
+  image: startx/db-tools:latest             # sx-dbtools container image
+  links:                                    # enable link to databases services
+    - db-couchbase:dbc                      # link to couchbase database (named dbc)
+  volumes:                                  # enable volumes for dump and backup
+    - "~/:/dump:z"                          # mounted volumes for dump and import mysql (*.sql) and couchbase (*.json)
+  environment:                              # enable configuration of environment variables
+   - COUCHBASE_ADMIN=cbAdmin:password       # user and password of the couchbase admin user
+   - COUCHBASE_BUCKET=demo                  # couchbase buckets names
+  command: ["dump","couchbase","demo"]      # sx-dbtools command
 ```
 ##### Import one mysql database
-```bash
-docker run -d \
---link db-mysql:dbm \                       # Linked mysql service
--v ~/mysql-data:/dump/mysql:z \             # mounted volume with *schema.sql and *data.sql files
--e MYSQL_DATABASE=demo,demo2,demo3 \        # List of mysql database to manipulate
--e MYSQL_ADMIN=root:rootPassword \          # mysql administrator username and password
-startx/db-tools                             # sx-dbtools docker image 
-import mysql demo2                          # sx-dbtools command
+```yaml
+app:                                        # docker-compose service name
+  image: startx/db-tools:latest             # sx-dbtools container image
+  links:                                    # enable link to databases services
+    - db-mysql:dbm                          # link to mysql database (named dbm)
+  volumes:                                  # enable volumes for dump and backup
+    - "~/:/dump:z"                          # mounted volumes for dump and import mysql (*.sql) and couchbase (*.json)
+  environment:                              # enable configuration of environment variables
+   - MYSQL_DATABASE=demo                    # mysql databases names
+   - MYSQL_ADMIN=demo:password              # user and password of the mysql admin user
+  command: ["import","mysql","demo2 "]      # sx-dbtools command
 ```
 
 ### Backup / Restore Commands
@@ -396,38 +483,47 @@ import mysql demo2                          # sx-dbtools command
 #### Examples
 
 ##### Backup everything
-```bash
-docker run -d \
---link db-mysql:dbm \                       # Linked mysql service
---link db-couchbase:dbc \                   # Linked couchbase service
--v ~/backup:/backup:z \                     # mounted volume with *schema.sql and *data.sql files
--v ~/couchbase-data:/dump/couchbase:z \     # mounted volume with *data.json files
--e MYSQL_DATABASE=demo \                    # List of mysql database to manipulate
--e MYSQL_ADMIN=root:rootPassword \          # mysql administrator username and password
--e COUCHBASE_ADMIN=demo:password \          # couchbase administrator username and password
--e COUCHBASE_BUCKET=demo,demo2 \            # List of couchbase bucket to manipulate
-startx/db-tools                             # sx-dbtools docker image 
-backup                                      # sx-dbtools command
+```yaml
+app:                                        # docker-compose service name
+  image: startx/db-tools:latest             # sx-dbtools container image
+  links:                                    # enable link to databases services
+    - db-mysql:dbm                          # link to mysql database (named dbm)
+    - db-couchbase:dbc                      # link to couchbase database (named dbc)
+  volumes:                                  # enable volumes for dump and backup
+    - "~/:/backup:z"                        # mounted volumes for backup and restore mysql and couchbase (*.tgz)
+  environment:                              # enable configuration of environment variables
+   - MYSQL_DATABASE=demo                    # mysql databases names
+   - MYSQL_ADMIN=demo:password              # user and password of the mysql admin user
+   - COUCHBASE_ADMIN=cbAdmin:password       # user and password of the couchbase admin user
+   - COUCHBASE_BUCKET=demo                  # couchbase buckets names
+  command: ["backup"]                       # sx-dbtools command
 ```
 ##### Backup one mysql database
-```bash
-docker run -d \
---link db-mysql:dbm \                       # Linked mysql service
--v ~/backup:/backup:z \                     # mounted volume with *schema.sql and *data.sql files
--e MYSQL_DATABASE=demo \                    # List of mysql database to manipulate
--e MYSQL_ADMIN=root:rootPassword \          # mysql administrator username and password
-startx/db-tools                             # sx-dbtools docker image 
-backup mysql demo                           # sx-dbtools command
+```yaml
+app:                                        # docker-compose service name
+  image: startx/db-tools:latest             # sx-dbtools container image
+  links:                                    # enable link to databases services
+    - db-mysql:dbm                          # link to mysql database (named dbm)
+  volumes:                                  # enable volumes for dump and backup
+    - "~/:/backup:z"                        # mounted volumes for backup and restore mysql and couchbase (*.tgz)
+  environment:                              # enable configuration of environment variables
+   - MYSQL_DATABASE=demo                    # mysql databases names
+   - MYSQL_ADMIN=demo:password              # user and password of the mysql admin user
+  command: ["backup","mysql","demo"]        # sx-dbtools command
 ```
 ##### Restore one couchbase bucket
-```bash
-docker run -d \
---link db-couchbase:dbc \                   # Linked couchbase service
--v ~/couchbase-data:/dump/couchbase:z \     # mounted volume with *data.json files
--e COUCHBASE_ADMIN=demo:password \          # couchbase administrator username and password
--e COUCHBASE_BUCKET=demo,demo2 \            # List of couchbase bucket to manipulate
-startx/db-tools                             # sx-dbtools docker image 
-restore couchbase 20180125_120948.tgz       # sx-dbtools command
+```yaml
+app:                                        # docker-compose service name
+  image: startx/db-tools:latest             # sx-dbtools container image
+  links:                                    # enable link to databases services
+    - db-mysql:dbm                          # link to mysql database (named dbm)
+    - db-couchbase:dbc                      # link to couchbase database (named dbc)
+  volumes:                                  # enable volumes for dump and backup
+    - "~/:/backup:z"                        # mounted volumes for backup and restore mysql and couchbase (*.tgz)
+  environment:                              # enable configuration of environment variables
+   - COUCHBASE_ADMIN=cbAdmin:password       # user and password of the couchbase admin user
+   - COUCHBASE_BUCKET=demo                  # couchbase buckets names
+  command: ["restore","couchbase","20180125_120948.tgz"] # sx-dbtools command
 ```
 
 ### Database Commands
@@ -447,38 +543,40 @@ restore couchbase 20180125_120948.tgz       # sx-dbtools command
 #### Examples
 
 ##### Create multiple empty mysql database(s) or couchbase bucket(s)
-```bash
-docker run -d \
---link db-mysql:dbm \                       # Linked mysql service
---link db-couchbase:dbc \                   # Linked couchbase service
--v ~/backup:/backup:z \                     # mounted volume with *schema.sql and *data.sql files
--v ~/couchbase-data:/dump/couchbase:z \     # mounted volume with *data.json files
--e MYSQL_DATABASE=demo \                    # List of mysql database to manipulate
--e MYSQL_ADMIN=root:rootPassword \          # mysql administrator username and password
--e COUCHBASE_ADMIN=demo:password \          # couchbase administrator username and password
--e COUCHBASE_BUCKET=demo,demo2 \            # List of couchbase bucket to manipulate
-startx/db-tools                             # sx-dbtools docker image 
-create-db                                   # sx-dbtools command
+```yaml
+app:                                        # docker-compose service name
+  image: startx/db-tools:latest             # sx-dbtools container image
+  links:                                    # enable link to databases services
+    - db-mysql:dbm                          # link to mysql database (named dbm)
+    - db-couchbase:dbc                      # link to couchbase database (named dbc)
+  environment:                              # enable configuration of environment variables
+   - MYSQL_DATABASE=demo                    # mysql databases names
+   - MYSQL_ADMIN=demo:password              # user and password of the mysql admin user
+   - COUCHBASE_ADMIN=cbAdmin:password       # user and password of the couchbase admin user
+   - COUCHBASE_BUCKET=demo                  # couchbase buckets names
+  command: ["create-db"]                    # sx-dbtools command
 ```
 ##### Recreate one empty mysql database
-```bash
-docker run -d \
---link db-mysql:dbm \                       # Linked mysql service
--v ~/backup:/backup:z \                     # mounted volume with *schema.sql and *data.sql files
--e MYSQL_DATABASE=demo \                    # List of mysql database to manipulate
--e MYSQL_ADMIN=root:rootPassword \          # mysql administrator username and password
-startx/db-tools                             # sx-dbtools docker image 
-recreate-db mysql demo                      # sx-dbtools command
+```yaml
+app:                                        # docker-compose service name
+  image: startx/db-tools:latest             # sx-dbtools container image
+  links:                                    # enable link to databases services
+    - db-mysql:dbm                          # link to mysql database (named dbm)
+  environment:                              # enable configuration of environment variables
+   - MYSQL_DATABASE=demo                    # mysql databases names
+   - MYSQL_ADMIN=demo:password              # user and password of the mysql admin user
+  command: ["recreate-db","mysql","demo"]   # sx-dbtools command
 ```
 ##### Delete one couchbase bucket
-```bash
-docker run -d \
---link db-couchbase:dbc \                   # Linked couchbase service
--v ~/couchbase-data:/dump/couchbase:z \     # mounted volume with *data.json files
--e COUCHBASE_ADMIN=demo:password \          # couchbase administrator username and password
--e COUCHBASE_BUCKET=demo,demo2 \            # List of couchbase bucket to manipulate
-startx/db-tools                             # sx-dbtools docker image 
-delete-db couchbase demo                    # sx-dbtools command
+```yaml
+app:                                        # docker-compose service name
+  image: startx/db-tools:latest             # sx-dbtools container image
+  links:                                    # enable link to databases services
+    - db-couchbase:dbc                      # link to couchbase database (named dbc)
+  environment:                              # enable configuration of environment variables
+   - COUCHBASE_ADMIN=cbAdmin:password       # user and password of the couchbase admin user
+   - COUCHBASE_BUCKET=demo                  # couchbase buckets names
+  command: ["delete-db","couchbase","demo"] # sx-dbtools command
 ```
 
 ### User management Commands
@@ -498,34 +596,40 @@ delete-db couchbase demo                    # sx-dbtools command
 #### Examples
 
 ##### Create multiple mysql user(s) or couchbase user(s)
-```bash
-docker run -d \
---link db-mysql:dbm \                       # Linked mysql service
---link db-couchbase:dbc \                   # Linked couchbase service
--e MYSQL_ADMIN=root:rootPassword \          # mysql administrator username and password
--e MYSQL_USERS=demo:pwd,user3:pwd3,test \   # List of mysql user (password optional) to manipulate
--e COUCHBASE_ADMIN=demo:password \          # couchbase administrator username and password
--e COUCHBASE_USERS=demo1:password1,demo2 \  # List of couchbase user (password optional) to manipulate
-startx/db-tools                             # sx-dbtools docker image 
-create-user                                 # sx-dbtools command
+```yaml
+app:                                        # docker-compose service name
+  image: startx/db-tools:latest             # sx-dbtools container image
+  links:                                    # enable link to databases services
+    - db-mysql:dbm                          # link to mysql database (named dbm)
+    - db-couchbase:dbc                      # link to couchbase database (named dbc)
+  environment:                              # enable configuration of environment variables
+   - MYSQL_USERS=demo:pwd                   # mysql user and password
+   - MYSQL_ADMIN=demo:password              # user and password of the mysql admin user
+   - COUCHBASE_ADMIN=cbAdmin:password       # user and password of the couchbase admin user
+   - COUCHBASE_USERS=demo1:password1        # couchbase user and password
+  command: ["create-user"]                  # sx-dbtools command
 ```
 ##### Recreate one mysql user
-```bash
-docker run -d \
---link db-mysql:dbm \                       # Linked mysql service
--e MYSQL_ADMIN=root:rootPassword \          # mysql administrator username and password
--e MYSQL_USERS=demo:pwd \                   # List of mysql user (password optional) to manipulate
-startx/db-tools                             # sx-dbtools docker image 
-recreate-user mysql demo                    # sx-dbtools command
+```yaml
+app:                                        # docker-compose service name
+  image: startx/db-tools:latest             # sx-dbtools container image
+  links:                                    # enable link to databases services
+    - db-mysql:dbm                          # link to mysql database (named dbm)
+  environment:                              # enable configuration of environment variables
+   - MYSQL_USERS=demo:pwd                   # mysql user and password
+   - MYSQL_ADMIN=demo:password              # user and password of the mysql admin user
+  command: ["recreate-user","mysql","demo"] # sx-dbtools command
 ```
 ##### Delete one couchbase user
-```bash
-docker run -d \
---link db-couchbase:dbc \                   # Linked couchbase service
--e COUCHBASE_ADMIN=demo:password \          # couchbase administrator username and password
--e COUCHBASE_USERS=demo1:password1 \        # List of couchbase user (password optional) to manipulate
-startx/db-tools                             # sx-dbtools docker image 
-delete-user couchbase demo1                 # sx-dbtools command
+```yaml
+app:                                        # docker-compose service name
+  image: startx/db-tools:latest             # sx-dbtools container image
+  links:                                    # enable link to databases services
+    - db-couchbase:dbc                      # link to couchbase database (named dbc)
+  environment:                              # enable configuration of environment variables
+   - COUCHBASE_ADMIN=cbAdmin:password       # user and password of the couchbase admin user
+   - COUCHBASE_USERS=demo1:password1        # couchbase user and password
+  command: ["delete-user","couchbase","demo1"] # sx-dbtools command
 ```
 
 ### sx-dbtools Commands
@@ -544,20 +648,28 @@ delete-user couchbase demo1                 # sx-dbtools command
 #### Examples
 
 ##### Get the version of sx-dbtools
-```bash
-docker run -d startx/db-tools version
+```yaml
+app:                                        # docker-compose service name
+  image: startx/db-tools:latest             # sx-dbtools container image
+  command: ["version"]                      # sx-dbtools command
 ```
 ##### Get information about the container
-```bash
-docker run -d startx/db-tools info
+```yaml
+app:                                        # docker-compose service name
+  image: startx/db-tools:latest             # sx-dbtools container image
+  command: ["info"]                         # sx-dbtools command
 ```
 ##### Get a usage guideline
-```bash
-docker run -d startx/db-tools usage
+```yaml
+app:                                        # docker-compose service name
+  image: startx/db-tools:latest             # sx-dbtools container image
+  command: ["usage"]                        # sx-dbtools command
 ```
 ##### Get help for creating a user
-```bash
-docker run -d startx/db-tools create-user help
+```yaml
+app:                                        # docker-compose service name
+  image: startx/db-tools:latest             # sx-dbtools container image
+  command: ["create-user", "help"]          # sx-dbtools command
 ```
 
 ## Troubleshooting
