@@ -25,6 +25,16 @@ source $LIBDIR/sx-dbtools-create-user.sh
 source $LIBDIR/sx-dbtools-delete-user.sh
 source $LIBDIR/sx-dbtools-recreate-user.sh
 
+# if SXCMD environement found, execute this instruction 
+# instead of the given command
+if [ ! -z "$SXCMD" ]; then
+    s=($SXCMD)
+    echo "environement var SXCMD found with instruction"
+    echo "executing command : $SXCMD"
+    echo ""
+    set -- ${s[0]} ${s[1]} ${s[2]} ${s[3]} ${s[4]} ${s[5]}
+fi
+
 # Dispatch input arguments
 case $1 in
     dump)                   dispatcherDump $@ ;;
@@ -45,5 +55,6 @@ case $1 in
     daemon|-d)              displayDaemon $@ ;;
     cmd|bash)               displayCommand $@ ;;
     version|--version)      displayVersion $@ ;;
+    welcome)                displayWelcome $@ ;;
     *)                      displayUsage $@ ;;
 esac

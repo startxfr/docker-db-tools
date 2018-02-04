@@ -129,6 +129,8 @@ sx-dbtools Commands:
   <cmd> help       display information about a command
   info             give information about the running sx-dbtools
   version          give the version of the running sx_dbtools
+  daemon           execute the container as a daemon (keep alive)
+  cmd              execute a command inside the container
 
 Examples:
   # Get this message
@@ -140,6 +142,47 @@ exit 0;
 }
 
 
+
+#######################################
+# Display general welcome message
+#######################################
+function displayWelcome {
+cat <<EOF
+sx-dbtools v$SXDBTOOLS_VERSION $HOSTNAME ($OS)
+
+Welcome to the sx-dbtools. If you see this message, you have
+probably run this container without arguments. You can run the
+following command to perform actions
+
+  create           Create user(s) + database(s) + data
+  delete           Delete user(s) + database(s) + data
+  recreate         Delete and create user(s) + database(s) + data
+  dump             Dump database(s) in dump directory
+  import           import database(s) from dump directory
+  create-data      alias of import command
+  backup           Backup database(s) in backup directory
+  restore          Restore database(s) in backup directory
+  create-user      Create database(s) user(s)
+  delete-user      Delete database(s) user(s)
+  recreate-user    Delete and create database(s) user(s)
+  create-db        Create database(s)
+  delete-db        Delete database(s)
+  recreate-db      Delete and create database(s)
+  usage            this message
+  <cmd> help       display information about a command
+  info             give information about the running sx-dbtools
+  version          give the version of the running sx_dbtools
+  daemon           execute the container as a daemon (keep alive)
+  cmd              execute a command inside the container
+
+Examples:
+  # Get usage message
+  docker run startx/sx-dbtools usage
+  # Dump all databases
+  docker run --link mysql:dbm -v ./:/dump startx/sx-dbtools dump
+EOF
+exit 0;
+}
 
 #######################################
 # Display sx-dbtools information
@@ -171,11 +214,11 @@ exit 0;
 # Display sx-dbtools command
 #######################################
 function displayCommand {
-    if [ -z "$2" ]; then
+    if [ ! -z "$2" ]; then
         shift
         exec $@
     else
-        exec /bin/bash
+        exec cat /etc/hostname
     fi 
 }
 

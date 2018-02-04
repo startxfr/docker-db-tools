@@ -51,6 +51,7 @@ function checkCouchbaseEnv {
         displayErrorMessage "Need to set COUCHBASE_DUMP_DIR"
         exit 128;
     fi 
+    mkdir -p $COUCHBASE_DUMP_DIR
     if checkCouchbaseIsNotInitialized; then
         echo "  - initialize cluster $COUCHBASE_HOST"
         initializeCouchbase
@@ -180,6 +181,14 @@ function createCouchbaseUsers {
             createCouchbaseUser $USER $PWD
         done
     fi 
+    if [[ -r $COUCHBASE_DUMP_DIR/USER ]]; then
+        for userInfo in $(cat $COUCHBASE_DUMP_DIR/USER | tr "," "\n")
+        do
+            set -f; IFS=':'; set -- $userInfo
+            USER=$1; PWD=$2; set +f; unset IFS
+            createCouchbaseUser $USER $PWD
+        done
+    fi 
 }
 function createCouchbaseUser {
     if [[ ! -z "$1" ]]; then
@@ -284,6 +293,14 @@ function deleteCouchbaseUsers {
             set -f; IFS=':'; set -- $userInfo
             USER=$1; PWD=$2; set +f; unset IFS
             echo "  - delete couchbase user $USER"
+            runDeleteCouchbaseUser $USER
+        done
+    fi 
+    if [[ -r $COUCHBASE_DUMP_DIR/USER ]]; then
+        for userInfo in $(cat $COUCHBASE_DUMP_DIR/USER | tr "," "\n")
+        do
+            set -f; IFS=':'; set -- $userInfo
+            USER=$1; PWD=$2; set +f; unset IFS
             runDeleteCouchbaseUser $USER
         done
     fi 
