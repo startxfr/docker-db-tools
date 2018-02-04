@@ -1,37 +1,39 @@
 FROM couchbase:enterprise-5.0.1
 
-RUN apt-get update -y && \
-    apt-get dist-upgrade -y && \
-    apt-get install -y mariadb-server-5.5 mariadb-client-5.5 tar gzip && \
-    apt-get clean
-
-ENV SXDBTOOLS_VERSION="0.1.11" \
-    SXDBTOOLS_DEBUG=true \
+ENV SXDBTOOLS_VERSION="0.1.15" \
     SXDBTOOLS_BACKUP_DIR=/backup \
     SXDBTOOLS_DUMP_DIR=/dump \
-    MYSQL_DUMP_DIR=$SXDBTOOLS_DUMP_DIR/mysql \
+    SXDBTOOLS_DEBUG=true \
+    MYSQL_DUMP_DIR=/dump/mysql \
     MYSQL_DUMP_DATAFILE="data.sql" \
     MYSQL_DUMP_SCHEMAFILE="schema.sql" \
     MYSQL_DUMP_ISEXTENDED=true \
     MYSQL_HOST=dbm \
-    COUCHBASE_DUMP_DIR=$SXDBTOOLS_DUMP_DIR/couchbase \
+    COUCHBASE_DUMP_DIR=/dump/couchbase \
     COUCHBASE_DUMP_DATAFILE="data.json" \
     COUCHBASE_HOST=dbc \
     SUMMARY="Database tools for manipulating couchbase and mariadb container"
 
-LABEL summary="$SUMMARY" \
+LABEL name="startx/db-tools" \
+      summary="$SUMMARY" \
       description="$SUMMARY" \
+      version="$SXDBTOOLS_VERSION" \
+      release="1" \
+      maintainer="startx.fr <dev@startx.fr>" \
       io.k8s.description="$SUMMARY" \
       io.k8s.display-name="sx-dbtools" \
-      fr.startx.component="sx-dbtools" \
       io.openshift.tags="db,mysql,couchbase" \
-      name="startx/db-tools" \
-      version="1" \
-      release="1" \
-      maintainer="startx.fr <dev@startx.fr>"
+      io.openshift.wants="mysql,couchbase" \
+      io.openshift.non-scalable="true" \
+      io.openshift.s2i.destination="/tmp" \
+      fr.startx.component="sx-dbtools"
 
 COPY ./bin /tmp/sxbin
-RUN mv /tmp/sxbin/* /bin/ && \
+RUN apt-get update -y && \
+    apt-get dist-upgrade -y && \
+    apt-get install -y mariadb-server-5.5 mariadb-client-5.5 tar gzip && \
+    apt-get clean && \
+    mv /tmp/sxbin/* /bin/ && \
     rm -rf /tmp/sxbin && \
     mkdir -p $MYSQL_DUMP_DIR && \
     mkdir -p $COUCHBASE_DUMP_DIR && \
@@ -42,13 +44,12 @@ RUN mv /tmp/sxbin/* /bin/ && \
     adduser mysql couchbase > /dev/null  && \
     chmod -R ugo+rw $SXDBTOOLS_BACKUP_DIR $SXDBTOOLS_BACKUP_DIR 
 
-WORKDIR /
+WORKDIR /tmp
 
 USER couchbase
 
 VOLUME $SXDBTOOLS_DUMP_DIR
 VOLUME $SXDBTOOLS_BACKUP_DIR
 
-
 ENTRYPOINT ["/bin/sx-dbtools"]
-CMD ["usage"]
+CMD ["welcome"]

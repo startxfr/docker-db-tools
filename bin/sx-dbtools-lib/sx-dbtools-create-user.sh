@@ -68,7 +68,7 @@ function doCreateUserCouchbaseAll {
     checkCouchbaseEnv
     displayCouchbaseTabInfoBlock
     echo "  - user(s) : $COUCHBASE_USERS"
-    createCouchbaseBuckets
+    createCouchbaseUsers
 }
 
 #######################################
@@ -79,7 +79,7 @@ function doCreateUserCouchbaseOne {
     checkCouchbaseEnv
     displayCouchbaseTabInfoBlock
     echo "  - bucket : $1"
-    createCouchbaseBucket $1
+    createCouchbaseUser $1
 }
 
 
