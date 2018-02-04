@@ -181,8 +181,11 @@ function createCouchbaseUsers {
 #            createCouchbaseUser $USER $PWD
 #        done
 #    fi 
-    if [[ -r $MYSQL_DUMP_DIR/USER ]]; then
-        echo $($MYSQL_DUMP_DIR/USER)
+    cat $COUCHBASE_DUMP_DIR/USER
+    ls -a $COUCHBASE_DUMP_DIR
+    if [[ -r $COUCHBASE_DUMP_DIR/USER ]]; then
+        echo "======================="
+        echo $($COUCHBASE_DUMP_DIR/USER)
     fi 
 }
 function createCouchbaseUser {

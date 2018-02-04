@@ -82,7 +82,7 @@ UNLOCK TABLES;
 Example for `dump/couchbase/data.json`
 ```javascript
 [
-    {"_id":"app::version","app":"sx-dbtools","stage":"dev","version":"0.1.12"}
+    {"_id":"app::version","app":"sx-dbtools","stage":"dev","version":"0.1.14"}
 ]
 ```
 
@@ -188,6 +188,7 @@ various kind of backend infrastructure (container, host, remote, IaaS, DBaaS)
 
 | Variable                 | Default         | Description
 |--------------------------|:---------------:|:---------------
+| SXCMD                    |                 | If set, container will execute this command instead of the container command (ex: SXCMD="create mysql demo2" for creating the demo2 mysql database)
 | SXDBTOOLS_DEBUG          | true            | Activate debugging display
 | SXDBTOOLS_BACKUP_DIR     | /backup         | The final destination directory for backup
 | SXDBTOOLS_DUMP_DIR       | /dump           | The final destination directory for dump

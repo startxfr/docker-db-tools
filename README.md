@@ -1,4 +1,4 @@
-# docker-db-tools ![sxapi](https://img.shields.io/badge/latest-v0.1.12-blue.svg)
+# docker-db-tools ![sxapi](https://img.shields.io/badge/latest-v0.1.14-blue.svg)
 
 Container for managing data from and to a mysql and/or a couchbase backend. 
 All command work with a couchbase cluser and / or a mysql server the same way.
@@ -398,6 +398,7 @@ various kind of backend infrastructure (container, host, remote, IaaS, DBaaS)
 
 | Variable                 | Default         | Description
 |--------------------------|:---------------:|:---------------
+| SXCMD                    |                 | If set, container will execute this command instead of the container command (ex: SXCMD="create mysql demo2" for creating the demo2 mysql database)
 | SXDBTOOLS_DEBUG          | true            | Activate debugging display
 | SXDBTOOLS_BACKUP_DIR     | /backup         | The final destination directory for backup
 | SXDBTOOLS_DUMP_DIR       | /dump           | The final destination directory for dump
@@ -415,6 +416,11 @@ various kind of backend infrastructure (container, host, remote, IaaS, DBaaS)
 | COUCHBASE_ADMIN          | dev:dev         | Couchbase admin user and password (ex: user:password)
 | COUCHBASE_USERS          |                 | Mysql list of users to the cluster "," is separator between users and ":" between user and his password. ex : user:password,user2:user2Password,user3,user4
 | COUCHBASE_BUCKET         |                 | Couchbase bucket name to use or create
+
+
+
+SXCMD="cmd cat /etc/hostname"
+
 
 Create a database `demo` + user `demo_user`. Load sample schema and data into database
 and allow `demo_user` to access this database only.

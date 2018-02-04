@@ -1,15 +1,15 @@
 FROM couchbase:enterprise-5.0.1
 
-ENV SXDBTOOLS_VERSION="0.1.12" \
+ENV SXDBTOOLS_VERSION="0.1.14" \
     SXDBTOOLS_BACKUP_DIR=/backup \
     SXDBTOOLS_DUMP_DIR=/dump \
     SXDBTOOLS_DEBUG=true \
-    MYSQL_DUMP_DIR=$SXDBTOOLS_DUMP_DIR/mysql \
+    MYSQL_DUMP_DIR=/dump/mysql \
     MYSQL_DUMP_DATAFILE="data.sql" \
     MYSQL_DUMP_SCHEMAFILE="schema.sql" \
     MYSQL_DUMP_ISEXTENDED=true \
     MYSQL_HOST=dbm \
-    COUCHBASE_DUMP_DIR=$SXDBTOOLS_DUMP_DIR/couchbase \
+    COUCHBASE_DUMP_DIR=/dump/couchbase \
     COUCHBASE_DUMP_DATAFILE="data.json" \
     COUCHBASE_HOST=dbc \
     SUMMARY="Database tools for manipulating couchbase and mariadb container"
