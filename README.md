@@ -1,4 +1,4 @@
-# docker-db-tools ![sxapi](https://img.shields.io/badge/latest-v0.1.10-blue.svg)
+# docker-db-tools ![sxapi](https://img.shields.io/badge/latest-v0.1.11-blue.svg)
 
 Container for managing data from and to a mysql and/or a couchbase backend. 
 All command work with a couchbase cluser and / or a mysql server the same way.
@@ -312,6 +312,10 @@ delete-user couchbase demo1                 # sx-dbtools command
 | <cmd>          | help            |          | display information about a command
 | info           |                 |          | give information about the running sx-dbtools
 | version        |                 |          | give the version of the running sx_dbtools
+| cmd            |                 |          | return an interactive bash command
+| bash           |                 |          | alias of command with no arguments
+| cmd            | command         |          | execute the command and return result
+| daemon         |                 |          | container never giveup and run permanently
 
 #### Examples
 

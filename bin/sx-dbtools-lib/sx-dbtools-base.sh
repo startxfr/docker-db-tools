@@ -166,3 +166,25 @@ function displayVersion {
 echo $SXDBTOOLS_VERSION
 exit 0;
 }
+
+#######################################
+# Display sx-dbtools command
+#######################################
+function displayCommand {
+    if [ -z "$2" ]; then
+        shift
+        exec $@
+    else
+        exec /bin/bash
+    fi 
+}
+
+#######################################
+# Display sx-dbtools daemon
+#######################################
+function displayDaemon {
+    while true; do
+        echo "sx-dbtools is alive on $HOSTNAME"
+        sleep 10
+    done
+}
