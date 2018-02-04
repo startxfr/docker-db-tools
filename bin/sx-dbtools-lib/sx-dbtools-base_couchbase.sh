@@ -173,19 +173,21 @@ function runCreateCouchbaseBucket {
 }
 
 function createCouchbaseUsers {
-#    if [ ! -z "$COUCHBASE_USERS" ]; then
-#        for userInfo in $(echo $COUCHBASE_USERS | tr "," "\n")
-#        do
-#            set -f; IFS=':'; set -- $userInfo
-#            USER=$1; PWD=$2; set +f; unset IFS
-#            createCouchbaseUser $USER $PWD
-#        done
-#    fi 
-    cat $COUCHBASE_DUMP_DIR/USER
-    ls -a $COUCHBASE_DUMP_DIR
+    if [ ! -z "$COUCHBASE_USERS" ]; then
+        for userInfo in $(echo $COUCHBASE_USERS | tr "," "\n")
+        do
+            set -f; IFS=':'; set -- $userInfo
+            USER=$1; PWD=$2; set +f; unset IFS
+            createCouchbaseUser $USER $PWD
+        done
+    fi 
     if [[ -r $COUCHBASE_DUMP_DIR/USER ]]; then
-        echo "======================="
-        echo $($COUCHBASE_DUMP_DIR/USER)
+        for userInfo in $(cat $COUCHBASE_DUMP_DIR/USER | tr "," "\n")
+        do
+            set -f; IFS=':'; set -- $userInfo
+            USER=$1; PWD=$2; set +f; unset IFS
+            createCouchbaseUser $USER $PWD
+        done
     fi 
 }
 function createCouchbaseUser {
@@ -291,6 +293,14 @@ function deleteCouchbaseUsers {
             set -f; IFS=':'; set -- $userInfo
             USER=$1; PWD=$2; set +f; unset IFS
             echo "  - delete couchbase user $USER"
+            runDeleteCouchbaseUser $USER
+        done
+    fi 
+    if [[ -r $COUCHBASE_DUMP_DIR/USER ]]; then
+        for userInfo in $(cat $COUCHBASE_DUMP_DIR/USER | tr "," "\n")
+        do
+            set -f; IFS=':'; set -- $userInfo
+            USER=$1; PWD=$2; set +f; unset IFS
             runDeleteCouchbaseUser $USER
         done
     fi 

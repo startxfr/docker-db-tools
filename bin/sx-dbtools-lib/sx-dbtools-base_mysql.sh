@@ -125,6 +125,14 @@ function createMysqlUsers {
             createMysqlUser $USER $PWD
         done
     fi 
+    if [[ -r $MYSQL_DUMP_DIR/USER ]]; then
+        for userInfo in $(cat $MYSQL_DUMP_DIR/USER | tr "," "\n")
+        do
+            set -f; IFS=':'; set -- $userInfo
+            USER=$1; PWD=$2; set +f; unset IFS
+            createMysqlUser $USER $PWD
+        done
+    fi 
 }
 function createMysqlUser {
     if [[ ! -z "$1" &&  ! -z "$2" ]]; then
@@ -182,6 +190,14 @@ function deleteMysqlUsers {
             set -f; IFS=':'; set -- $userInfo
             USER=$1; PWD=$2; set +f; unset IFS
             echo "  - delete mysql user $1"
+            runDeleteMysqlUser $USER
+        done
+    fi 
+    if [[ -r $MYSQL_DUMP_DIR/USER ]]; then
+        for userInfo in $(cat $MYSQL_DUMP_DIR/USER | tr "," "\n")
+        do
+            set -f; IFS=':'; set -- $userInfo
+            USER=$1; PWD=$2; set +f; unset IFS
             runDeleteMysqlUser $USER
         done
     fi 
