@@ -207,6 +207,11 @@ exit 0;
 #######################################
 function displayVersion {
 echo $SXDBTOOLS_VERSION
+if [ ! -z "$SXDBTOOLS_DEBUG" ]; then
+    if [[ $SXDBTOOLS_DEBUG == *"true"* ]]; then
+        env
+    fi 
+fi 
 exit 0;
 }
 
