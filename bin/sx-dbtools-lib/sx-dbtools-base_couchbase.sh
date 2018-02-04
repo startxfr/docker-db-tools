@@ -51,6 +51,7 @@ function checkCouchbaseEnv {
         displayErrorMessage "Need to set COUCHBASE_DUMP_DIR"
         exit 128;
     fi 
+    mkdir -p $COUCHBASE_DUMP_DIR
     if checkCouchbaseIsNotInitialized; then
         echo "  - initialize cluster $COUCHBASE_HOST"
         initializeCouchbase

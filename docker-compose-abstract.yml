@@ -2,7 +2,6 @@ app:
   build: ./
   environment:
    - MYSQL_ADMIN=root:rootPassword
-  command: ["create"]
 
 db-mysql:
   image: mariadb:5.5

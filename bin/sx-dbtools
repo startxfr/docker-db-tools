@@ -45,5 +45,6 @@ case $1 in
     daemon|-d)              displayDaemon $@ ;;
     cmd|bash)               displayCommand $@ ;;
     version|--version)      displayVersion $@ ;;
+    welcome)                displayWelcome $@ ;;
     *)                      displayUsage $@ ;;
 esac

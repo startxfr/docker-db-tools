@@ -1,11 +1,6 @@
 FROM couchbase:enterprise-5.0.1
 
-RUN apt-get update -y && \
-    apt-get dist-upgrade -y && \
-    apt-get install -y mariadb-server-5.5 mariadb-client-5.5 tar gzip && \
-    apt-get clean
-
-ENV SXDBTOOLS_VERSION="0.1.11" \
+ENV SXDBTOOLS_VERSION="0.1.12" \
     SXDBTOOLS_BACKUP_DIR=/backup \
     SXDBTOOLS_DUMP_DIR=/dump \
     SXDBTOOLS_DEBUG=true \
@@ -34,7 +29,11 @@ LABEL name="startx/db-tools" \
       fr.startx.component="sx-dbtools"
 
 COPY ./bin /tmp/sxbin
-RUN mv /tmp/sxbin/* /bin/ && \
+RUN apt-get update -y && \
+    apt-get dist-upgrade -y && \
+    apt-get install -y mariadb-server-5.5 mariadb-client-5.5 tar gzip && \
+    apt-get clean && \
+    mv /tmp/sxbin/* /bin/ && \
     rm -rf /tmp/sxbin && \
     mkdir -p $MYSQL_DUMP_DIR && \
     mkdir -p $COUCHBASE_DUMP_DIR && \
@@ -45,13 +44,12 @@ RUN mv /tmp/sxbin/* /bin/ && \
     adduser mysql couchbase > /dev/null  && \
     chmod -R ugo+rw $SXDBTOOLS_BACKUP_DIR $SXDBTOOLS_BACKUP_DIR 
 
-WORKDIR /
+WORKDIR /tmp
 
 USER couchbase
 
 VOLUME $SXDBTOOLS_DUMP_DIR
 VOLUME $SXDBTOOLS_BACKUP_DIR
 
-
 ENTRYPOINT ["/bin/sx-dbtools"]
-CMD ["usage"]
+CMD ["welcome"]

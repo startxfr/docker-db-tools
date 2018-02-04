@@ -19,7 +19,7 @@ app:
     - "./bin/sx-dbtools:/bin/sx-dbtools:z"
     - "./bin/sx-dbtools-lib:/bin/sx-dbtools-lib:z"
     - "./bin/sx-dbtools-process-mysqldump:/bin/sx-dbtools-process-mysqldump:z"
-  command: ["create-user","couchbase"]
+  command: ["cmd"]
 
 db-mysql:
   extends:

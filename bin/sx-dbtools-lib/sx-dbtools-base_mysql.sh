@@ -66,6 +66,7 @@ function checkMysqlEnv {
         displayErrorMessage "Need to set MYSQL_DUMP_DIR"
         exit 128;
     fi 
+    mkdir -p $MYSQL_DUMP_DIR
     if [ -z "$MYSQL_USERS" ]; then
         displayErrorMessage "Need to set MYSQL_USERS"
         exit 128;
