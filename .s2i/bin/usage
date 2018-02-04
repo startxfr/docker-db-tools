@@ -1,5 +1,12 @@
-#!/bin/bash
+#!/bin/bash -e
+#
+# S2I assemble script for the 'sx-dbtools' image.
+# The 'assemble' script builds your application source ready to run.
+#
+# For more information refer to the documentation:
+#  https://github.com/openshift/source-to-image/blob/master/docs/builder_image.md
+#
+PREFIX="---> S2I usage sx-dbtools : "
 
-# inform the user how to use the image
-echo "s2i usage : /bin/sx-dbtools usage"
+echo "$PREFIX Display usage"
 exec /bin/sx-dbtools usage

@@ -1,17 +1,25 @@
-#!/bin/bash
+#!/bin/bash -e
+#
+# S2I assemble script for the 'sx-dbtools' image.
+# The 'assemble' script builds your application source ready to run.
+#
+# For more information refer to the documentation:
+#  https://github.com/openshift/source-to-image/blob/master/docs/builder_image.md
+#
+PREFIX="---> S2I assemble sx-dbtools : "
 
-# move the application source
+echo "$PREFIX Installing application source"
 if [[ -r /tmp/src/backup ]]; then
-    echo "s2i assemble : copy source from /tmp/src/backup > $SXDBTOOLS_BACKUP_DIR"
+    echo "$PREFIX copy source from /tmp/src/backup > $SXDBTOOLS_BACKUP_DIR"
     cp /tmp/src/backup/. $SXDBTOOLS_BACKUP_DIR/
 else; then
-    echo "s2i assemble : no source backup directory. Create $SXDBTOOLS_BACKUP_DIR"
+    echo "$PREFIX no source backup directory. Create $SXDBTOOLS_BACKUP_DIR"
     mkdir -p $SXDBTOOLS_BACKUP_DIR
 fi 
 if [[ -r /tmp/src/dump ]]; then
-    echo "s2i assemble : copy source from /tmp/src/dump > $SXDBTOOLS_DUMP_DIR"
+    echo "$PREFIX copy source from /tmp/src/dump > $SXDBTOOLS_DUMP_DIR"
     cp /tmp/src/dump/. $SXDBTOOLS_DUMP_DIR/
 else; then
-    echo "s2i assemble : no source dump directory. Create $SXDBTOOLS_DUMP_DIR"
+    echo "$PREFIX no source dump directory. Create $SXDBTOOLS_DUMP_DIR"
     mkdir -p $SXDBTOOLS_DUMP_DIR
 fi 

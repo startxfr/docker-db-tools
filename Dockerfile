@@ -29,11 +29,12 @@ LABEL name="startx/db-tools" \
       io.openshift.wants="mysql,couchbase" \
       io.openshift.non-scalable="true" \
       io.openshift.s2i.destination="/tmp" \
-      io.openshift.s2i.scripts-url=image:///usr/libexec/s2i \
-      io.openshift.s2i.assemble-input-files=image:///usr/libexec/s2i \
-      io.s2i.scripts-url=image:///usr/libexec/s2i \
+      io.openshift.s2i.scripts-url=image:///usr/local/s2i \
+      io.openshift.s2i.assemble-input-files=image:///usr/local/s2i \
+      io.s2i.scripts-url=image:///usr/local/s2i \
       fr.startx.component="sx-dbtools"
 
+COPY ./.s2i/bin/ /usr/local/s2i
 COPY ./bin /tmp/sxbin
 RUN apt-get update -y && \
     apt-get dist-upgrade -y && \
