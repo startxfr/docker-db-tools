@@ -9,4 +9,4 @@
 PREFIX="---> S2I usage sx-dbtools : "
 
 echo "$PREFIX Display usage"
-exec /bin/sx-dbtools usage
+exec /bin/sx-dbtools welcome
