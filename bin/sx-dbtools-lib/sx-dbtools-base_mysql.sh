@@ -66,6 +66,7 @@ function checkMysqlEnv {
         displayErrorMessage "Need to set MYSQL_DUMP_DIR"
         exit 128;
     fi 
+    mkdir -p $MYSQL_DUMP_DIR
     if [ -z "$MYSQL_USERS" ]; then
         displayErrorMessage "Need to set MYSQL_USERS"
         exit 128;
@@ -118,6 +119,14 @@ function runCreateMysqlDatabase {
 function createMysqlUsers {
     if [ ! -z "$MYSQL_USERS" ]; then
         for userInfo in $(echo $MYSQL_USERS | tr "," "\n")
+        do
+            set -f; IFS=':'; set -- $userInfo
+            USER=$1; PWD=$2; set +f; unset IFS
+            createMysqlUser $USER $PWD
+        done
+    fi 
+    if [[ -r $MYSQL_DUMP_DIR/USER ]]; then
+        for userInfo in $(cat $MYSQL_DUMP_DIR/USER | tr "," "\n")
         do
             set -f; IFS=':'; set -- $userInfo
             USER=$1; PWD=$2; set +f; unset IFS
@@ -181,6 +190,14 @@ function deleteMysqlUsers {
             set -f; IFS=':'; set -- $userInfo
             USER=$1; PWD=$2; set +f; unset IFS
             echo "  - delete mysql user $1"
+            runDeleteMysqlUser $USER
+        done
+    fi 
+    if [[ -r $MYSQL_DUMP_DIR/USER ]]; then
+        for userInfo in $(cat $MYSQL_DUMP_DIR/USER | tr "," "\n")
+        do
+            set -f; IFS=':'; set -- $userInfo
+            USER=$1; PWD=$2; set +f; unset IFS
             runDeleteMysqlUser $USER
         done
     fi 
