@@ -1,20 +1,15 @@
 FROM couchbase:enterprise-5.0.1
 
-RUN apt-get update -y && \
-    apt-get dist-upgrade -y && \
-    apt-get install -y mariadb-server-5.5 mariadb-client-5.5 tar gzip && \
-    apt-get clean
-
-ENV SXDBTOOLS_VERSION="0.1.11" \
-    SXDBTOOLS_DEBUG=false \
+ENV SXDBTOOLS_VERSION="0.1.15" \
     SXDBTOOLS_BACKUP_DIR=/backup \
     SXDBTOOLS_DUMP_DIR=/dump \
-    MYSQL_DUMP_DIR=$SXDBTOOLS_DUMP_DIR/mysql \
+    SXDBTOOLS_DEBUG=false \
+    MYSQL_DUMP_DIR=/dump/mysql \
     MYSQL_DUMP_DATAFILE="data.sql" \
     MYSQL_DUMP_SCHEMAFILE="schema.sql" \
     MYSQL_DUMP_ISEXTENDED=true \
     MYSQL_HOST=dbm \
-    COUCHBASE_DUMP_DIR=$SXDBTOOLS_DUMP_DIR/couchbase \
+    COUCHBASE_DUMP_DIR=/dump/couchbase \
     COUCHBASE_DUMP_DATAFILE="data.json" \
     COUCHBASE_HOST=dbc \
     SUMMARY="Database tools for manipulating couchbase and mariadb container" \
@@ -40,8 +35,11 @@ LABEL name="startx/db-tools" \
       fr.startx.component="sx-dbtools"
 
 COPY ./bin /tmp/sxbin
-COPY ./.s2i/bin/* /usr/libexec/s2i/
-RUN mv /tmp/sxbin/* /bin/ && \
+RUN apt-get update -y && \
+    apt-get dist-upgrade -y && \
+    apt-get install -y mariadb-server-5.5 mariadb-client-5.5 tar gzip && \
+    apt-get clean && \
+    mv /tmp/sxbin/* /bin/ && \
     rm -rf /tmp/sxbin && \
     mkdir -p $MYSQL_DUMP_DIR && \
     mkdir -p $COUCHBASE_DUMP_DIR && \
@@ -53,13 +51,12 @@ RUN mv /tmp/sxbin/* /bin/ && \
     chgrp -R 0 $SXDBTOOLS_BACKUP_DIR $SXDBTOOLS_BACKUP_DIR  && \
     chmod -R g=u $SXDBTOOLS_BACKUP_DIR $SXDBTOOLS_BACKUP_DIR 
 
-WORKDIR /
+WORKDIR /tmp
 
 USER 1001
 
 VOLUME $SXDBTOOLS_DUMP_DIR
 VOLUME $SXDBTOOLS_BACKUP_DIR
 
-
 ENTRYPOINT ["/bin/sx-dbtools"]
-CMD ["usage"]
+CMD ["welcome"]
