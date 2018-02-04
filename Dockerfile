@@ -30,9 +30,10 @@ LABEL name="startx/db-tools" \
       io.openshift.tags="builder,db,mysql,couchbase" \
       io.openshift.wants="mysql,couchbase" \
       io.openshift.non-scalable="true" \
+      io.openshift.min-memory="500Mi" \
+      io.openshift.min-cpu="500m" \
       io.openshift.s2i.destination="/tmp" \
       io.openshift.s2i.scripts-url=image:///usr/local/s2i \
-      io.openshift.s2i.assemble-input-files=image:///usr/local/s2i \
       io.s2i.scripts-url=image:///usr/local/s2i \
       fr.startx.component="sx-dbtools"
 
@@ -51,8 +52,8 @@ RUN apt-get update -y && \
     rm -f /bin/sx-dbtools*.c && \
     adduser couchbase mysql > /dev/null && \
     adduser mysql couchbase > /dev/null  && \
-    chgrp -R 0 $SXDBTOOLS_BACKUP_DIR $SXDBTOOLS_BACKUP_DIR  && \
-    chmod -R g=u $SXDBTOOLS_BACKUP_DIR $SXDBTOOLS_BACKUP_DIR 
+    chgrp -R 0 $SXDBTOOLS_BACKUP_DIR $SXDBTOOLS_BACKUP_DIR /tmp && \
+    chmod -R g=u $SXDBTOOLS_BACKUP_DIR $SXDBTOOLS_BACKUP_DIR /tmp
 
 WORKDIR /tmp
 
