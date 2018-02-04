@@ -12,6 +12,7 @@ function displayMysqlTabInfoBlock {
 
 function checkMysqlEnv {
     if [ ! -z "$DBM_ENV_MARIADB_VERSION" ]; then
+        displayDebugMessage "mysql linked container labeled 'dbm' via docker"
         if [ -z "$DBM_PORT_3306_TCP_ADDR" ]; then
             displayErrorMessage "Need to expose port 3306 in your mysql container"
             exit 128;
@@ -24,6 +25,26 @@ function checkMysqlEnv {
                 exit 128;
             fi 
             MYSQL_PASSWORD="$DBM_ENV_MYSQL_ROOT_PASSWORD"
+        else
+            set -f; IFS=':'; set -- $MYSQL_ADMIN
+            MYSQL_USER=$1; 
+            MYSQL_PASSWORD=$2; 
+            set +f; unset IFS;
+            if [ -z "$MYSQL_PASSWORD" ]; then
+                displayErrorMessage "Need to set MYSQL_ADMIN with username:password"
+                exit 128;
+            fi 
+        fi 
+    elif [ ! -z "$DBM_SERVICE_HOST" ]; then
+        displayDebugMessage "mysql linked container labeled 'dbm' via kubernetes"
+        if [ -z "$DBM_PORT_3306_TCP_PORT" ]; then
+            displayErrorMessage "Need to expose port 3306 in your mysql container"
+            exit 128;
+        fi 
+        MYSQL_HOST="$DBM_SERVICE_HOST"
+        if [ -z "$MYSQL_ADMIN" ]; then
+            displayErrorMessage "Need to set MYSQL_ADMIN environment var in your sx-dbtools container"
+            exit 128;
         else
             set -f; IFS=':'; set -- $MYSQL_ADMIN
             MYSQL_USER=$1; 

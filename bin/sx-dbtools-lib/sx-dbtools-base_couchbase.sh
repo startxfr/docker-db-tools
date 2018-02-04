@@ -11,12 +11,21 @@ function displayCouchbaseTabInfoBlock {
 
 function checkCouchbaseEnv {
     if [ ! -z "$DBC_PORT_8091_TCP_START" ]; then
+        displayDebugMessage "couchbase linked container labeled 'dbc' via docker"
         if [ -z "$DBC_PORT_8091_TCP_ADDR" ]; then
             displayErrorMessage "Need to expose port 8091 from your couchbase container"
             exit 128;
         fi 
         COUCHBASE_HOST="$DBC_PORT_8091_TCP_ADDR"
         COUCHBASE_PORT="$DBC_PORT_8091_TCP_PORT_START"
+    elif [ ! -z "$DBC_SERVICE_HOST" ]; then
+        displayDebugMessage "couchbase linked container labeled 'dbc' via kubernetes"
+        if [ -z "$DBC_PORT_8091_TCP_PORT" ]; then
+            displayErrorMessage "Need to expose port 8091 from your couchbase container"
+            exit 128;
+        fi 
+        COUCHBASE_HOST="$DBC_SERVICE_HOST"
+        COUCHBASE_PORT="$DBC_PORT_8091_TCP_PORT"
     else
         displayDebugMessage "No mysql linked container labeled 'dbc'"
         if [ -z "$COUCHBASE_HOST" ]; then
