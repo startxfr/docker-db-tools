@@ -27,6 +27,8 @@ LABEL name="startx/db-tools" \
       io.openshift.tags="db,mysql,couchbase" \
       io.openshift.wants="mysql,couchbase" \
       io.openshift.non-scalable="true" \
+      io.openshift.min-memory="500Mi" \
+      io.openshift.min-cpu="500m" \
       io.openshift.s2i.destination="/tmp" \
       fr.startx.component="sx-dbtools"
 
