@@ -1,5 +1,7 @@
 FROM couchbase:enterprise-5.0.1
 
+MAINTAINER Startx <dev@startx.fr>
+
 ENV SXDBTOOLS_VERSION="0.1.19" \
     SXDBTOOLS_BACKUP_DIR=/backup \
     SXDBTOOLS_DUMP_DIR=/dump \
@@ -19,7 +21,6 @@ LABEL name="startx/db-tools" \
       description="$SUMMARY" \
       version="$SXDBTOOLS_VERSION" \
       release="1" \
-      author="Startx <dev@startx.fr>" \
       maintainer="Startx <dev@startx.fr>" \
       io.k8s.description="$SUMMARY" \
       io.k8s.display-name="sx-dbtools" \
