@@ -2,7 +2,7 @@ FROM couchbase:enterprise-5.0.1
 
 MAINTAINER Startx <dev@startx.fr>
 
-ENV SXDBTOOLS_VERSION="0.1.19" \
+ENV SXDBTOOLS_VERSION="0.1.20" \
     SXDBTOOLS_BACKUP_DIR=/backup \
     SXDBTOOLS_DUMP_DIR=/dump \
     SXDBTOOLS_DEBUG=true \
@@ -27,6 +27,8 @@ LABEL name="startx/db-tools" \
       io.openshift.tags="db,mysql,couchbase" \
       io.openshift.wants="mysql,couchbase" \
       io.openshift.non-scalable="true" \
+      io.openshift.min-memory="500Mi" \
+      io.openshift.min-cpu="500m" \
       io.openshift.s2i.destination="/tmp" \
       fr.startx.component="sx-dbtools"
 
