@@ -46,9 +46,9 @@
                         }
                     },
                     {
-                        "name": "0.1.19",
+                        "name": "0.1.21",
                         "annotations": {
-                            "openshift.io/display-name": "S2I sx-dbtools (v0.1.19)",
+                            "openshift.io/display-name": "S2I sx-dbtools (v0.1.21)",
                             "description": "Database tools for manipulating couchbase and mariadb container. For more information about using this builder image, including OpenShift considerations, see https://github.com/startxfr/docker-db-tools-example.git",
                             "iconClass": "icon-mysql-database",
                             "tags": "builder,mysql,couchbase",
@@ -58,7 +58,7 @@
                         },
                         "from": {
                             "kind": "DockerImage",
-                            "name": "startx/db-tools:0.1.19-s2i"
+                            "name": "startx/db-tools:0.1.21-s2i"
                         }
                     },
                     {
