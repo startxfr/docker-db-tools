@@ -13,13 +13,14 @@ app:
    - COUCHBASE_ADMIN=demo:password
    - COUCHBASE_BUCKET=demo,demo2
    - COUCHBASE_USERS=demo1:password1,demo2
+   - SXDBTOOLS_DEBUG=false
   volumes:
     - "./sample/dump:/dump:z"
     - "./sample/backup:/backup:z"
     - "./bin/sx-dbtools:/bin/sx-dbtools:z"
     - "./bin/sx-dbtools-lib:/bin/sx-dbtools-lib:z"
     - "./bin/sx-dbtools-process-mysqldump:/bin/sx-dbtools-process-mysqldump:z"
-  command: ["create-user","couchbase"]
+  command: ["info"]
 
 db-mysql:
   extends:

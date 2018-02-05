@@ -5,11 +5,22 @@ OS=`cat /etc/os-release | grep "PRETTY_NAME" | sed 's/PRETTY_NAME=//g' | sed 's/
 #######################################
 # Display debug message
 #######################################
-function displayDebugMessage {
+function isDebug {
     if [ ! -z "$SXDBTOOLS_DEBUG" ]; then
         if [[ $SXDBTOOLS_DEBUG == *"true"* ]]; then
-            echo "DEBUG: " $@
+            echo "true";
+            return;
         fi 
+    fi 
+    echo "false";
+}
+
+#######################################
+# Display debug message
+#######################################
+function displayDebugMessage {
+    if [ `isDebug` == "true" ]; then
+            echo "DEBUG: " $@
     fi 
 }
 
@@ -100,31 +111,31 @@ sx-dbtools v$SXDBTOOLS_VERSION $HOSTNAME ($OS)
 Usage:
   sx-dbtools command [database-type/sub-command]
 
-Global Commands:
+- Global Commands:
   create           Create user(s) + database(s) + data
   delete           Delete user(s) + database(s) + data
   recreate         Delete and create user(s) + database(s) + data
 
-Data Commands:
+- Data Commands:
   dump             Dump database(s) in dump directory
   import           import database(s) from dump directory
   create-data      alias of import command
 
-Backup / Restore Commands:
+- Backup / Restore Commands:
   backup           Backup database(s) in backup directory
   restore          Restore database(s) in backup directory
 
-User management Commands:
+- User management Commands:
   create-user      Create database(s) user(s)
   delete-user      Delete database(s) user(s)
   recreate-user    Delete and create database(s) user(s)
 
-Database Commands:
+- Database Commands:
   create-db        Create database(s)
   delete-db        Delete database(s)
   recreate-db      Delete and create database(s)
 
-sx-dbtools Commands:
+- sx-dbtools Commands:
   usage            this message
   <cmd> help       display information about a command
   info             give information about the running sx-dbtools
@@ -137,6 +148,7 @@ Examples:
   sx-dbtools usage
   # Dump all databases
   sx-dbtools dump
+
 EOF
 exit 0;
 }
@@ -175,11 +187,6 @@ following command to perform actions
   daemon           execute the container as a daemon (keep alive)
   cmd              execute a command inside the container
 
-Examples:
-  # Get usage message
-  docker run startx/sx-dbtools usage
-  # Dump all databases
-  docker run --link mysql:dbm -v ./:/dump startx/sx-dbtools dump
 EOF
 exit 0;
 }
@@ -193,11 +200,26 @@ sx-dbtools version : $SXDBTOOLS_VERSION
 sx-dbtools container : $HOSTNAME
 sx-dbtools OS : $OS
 mysql dump directory : $MYSQL_DUMP_DIR
+if [ `isDebug` == "true" ]; then
+    mysql schema file : $MYSQL_DUMP_SCHEMAFILE
+    mysql data file   : $MYSQL_DUMP_DATAFILE
+fi 
 mysql host : $MYSQL_HOST
 mysql database(s) : $MYSQL_DATABASE
+if [ `isDebug` == "true" ]; then
+    mysql admin       : $MYSQL_ADMIN
+    mysql user(s)     : $MYSQL_USERS
+fi 
 couchbase dump directory : $COUCHBASE_DUMP_DIR
+if [ `isDebug` == "true" ]; then
+    couchbase data file: $COUCHBASE_DUMP_DATAFILE
+fi 
 couchbase host : $COUCHBASE_HOST
 couchbase bucket(s) : $COUCHBASE_BUCKET
+if [ `isDebug` == "true" ]; then
+    couchbase admin   : $COUCHBASE_ADMIN
+    couchbase user(s) : $COUCHBASE_USERS
+fi
 EOF
 exit 0;
 }
@@ -207,10 +229,8 @@ exit 0;
 #######################################
 function displayVersion {
 echo $SXDBTOOLS_VERSION
-if [ ! -z "$SXDBTOOLS_DEBUG" ]; then
-    if [[ $SXDBTOOLS_DEBUG == *"true"* ]]; then
-        env
-    fi 
+if [ `isDebug` == "true" ]; then
+    env
 fi 
 exit 0;
 }
@@ -232,7 +252,11 @@ function displayCommand {
 #######################################
 function displayDaemon {
     while true; do
-        echo "sx-dbtools is alive on $HOSTNAME"
+        if [ `isDebug` == "true" ]; then
+            echo "sx-dbtools is alive on $HOSTNAME running sx-dbtools v$SXDBTOOLS_VERSION"
+        else
+            echo "sx-dbtools is alive on $HOSTNAME"
+        fi
         sleep 10
     done
 }
