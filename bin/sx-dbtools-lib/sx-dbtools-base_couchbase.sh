@@ -6,6 +6,11 @@
 #######################################
 function displayCouchbaseTabInfoBlock {
     echo "  - server : $COUCHBASE_HOST"
+    echo "  - bucket(s) : $COUCHBASE_BUCKET"
+    if [ `isDebug` == "true" ]; then
+        echo "  - couchbase admin : $COUCHBASE_ADMIN"
+        echo "  - couchbase user(s) : $COUCHBASE_USERS"
+    fi 
 }
 
 
@@ -18,6 +23,7 @@ function checkCouchbaseEnv {
         fi 
         COUCHBASE_HOST="$DBC_PORT_8091_TCP_ADDR"
         COUCHBASE_PORT="$DBC_PORT_8091_TCP_PORT_START"
+        displayDebugMessage "couchbase host set to $COUCHBASE_HOST"
     elif [ ! -z "$DBC_SERVICE_HOST" ]; then
         displayDebugMessage "couchbase linked container labeled 'dbc' via kubernetes"
         if [ -z "$DBC_PORT_8091_TCP_PORT" ]; then
@@ -26,12 +32,14 @@ function checkCouchbaseEnv {
         fi 
         COUCHBASE_HOST="$DBC_SERVICE_HOST"
         COUCHBASE_PORT="$DBC_PORT_8091_TCP_PORT"
+        displayDebugMessage "couchbase host set to $COUCHBASE_HOST"
     else
-        displayDebugMessage "No mysql linked container labeled 'dbc'"
+        displayDebugMessage "No couchbase linked container labeled 'dbc'"
         if [ -z "$COUCHBASE_HOST" ]; then
             displayErrorMessage "Need to set COUCHBASE_HOST"
             exit 128;
         fi 
+        displayDebugMessage "couchbase host set to $COUCHBASE_HOST"
         if [ -z "$COUCHBASE_PORT" ]; then
             COUCHBASE_PORT=8091
         fi 
@@ -54,6 +62,8 @@ function checkCouchbaseEnv {
             else 
                 COUCHBASE_PASSWORD=$PWD
             fi
+            displayDebugMessage "couchbase admin user set to $COUCHBASE_ADMIN"
+            displayDebugMessage "couchbase admin password set to $COUCHBASE_PASSWORD"
         fi
     fi 
     if [ -z "$COUCHBASE_DUMP_DIR" ]; then
