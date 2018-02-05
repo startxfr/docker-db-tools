@@ -5,8 +5,15 @@
 # Display small repetitive information in tabulated information block
 #######################################
 function displayMysqlTabInfoBlock {
-    echo "  - mysql version : $DBM_ENV_MARIADB_VERSION"
+    if [ ! -z "$DBM_ENV_MARIADB_VERSION" ]; then
+        echo "  - mysql version : $DBM_ENV_MARIADB_VERSION"
+    fi
     echo "  - server : $MYSQL_HOST"
+    echo "  - database(s) : $MYSQL_DATABASE"
+    if [ `isDebug` == "true" ]; then
+        echo "  - mysql admin : $MYSQL_ADMIN"
+        echo "  - mysql user(s) : $MYSQL_USERS"
+    fi 
 }
 
 
@@ -18,12 +25,15 @@ function checkMysqlEnv {
             exit 128;
         fi 
         MYSQL_HOST="$DBM_PORT_3306_TCP_ADDR"
+        displayDebugMessage "mysql host set to $MYSQL_HOST"
         if [ -z "$MYSQL_ADMIN" ]; then
             MYSQL_USER="root"
+            displayDebugMessage "mysql admin user set to root"
             if [ -z "$DBM_ENV_MYSQL_ROOT_PASSWORD" ]; then
                 displayErrorMessage "Need to set MYSQL_ROOT_PASSWORD environment var in your mysql container"
                 exit 128;
             fi 
+            displayDebugMessage "mysql admin password set to $MYSQL_PASSWORD"
             MYSQL_PASSWORD="$DBM_ENV_MYSQL_ROOT_PASSWORD"
         else
             set -f; IFS=':'; set -- $MYSQL_ADMIN
@@ -34,6 +44,8 @@ function checkMysqlEnv {
                 displayErrorMessage "Need to set MYSQL_ADMIN with username:password"
                 exit 128;
             fi 
+            displayDebugMessage "mysql admin user set to $MYSQL_USER"
+            displayDebugMessage "mysql admin password set to $MYSQL_PASSWORD"
         fi 
     elif [ ! -z "$DBM_SERVICE_HOST" ]; then
         displayDebugMessage "mysql linked container labeled 'dbm' via kubernetes"
@@ -42,6 +54,7 @@ function checkMysqlEnv {
             exit 128;
         fi 
         MYSQL_HOST="$DBM_SERVICE_HOST"
+        displayDebugMessage "mysql host set to $MYSQL_HOST"
         if [ -z "$MYSQL_ADMIN" ]; then
             displayErrorMessage "Need to set MYSQL_ADMIN environment var in your sx-dbtools container"
             exit 128;
@@ -54,6 +67,8 @@ function checkMysqlEnv {
                 displayErrorMessage "Need to set MYSQL_ADMIN with username:password"
                 exit 128;
             fi 
+            displayDebugMessage "mysql admin user set to $MYSQL_USER"
+            displayDebugMessage "mysql admin password set to $MYSQL_PASSWORD"
         fi 
     else
         displayDebugMessage "No mysql linked container labeled 'dbm'"
@@ -78,6 +93,8 @@ function checkMysqlEnv {
             displayErrorMessage "Need to set MYSQL_PASSWORD"
             exit 128;
         fi 
+        displayDebugMessage "mysql admin user set to $MYSQL_USER"
+        displayDebugMessage "mysql admin password set to $MYSQL_PASSWORD"
     fi 
     if [ -z "$MYSQL_DATABASE" ]; then
         displayErrorMessage "Need to set MYSQL_DATABASE"
