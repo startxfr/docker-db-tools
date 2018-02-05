@@ -1,4 +1,4 @@
-# docker-db-tools ![sxapi](https://img.shields.io/badge/latest-v0.1.19-blue.svg)
+# docker-db-tools ![sxapi](https://img.shields.io/badge/latest-v0.1.20-blue.svg)
 
 SXDbTools is a container for managing data from and to a mysql and/or a couchbase backend. All command work with a couchbase cluser and / or a mysql server the same way.
 
@@ -30,8 +30,8 @@ Here is a list of the various available versions.
 | `testing`      | [testing](https://github.com/startxfr/docker-db-tools/blob/testing)         | [Dockerfile](https://github.com/startxfr/docker-db-tools/blob/testing/Dockerfile)     | Docker image with debug activated + local sample volume + docker-compose test environment
 | `stable`       | [docker](https://github.com/startxfr/docker-db-tools/blob/docker)           | [Dockerfile](https://github.com/startxfr/docker-db-tools/blob/docker/Dockerfile)      | Docker image with debug desactivated
 | `stable-s2i`   | [s2i](https://github.com/startxfr/docker-db-tools/blob/s2i)                 | [Dockerfile](https://github.com/startxfr/docker-db-tools/blob/s2i/Dockerfile)         | Docker image with s2i config + debug desactivated
-| `0.1.19`       | [v0.1.19](https://github.com/startxfr/docker-db-tools/blob/v0.1.19)         | [Dockerfile](https://github.com/startxfr/docker-db-tools/blob/v0.1.19/Dockerfile)     | Latest release version coresponding to a fixed in time stable release (full list available on [tag list](https://hub.docker.com/r/startx/db-tools/tags/))
-| `0.1.19-s2i`   | [v0.1.19-s2i](https://github.com/startxfr/docker-db-tools/blob/v0.1.19-s2i) | [Dockerfile](https://github.com/startxfr/docker-db-tools/blob/v0.1.19-s2i/Dockerfile) | Latest release version coresponding to a fixed in time stable release (full list available on [tag list](https://hub.docker.com/r/startx/db-tools/tags/))
+| `0.1.20`       | [v0.1.20](https://github.com/startxfr/docker-db-tools/blob/v0.1.20)         | [Dockerfile](https://github.com/startxfr/docker-db-tools/blob/v0.1.20/Dockerfile)     | Latest release version coresponding to a fixed in time stable release (full list available on [tag list](https://hub.docker.com/r/startx/db-tools/tags/))
+| `0.1.20-s2i`   | [v0.1.20-s2i](https://github.com/startxfr/docker-db-tools/blob/v0.1.20-s2i) | [Dockerfile](https://github.com/startxfr/docker-db-tools/blob/v0.1.20-s2i/Dockerfile) | Latest release version coresponding to a fixed in time stable release (full list available on [tag list](https://hub.docker.com/r/startx/db-tools/tags/))
 
 ## Getting Started
 
@@ -48,10 +48,7 @@ you must tag properly the database service when you link your containers.
 | dbm       | mysql container running offical `mariadb:5.5` image
 | dbc       | couchbase container running offical `couchbase:5.0.1` image
 
-See [docker linked services examples](https://github.com/startxfr/docker-db-tools/tree/master/docs/USE_docker.md#linked-services), 
-[docker-compose linked services examples](https://github.com/startxfr/docker-db-tools/tree/master/docs/USE_compose.md#linked-services) or 
-[openshift linked services examples](https://github.com/startxfr/docker-db-tools/tree/master/docs/USE_openshift.md#linked-services)
-for copy and paste examples.
+See [docker linked services examples](https://github.com/startxfr/docker-db-tools/tree/master/docs/USE_docker.md#linked-services), [docker-compose linked services examples](https://github.com/startxfr/docker-db-tools/tree/master/docs/USE_compose.md#linked-services) or [openshift linked services examples](https://github.com/startxfr/docker-db-tools/tree/master/docs/USE_openshift.md#linked-services) for copy and paste examples.
 
 ## Data volumes
 
@@ -63,10 +60,7 @@ loaded or dumped properly.
 | `/dump`            | volume containing a `mysql` directory and/or a `couchbase` directory
 | `/backup`          | volume containing backup files
 
-See [docker data volumes examples](https://github.com/startxfr/docker-db-tools/tree/master/docs/USE_docker.md#data-volumes), 
-[docker-compose data volumes examples](https://github.com/startxfr/docker-db-tools/tree/master/docs/USE_compose.md#data-volumes) or 
-[openshift data volumes examples](https://github.com/startxfr/docker-db-tools/tree/master/docs/USE_openshift.md#data-volumes)
-for copy and paste examples.
+See [docker data volumes examples](https://github.com/startxfr/docker-db-tools/tree/master/docs/USE_docker.md#data-volumes), [docker-compose data volumes examples](https://github.com/startxfr/docker-db-tools/tree/master/docs/USE_compose.md#data-volumes) or [openshift data volumes examples](https://github.com/startxfr/docker-db-tools/tree/master/docs/USE_openshift.md#data-volumes) for copy and paste examples.
 
 ## Environement variables
 
@@ -94,10 +88,7 @@ various kind of backend infrastructure (container, host, remote, IaaS, DBaaS)
 | COUCHBASE_USERS          |                 | Mysql list of users to the cluster "," is separator between users and ":" between user and his password. ex : user:password,user2:user2Password,user3,user4
 | COUCHBASE_BUCKET         |                 | Couchbase bucket name to use or create
 
-See [docker environement variables examples](https://github.com/startxfr/docker-db-tools/tree/master/docs/USE_docker.md#environement-variables), 
-[docker-compose environement variables examples](https://github.com/startxfr/docker-db-tools/tree/master/docs/USE_compose.md#environement-variables) or 
-[openshift environement variables examples](https://github.com/startxfr/docker-db-tools/tree/master/docs/USE_openshift.md#environement-variables)
-for copy and paste examples.
+See [docker environement variables examples](https://github.com/startxfr/docker-db-tools/tree/master/docs/USE_docker.md#environement-variables), [docker-compose environement variables examples](https://github.com/startxfr/docker-db-tools/tree/master/docs/USE_compose.md#environement-variables) or [openshift environement variables examples](https://github.com/startxfr/docker-db-tools/tree/master/docs/USE_openshift.md#environement-variables) for copy and paste examples.
 
 ## Actions you can perform
 
@@ -115,10 +106,7 @@ for copy and paste examples.
 | recreate       | mysql/couchbase |          | Delete and create all user(s) + database(s) + data for one database type (mysql or couchbase)
 | recreate       | mysql/couchbase | database | Delete and create one database + data for one database type (mysql or couchbase)
 
-See [docker global commands examples](https://github.com/startxfr/docker-db-tools/tree/master/docs/USE_docker.md#global-commands), 
-[docker-compose global commands examples](https://github.com/startxfr/docker-db-tools/tree/master/docs/USE_compose.md#global-commands) or 
-[openshift global commands examples](https://github.com/startxfr/docker-db-tools/tree/master/docs/USE_openshift.md#global-commands)
-for copy and paste examples.
+See [docker global commands examples](https://github.com/startxfr/docker-db-tools/tree/master/docs/USE_docker.md#global-commands), [docker-compose global commands examples](https://github.com/startxfr/docker-db-tools/tree/master/docs/USE_compose.md#global-commands) or [openshift global commands examples](https://github.com/startxfr/docker-db-tools/tree/master/docs/USE_openshift.md#global-commands) for copy and paste examples.
 
 ### Data Commands
 
@@ -132,10 +120,7 @@ for copy and paste examples.
 | import         | mysql/couchbase | database | import database(s) from dump directory
 | create-data    |                 |          | alias of import command
 
-See [docker data commands examples](https://github.com/startxfr/docker-db-tools/tree/master/docs/USE_docker.md#data-commands), 
-[docker-compose data commands examples](https://github.com/startxfr/docker-db-tools/tree/master/docs/USE_compose.md#data-commands) or 
-[openshift data commands examples](https://github.com/startxfr/docker-db-tools/tree/master/docs/USE_openshift.md#data-commands)
-for copy and paste examples.
+See [docker data commands examples](https://github.com/startxfr/docker-db-tools/tree/master/docs/USE_docker.md#data-commands), [docker-compose data commands examples](https://github.com/startxfr/docker-db-tools/tree/master/docs/USE_compose.md#data-commands) or [openshift data commands examples](https://github.com/startxfr/docker-db-tools/tree/master/docs/USE_openshift.md#data-commands) for copy and paste examples.
 
 ### Backup / Restore Commands
 
@@ -146,10 +131,7 @@ for copy and paste examples.
 | backup         | mysql/couchbase | database | Backup one database or bucket in backup directory (not implemented)
 | restore        | archivename.tgz |          | Restore database(s) in backup directory (not implemented)
 
-See [docker backup/restore commands examples](https://github.com/startxfr/docker-db-tools/tree/master/docs/USE_docker.md#backup--restore-commands), 
-[docker-compose backup/restore commands examples](https://github.com/startxfr/docker-db-tools/tree/master/docs/USE_compose.md#backup--restore-commands) or 
-[openshift backup/restore commands examples](https://github.com/startxfr/docker-db-tools/tree/master/docs/USE_openshift.md#backup--restore-commands)
-for copy and paste examples.
+See [docker backup/restore commands examples](https://github.com/startxfr/docker-db-tools/tree/master/docs/USE_docker.md#backup--restore-commands), [docker-compose backup/restore commands examples](https://github.com/startxfr/docker-db-tools/tree/master/docs/USE_compose.md#backup--restore-commands) or [openshift backup/restore commands examples](https://github.com/startxfr/docker-db-tools/tree/master/docs/USE_openshift.md#backup--restore-commands) for copy and paste examples.
 
 ### Database Commands
 
@@ -165,10 +147,7 @@ for copy and paste examples.
 | recreate-db    | mysql/couchbase |          | Delete and create all database(s) for one database type (mysql or couchbase)
 | recreate-db    | mysql/couchbase | database | Delete and create one database for one database type (mysql or couchbase)
 
-See [docker database commands examples](https://github.com/startxfr/docker-db-tools/tree/master/docs/USE_docker.md#database-commands), 
-[docker-compose database commands examples](https://github.com/startxfr/docker-db-tools/tree/master/docs/USE_compose.md#database-commands) or 
-[openshift database commands examples](https://github.com/startxfr/docker-db-tools/tree/master/docs/USE_openshift.md#database-commands)
-for copy and paste examples.
+See [docker database commands examples](https://github.com/startxfr/docker-db-tools/tree/master/docs/USE_docker.md#database-commands), [docker-compose database commands examples](https://github.com/startxfr/docker-db-tools/tree/master/docs/USE_compose.md#database-commands) or [openshift database commands examples](https://github.com/startxfr/docker-db-tools/tree/master/docs/USE_openshift.md#database-commands) for copy and paste examples.
 
 
 ### User management Commands
@@ -185,10 +164,7 @@ for copy and paste examples.
 | recreate-user  | mysql/couchbase |          | Delete and create all user(s) for one database type (mysql or couchbase)
 | recreate-user  | mysql/couchbase | user     | Delete and create one user for one database type (mysql or couchbase)
 
-See [docker user management commands examples](https://github.com/startxfr/docker-db-tools/tree/master/docs/USE_docker.md#user-management-commands), 
-[docker-compose user management commands examples](https://github.com/startxfr/docker-db-tools/tree/master/docs/USE_compose.md#user-management-commands) or 
-[openshift user management commands examples](https://github.com/startxfr/docker-db-tools/tree/master/docs/USE_openshift.md#user-management-commands)
-for copy and paste examples.
+See [docker user management commands examples](https://github.com/startxfr/docker-db-tools/tree/master/docs/USE_docker.md#user-management-commands), [docker-compose user management commands examples](https://github.com/startxfr/docker-db-tools/tree/master/docs/USE_compose.md#user-management-commands) or [openshift user management commands examples](https://github.com/startxfr/docker-db-tools/tree/master/docs/USE_openshift.md#user-management-commands) for copy and paste examples.
 
 ### sx-dbtools Commands
 
@@ -203,10 +179,7 @@ for copy and paste examples.
 | cmd            | command         |          | execute the command and return result
 | daemon         |                 |          | container never giveup and run permanently
 
-See [docker sx-dbtools commands examples](https://github.com/startxfr/docker-db-tools/tree/master/docs/USE_docker.md#sx-dbtools-commands), 
-[docker-compose sx-dbtools commands examples](https://github.com/startxfr/docker-db-tools/tree/master/docs/USE_compose.md#sx-dbtools-commands) or 
-[openshift sx-dbtools commands examples](https://github.com/startxfr/docker-db-tools/tree/master/docs/USE_openshift.md#sx-dbtools-commands)
-for copy and paste examples.
+See [docker sx-dbtools commands examples](https://github.com/startxfr/docker-db-tools/tree/master/docs/USE_docker.md#sx-dbtools-commands), [docker-compose sx-dbtools commands examples](https://github.com/startxfr/docker-db-tools/tree/master/docs/USE_compose.md#sx-dbtools-commands) or [openshift sx-dbtools commands examples](https://github.com/startxfr/docker-db-tools/tree/master/docs/USE_openshift.md#sx-dbtools-commands) for copy and paste examples.
 
 ## Troubleshooting
 
