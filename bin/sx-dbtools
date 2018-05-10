@@ -35,6 +35,12 @@ if [ ! -z "$SXCMD" ]; then
     set -- ${s[0]} ${s[1]} ${s[2]} ${s[3]} ${s[4]} ${s[5]}
 fi
 
+
+if [[ $SXDBTOOLS_DELAY =~ ^?[0-9]+$ ]]; then
+    echo "Delay execution in $SXDBTOOLS_DELAY seconds"
+    sleep $SXDBTOOLS_DELAY
+fi
+
 # Dispatch input arguments
 case $1 in
     dump)                   dispatcherDump $@ ;;

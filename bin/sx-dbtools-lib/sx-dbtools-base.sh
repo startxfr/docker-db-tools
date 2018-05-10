@@ -195,32 +195,30 @@ exit 0;
 # Display sx-dbtools information
 #######################################
 function displayInformation {
-cat <<EOF
-sx-dbtools version : $SXDBTOOLS_VERSION
-sx-dbtools container : $HOSTNAME
-sx-dbtools OS : $OS
-mysql dump directory : $MYSQL_DUMP_DIR
+echo "sx-dbtools version : $SXDBTOOLS_VERSION"
+echo "sx-dbtools container : $HOSTNAME"
+echo "sx-dbtools OS : $OS"
+echo "mysql dump directory : $MYSQL_DUMP_DIR"
 if [ `isDebug` == "true" ]; then
-    mysql schema file : $MYSQL_DUMP_SCHEMAFILE
-    mysql data file   : $MYSQL_DUMP_DATAFILE
+    echo "mysql schema file : $MYSQL_DUMP_SCHEMAFILE"
+    echo "mysql data file   : $MYSQL_DUMP_DATAFILE"
 fi 
-mysql host : $MYSQL_HOST
-mysql database(s) : $MYSQL_DATABASE
+echo "mysql host : $MYSQL_HOST"
+echo "mysql database(s) : $MYSQL_DATABASE"
 if [ `isDebug` == "true" ]; then
-    mysql admin       : $MYSQL_ADMIN
-    mysql user(s)     : $MYSQL_USERS
+    echo "mysql admin       : $MYSQL_ADMIN"
+    echo "mysql user(s)     : $MYSQL_USERS"
 fi 
-couchbase dump directory : $COUCHBASE_DUMP_DIR
+echo "couchbase dump directory : $COUCHBASE_DUMP_DIR"
 if [ `isDebug` == "true" ]; then
-    couchbase data file: $COUCHBASE_DUMP_DATAFILE
+    echo "couchbase data file: $COUCHBASE_DUMP_DATAFILE"
 fi 
-couchbase host : $COUCHBASE_HOST
-couchbase bucket(s) : $COUCHBASE_BUCKET
+echo "couchbase host : $COUCHBASE_HOST"
+echo "couchbase bucket(s) : $COUCHBASE_BUCKET"
 if [ `isDebug` == "true" ]; then
-    couchbase admin   : $COUCHBASE_ADMIN
-    couchbase user(s) : $COUCHBASE_USERS
+    echo "couchbase admin   : $COUCHBASE_ADMIN"
+    echo "couchbase user(s) : $COUCHBASE_USERS"
 fi
-EOF
 exit 0;
 }
 
