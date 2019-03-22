@@ -1,8 +1,8 @@
 [
   {
     "_id":"app::version",
-    "app":"sx-dbtools",
     "stage":"test",
-    "version":"0.1.26"
+    "app":"sx-dbtools",
+    "version":"0.1.27"
   }
 ]
