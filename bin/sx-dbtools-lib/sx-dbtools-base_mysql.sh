@@ -325,7 +325,7 @@ function importMysqlDatabaseSchema {
             echo "  - importing schema $MYSQL_DUMP_SCHEMAFILE > $1 LOADED"
             runImportMysqlDatabaseSqlDump $1 $MYSQL_DUMP_DIR/$MYSQL_DUMP_SCHEMAFILE
         else
-          displayDebugMessage "base mysql : No database schema import because no $1.$MYSQL_DUMP_SCHEMAFILE file not found"
+          displayDebugMessage "base mysql : No database schema import because no $1.$MYSQL_DUMP_SCHEMAFILE, schema-${1}*.sql or $MYSQL_DUMP_DIR/$MYSQL_DUMP_SCHEMAFILE file not found"
         fi
     fi 
 }
@@ -366,7 +366,7 @@ function importMysqlDatabaseData {
         echo "  - importing data $MYSQL_DUMP_DATAFILE > $1 LOADED"
         runImportMysqlDatabaseSqlDump $1 $MYSQL_DUMP_DIR/$MYSQL_DUMP_DATAFILE
     else
-      displayDebugMessage "base mysql : No database data import because no $1.$MYSQL_DUMP_DATAFILE file not found"
+      displayDebugMessage "base mysql : No database data import because no $1.$MYSQL_DUMP_DATAFILE, data-${1}*.sql or $MYSQL_DUMP_DIR/$MYSQL_DUMP_DATAFILE file not found"
     fi 
 }
 
