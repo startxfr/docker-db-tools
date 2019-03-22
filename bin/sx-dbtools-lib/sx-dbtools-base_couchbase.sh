@@ -15,6 +15,7 @@ function displayCouchbaseTabInfoBlock {
 
 
 function checkCouchbaseEnv {
+    displayDebugMessage "base_couchbase : checkCouchbaseEnv()"
     if [ ! -z "$DBC_PORT_8091_TCP_START" ]; then
         displayDebugMessage "couchbase linked container labeled 'dbc' via docker"
         if [ -z "$DBC_PORT_8091_TCP_ADDR" ]; then
@@ -78,6 +79,7 @@ function checkCouchbaseEnv {
 }
 
 function dumpCouchbaseBucketAll {
+    displayDebugMessage "base_couchbase : dumpCouchbaseBucketAll()"
     if [ ! -z "$COUCHBASE_BUCKET" ]; then
         for BUCKET in $(echo $COUCHBASE_BUCKET | tr "," "\n")
         do
@@ -86,11 +88,15 @@ function dumpCouchbaseBucketAll {
         done
     fi 
 }
+
 function dumpCouchbaseBucketOne {
+    displayDebugMessage "base_couchbase : dumpCouchbaseBucketOne($1)"
     echo "  - dump data $1 > $1.$COUCHBASE_DUMP_DATAFILE"
     runDumpCouchbaseBucket $1
 }
+
 function runDumpCouchbaseBucket {
+    displayDebugMessage "base_couchbase : runDumpCouchbaseBucket($1)"
     if cbexport json \
     -f list \
     -c couchbase://$COUCHBASE_HOST:$COUCHBASE_PORT \
@@ -105,9 +111,8 @@ function runDumpCouchbaseBucket {
     fi;
 }
 
-
-
 function checkCouchbaseIsNotInitialized {
+    displayDebugMessage "base_couchbase : checkCouchbaseIsNotInitialized()"
     RESULT=`couchbase-cli bucket-list -c couchbase://$COUCHBASE_HOST:$COUCHBASE_PORT -u $COUCHBASE_ADMIN -p $COUCHBASE_PASSWORD`
     if [[ $RESULT == *"Cluster is not initialized"* ]]; then
         return 0; # no error
@@ -117,6 +122,7 @@ function checkCouchbaseIsNotInitialized {
 }
 
 function checkCouchbaseBucketsExist {
+    displayDebugMessage "base_couchbase : checkCouchbaseBucketsExist()"
     if [ ! -z "$COUCHBASE_BUCKET" ]; then
         for BUCKET in $(echo $COUCHBASE_BUCKET | tr "," "\n")
         do
@@ -125,13 +131,17 @@ function checkCouchbaseBucketsExist {
         done
     fi 
 }
+
 function checkCouchbaseBucketExist {
+    displayDebugMessage "base_couchbase : checkCouchbaseBucketExist($1)"
     if [ ! -z "$1" ]; then
         echo $(runCheckCouchbaseBucketExist $1)
         return;
     fi 
 }
+
 function runCheckCouchbaseBucketExist {
+    displayDebugMessage "base_couchbase : runCheckCouchbaseBucketExist($1)"
     RESULT=`couchbase-cli bucket-list -c couchbase://$COUCHBASE_HOST:$COUCHBASE_PORT -u $COUCHBASE_ADMIN -p $COUCHBASE_PASSWORD | grep $1`
     if [ "$RESULT" == "$1" ]; then
         return 0; # no error
@@ -141,6 +151,7 @@ function runCheckCouchbaseBucketExist {
 }
 
 function initializeCouchbase {
+    displayDebugMessage "base_couchbase : initializeCouchbase()"
     couchbase-cli cluster-init \
     -c couchbase://$COUCHBASE_HOST:$COUCHBASE_PORT \
     --cluster-username $COUCHBASE_ADMIN \
@@ -162,6 +173,7 @@ function initializeCouchbase {
 }
 
 function createCouchbaseBuckets {
+    displayDebugMessage "base_couchbase : createCouchbaseBuckets()"
     if [ ! -z "$COUCHBASE_BUCKET" ]; then
         for BUCKET in $(echo $COUCHBASE_BUCKET | tr "," "\n")
         do
@@ -170,13 +182,17 @@ function createCouchbaseBuckets {
         done
     fi 
 }
+
 function createCouchbaseBucket {
+    displayDebugMessage "base_couchbase : createCouchbaseBucket($1)"
     if [ ! -z "$1" ]; then
         echo "  - create bucket $1"
         runCreateCouchbaseBucket $1
     fi 
 }
+
 function runCreateCouchbaseBucket {
+    displayDebugMessage "base_couchbase : runCreateCouchbaseBucket($1)"
     if couchbase-cli bucket-create \
     -c couchbase://$COUCHBASE_HOST:$COUCHBASE_PORT \
     -u $COUCHBASE_ADMIN \
@@ -192,6 +208,7 @@ function runCreateCouchbaseBucket {
 }
 
 function createCouchbaseUsers {
+    displayDebugMessage "base_couchbase : createCouchbaseUsers($1,$2)"
     if [ ! -z "$COUCHBASE_USERS" ]; then
         for userInfo in $(echo $COUCHBASE_USERS | tr "," "\n")
         do
@@ -209,12 +226,16 @@ function createCouchbaseUsers {
         done
     fi 
 }
+
 function createCouchbaseUser {
+    displayDebugMessage "base_couchbase : createCouchbaseUser($1,$2)"
     if [[ ! -z "$1" ]]; then
         runCreateCouchbaseUser $1 $2
     fi 
 }
+
 function runCreateCouchbaseUser {
+    displayDebugMessage "base_couchbase : runCreateCouchbaseUser($1,$2)"
     USER=$1
     PWD=$2
     export RANDFILE=/tmp/.rnd
@@ -241,8 +262,8 @@ function runCreateCouchbaseUser {
     fi;
 }
 
-
 function importCouchbaseBuckets {
+    displayDebugMessage "base_couchbase : importCouchbaseBuckets()"
     if [ ! -z "$COUCHBASE_BUCKET" ]; then
         for BUCKET in $(echo $COUCHBASE_BUCKET | tr "," "\n")
         do
@@ -250,13 +271,16 @@ function importCouchbaseBuckets {
         done
     fi 
 }
+
 function importCouchbaseBucket {
+    displayDebugMessage "base_couchbase : importCouchbaseBucket($1)"
     if [ ! -z "$1" ]; then
         runImportCouchbaseBucketData $1
     fi 
 }
 
 function runImportCouchbaseBucketData {
+    displayDebugMessage "base_couchbase : runImportCouchbaseBucketData($1)"
     if [[ -r $COUCHBASE_DUMP_DIR/$1.$COUCHBASE_DUMP_DATAFILE ]]; then
         FILE=$1.$COUCHBASE_DUMP_DATAFILE
     elif [[ -r $COUCHBASE_DUMP_DIR/$COUCHBASE_DUMP_DATAFILE ]]; then
@@ -278,6 +302,7 @@ function runImportCouchbaseBucketData {
 }
 
 function deleteCouchbaseBuckets {
+    displayDebugMessage "base_couchbase : deleteCouchbaseBuckets()"
     if [ ! -z "$COUCHBASE_BUCKET" ]; then
         for BUCKET in $(echo $COUCHBASE_BUCKET | tr "," "\n")
         do
@@ -286,13 +311,17 @@ function deleteCouchbaseBuckets {
         done
     fi 
 }
+
 function deleteCouchbaseBucket {
+    displayDebugMessage "base_couchbase : deleteCouchbaseBucket($1)"
     if [ ! -z "$1" ]; then
         echo "  - delete bucket $1"
         runDeleteCouchbaseBucket $1
     fi 
 }
+
 function runDeleteCouchbaseBucket {
+    displayDebugMessage "base_couchbase : runDeleteCouchbaseBucket($1)"
     if couchbase-cli bucket-delete \
     -c couchbase://$COUCHBASE_HOST:$COUCHBASE_PORT \
     -u $COUCHBASE_ADMIN \
@@ -304,8 +333,8 @@ function runDeleteCouchbaseBucket {
     fi;
 }
 
-
 function deleteCouchbaseUsers {
+    displayDebugMessage "base_couchbase : deleteCouchbaseUsers()"
     if [ ! -z "$COUCHBASE_USERS" ]; then
         for userInfo in $(echo $COUCHBASE_USERS | tr "," "\n")
         do
@@ -324,13 +353,17 @@ function deleteCouchbaseUsers {
         done
     fi 
 }
+
 function deleteCouchbaseUser {
+    displayDebugMessage "base_couchbase : deleteCouchbaseUser()"
     if [ ! -z "$1" ]; then
         echo "  - delete couchbase user $1"
         runDeleteCouchbaseUser $1
     fi 
 }
+
 function runDeleteCouchbaseUser {
+    displayDebugMessage "base_couchbase : runDeleteCouchbaseUser($1)"
     if couchbase-cli user-manage \
     -c couchbase://$COUCHBASE_HOST:$COUCHBASE_PORT \
     -u $COUCHBASE_ADMIN \

@@ -32,6 +32,7 @@ exit 0;
 # Execute backup for all databases
 #######################################
 function doBackupGlobal {
+    displayDebugMessage "backup : doBackupGlobal()"
     echo "- Backup all database"
     checkMysqlEnv
     displayMysqlTabInfoBlock
@@ -51,6 +52,7 @@ function doBackupGlobal {
 # Execute backup for all mysql databases
 #######################################
 function doBackupMysqlAll {
+    displayDebugMessage "backup : doBackupMysqlAll()"
     echo "- Backup all mysql database"
     checkMysqlEnv
     displayMysqlTabInfoBlock
@@ -63,6 +65,7 @@ function doBackupMysqlAll {
 # Execute backup for one mysql database
 #######################################
 function doBackupMysqlOne {
+    displayDebugMessage "backup : doBackupMysqlOne($1)"
     echo "- Backup '$1' mysql database"
     checkMysqlEnv
     displayMysqlTabInfoBlock
@@ -76,6 +79,7 @@ function doBackupMysqlOne {
 # Execute backup for all couchbase buckets
 #######################################
 function doBackupCouchbaseAll {
+    displayDebugMessage "backup : doBackupCouchbaseAll()"
     echo "- Backup all couchbase buckets"
     checkCouchbaseEnv
     displayCouchbaseTabInfoBlock
@@ -88,6 +92,7 @@ function doBackupCouchbaseAll {
 # Execute backup for one couchbase bucket
 #######################################
 function doBackupCouchbaseOne {
+    displayDebugMessage "backup : doBackupCouchbaseOne($1)"
     echo "- Backup '$1' couchbase bucket"
     checkCouchbaseEnv
     displayCouchbaseTabInfoBlock

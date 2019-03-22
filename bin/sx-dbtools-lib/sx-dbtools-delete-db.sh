@@ -32,6 +32,7 @@ exit 0;
 # Execute delete-db for all databases
 #######################################
 function doDeleteDbGlobal {
+    displayDebugMessage "delete-db : doDeleteDbGlobal()"
     doDeleteDbMysqlAll
     doDeleteDbCouchbaseAll
 }
@@ -41,6 +42,7 @@ function doDeleteDbGlobal {
 # Execute delete-db for all mysql databases
 #######################################
 function doDeleteDbMysqlAll {
+    displayDebugMessage "delete-db : doDeleteDbMysqlAll()"
     echo "- Delete all mysql database"
     checkMysqlEnv
     if checkMysqlDatabasesExist; then
@@ -56,6 +58,7 @@ function doDeleteDbMysqlAll {
 # Execute delete-db for one mysql database
 #######################################
 function doDeleteDbMysqlOne {
+    displayDebugMessage "delete-db : doDeleteDbMysqlOne()"
     echo "- Delete '$1' mysql database"
     checkMysqlEnv
     if checkMysqlDatabaseExist $1; then
@@ -72,6 +75,7 @@ function doDeleteDbMysqlOne {
 # Execute delete-db for all couchbase buckets
 #######################################
 function doDeleteDbCouchbaseAll {
+    displayDebugMessage "delete-db : doDeleteDbCouchbaseAll()"
     echo "- Delete all couchbase buckets"
     checkCouchbaseEnv
     if $(checkCouchbaseBucketsExist); then
@@ -87,6 +91,7 @@ function doDeleteDbCouchbaseAll {
 # Execute delete-db for one couchbase bucket
 #######################################
 function doDeleteDbCouchbaseOne {
+    displayDebugMessage "delete-db : doDeleteDbCouchbaseOne()"
     echo "- Delete '$1' couchbase bucket"
     checkCouchbaseEnv
     if $(checkCouchbaseBucketExist $1); then

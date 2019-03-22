@@ -18,6 +18,7 @@ function displayMysqlTabInfoBlock {
 
 
 function checkMysqlEnv {
+    displayDebugMessage "base_mysql : checkMysqlEnv()"
     if [ ! -z "$DBM_ENV_MARIADB_VERSION" ]; then
         displayDebugMessage "mysql linked container labeled 'dbm' via docker"
         if [ -z "$DBM_PORT_3306_TCP_ADDR" ]; then
@@ -112,6 +113,7 @@ function checkMysqlEnv {
 }
 
 function checkMysqlDatabasesExist {
+    displayDebugMessage "base_mysql : checkMysqlDatabasesExist()"
     if [ ! -z "$MYSQL_DATABASE" ]; then
         for DATABASE in $(echo $MYSQL_DATABASE | tr "," "\n")
         do
@@ -126,6 +128,7 @@ function checkMysqlDatabasesExist {
 }
 
 function checkMysqlDatabaseExist {
+    displayDebugMessage "base_mysql : checkMysqlDatabaseExist($1)"
     RESULT=`mysql -h $MYSQL_HOST -u $MYSQL_USER --password=$MYSQL_PASSWORD --skip-column-names -e "SHOW DATABASES LIKE '$1'"`
     if [ "$RESULT" == "$1" ]; then
         return 0; # no error
@@ -135,6 +138,7 @@ function checkMysqlDatabaseExist {
 }
 
 function createMysqlDatabases {
+    displayDebugMessage "base_mysql : createMysqlDatabases()"
     if [ ! -z "$MYSQL_DATABASE" ]; then
         for DATABASE in $(echo $MYSQL_DATABASE | tr "," "\n")
         do
@@ -144,17 +148,20 @@ function createMysqlDatabases {
     fi 
 }
 function createMysqlDatabase {
+    displayDebugMessage "base_mysql : createMysqlDatabase($1)"
     if [ ! -z "$1" ]; then
         echo "  - create database $1"
         runCreateMysqlDatabase $1
     fi 
 }
 function runCreateMysqlDatabase {
+    displayDebugMessage "base_mysql : runCreateMysqlDatabase($1)"
     mysql -h $MYSQL_HOST -u $MYSQL_USER --password=$MYSQL_PASSWORD \
     -e "CREATE DATABASE $1 DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci;"
 }
 
 function createMysqlUsers {
+    displayDebugMessage "base_mysql : createMysqlUsers()"
     if [ ! -z "$MYSQL_USERS" ]; then
         for userInfo in $(echo $MYSQL_USERS | tr "," "\n")
         do
@@ -173,11 +180,13 @@ function createMysqlUsers {
     fi 
 }
 function createMysqlUser {
+    displayDebugMessage "base_mysql : createMysqlUser( $1, $2 )"
     if [[ ! -z "$1" &&  ! -z "$2" ]]; then
         runCreateMysqlUser $USER $PWD
     fi 
 }
 function runCreateMysqlUser {
+    displayDebugMessage "base_mysql : runCreateMysqlUser( $1, $2 )"
     USER=$1
     PWD=$2
     export RANDFILE=/tmp/.rnd
@@ -202,6 +211,7 @@ function runCreateMysqlUser {
 }
 
 function deleteMysqlDatabases {
+    displayDebugMessage "base_mysql : deleteMysqlDatabases()"
     if [ ! -z "$MYSQL_DATABASE" ]; then
         for DATABASE in $(echo $MYSQL_DATABASE | tr "," "\n")
         do
@@ -211,17 +221,20 @@ function deleteMysqlDatabases {
     fi 
 }
 function deleteMysqlDatabase {
+    displayDebugMessage "base_mysql : deleteMysqlDatabase($1)"
     if [ ! -z "$1" ]; then
         echo "  - delete database $1"
         runDeleteMysqlDatabase $1
     fi 
 }
 function runDeleteMysqlDatabase {
+    displayDebugMessage "base_mysql : runDeleteMysqlDatabase($1)"
     mysql -h $MYSQL_HOST -u $MYSQL_USER --password=$MYSQL_PASSWORD -D $1 -e "DROP DATABASE $1;"
     displayDebugMessage "delete db : $1 DELETED"
 }
 
 function deleteMysqlUsers {
+    displayDebugMessage "base_mysql : deleteMysqlUsers()"
     if [ ! -z "$MYSQL_USERS" ]; then
         for userInfo in $(echo $MYSQL_USERS | tr "," "\n")
         do
@@ -241,12 +254,14 @@ function deleteMysqlUsers {
     fi 
 }
 function deleteMysqlUser {
+    displayDebugMessage "base_mysql : deleteMysqlUser($1)"
     if [ ! -z "$1" ]; then
         echo "  - delete mysql user $1"
         runDeleteMysqlUser $USER
     fi 
 }
 function runDeleteMysqlUser {
+    displayDebugMessage "base_mysql : runDeleteMysqlUser($1)"
     mysql -h $MYSQL_HOST -u $MYSQL_USER --password=$MYSQL_PASSWORD -e "DROP USER '$1'@'%';"
     displayDebugMessage "base mysql : user $1 DELETED"
     mysql -h $MYSQL_HOST -u $MYSQL_USER --password=$MYSQL_PASSWORD -e "FLUSH PRIVILEGES;"
@@ -255,6 +270,7 @@ function runDeleteMysqlUser {
 
 
 function importMysqlDatabases {
+    displayDebugMessage "base_mysql : importMysqlDatabases()"
     displayDebugMessage "base mysql : Import databases $MYSQL_DATABASE"
     if [ ! -z "$MYSQL_DATABASE" ]; then
         for DATABASE in $(echo $MYSQL_DATABASE | tr "," "\n")
@@ -266,6 +282,7 @@ function importMysqlDatabases {
     fi 
 }
 function importMysqlDatabase {
+    displayDebugMessage "base_mysql : importMysqlDatabase($1)"
     displayDebugMessage "base mysql : Import database $1"
     if [ ! -z "$1" ]; then
         importMysqlDatabaseSchema $1
@@ -276,6 +293,7 @@ function importMysqlDatabase {
 }
 
 function importMysqlDatabasesSchema {
+    displayDebugMessage "base_mysql : importMysqlDatabasesSchema()"
     displayDebugMessage "base mysql : Import databases $MYSQL_DATABASE"
     if [ ! -z "$MYSQL_DATABASE" ]; then
         for DATABASE in $(echo $MYSQL_DATABASE | tr "," "\n")
@@ -287,6 +305,7 @@ function importMysqlDatabasesSchema {
     fi 
 }
 function importMysqlDatabaseSchema {
+    displayDebugMessage "base_mysql : importMysqlDatabaseSchema($1)"
     if [ ! -z "$1" ]; then
         if [[ -r $MYSQL_DUMP_DIR/$1.$MYSQL_DUMP_SCHEMAFILE ]]; then
             echo "  - importing schema $1.$MYSQL_DUMP_SCHEMAFILE > $1 LOADED"
@@ -300,11 +319,13 @@ function importMysqlDatabaseSchema {
     fi 
 }
 function runImportMysqlDatabaseSqlDump {
+    displayDebugMessage "base_mysql : runImportMysqlDatabaseSqlDump( $1, $2 )"
     displayDebugMessage "base mysql : Import mysql dump $2 in $1"
     mysql -h $MYSQL_HOST -u $MYSQL_USER --password=$MYSQL_PASSWORD $1 < $2
 }
 
 function importMysqlDatabasesData {
+    displayDebugMessage "base_mysql : importMysqlDatabasesData()"
     if [ ! -z "$MYSQL_DATABASE" ]; then
         for DATABASE in $(echo $MYSQL_DATABASE | tr "," "\n")
         do
@@ -315,6 +336,7 @@ function importMysqlDatabasesData {
     fi 
 }
 function importMysqlDatabaseData {
+    displayDebugMessage "base_mysql : importMysqlDatabaseData($1)"
     if [ ! -z "$1" ]; then
         if [[ -r $MYSQL_DUMP_DIR/$1.$MYSQL_DUMP_DATAFILE ]]; then
             echo "  - importing data $1.$MYSQL_DUMP_DATAFILE > $1 LOADED"
@@ -330,6 +352,7 @@ function importMysqlDatabaseData {
 
 
 function dumpMysqlDatabases {
+    displayDebugMessage "base_mysql : dumpMysqlDatabases()"
     if [ ! -z "$MYSQL_DATABASE" ]; then
         for DATABASE in $(echo $MYSQL_DATABASE | tr "," "\n")
         do
@@ -340,6 +363,7 @@ function dumpMysqlDatabases {
     fi 
 }
 function dumpMysqlDatabase {
+    displayDebugMessage "base_mysql : dumpMysqlDatabase($1)"
     echo "  - dump schema $1 > $1.$MYSQL_DUMP_SCHEMAFILE"
     runDumpMysqlDatabaseSchema $1 $MYSQL_DUMP_DIR/$1.$MYSQL_DUMP_SCHEMAFILE
     echo "  - dump data $1 > $1.$MYSQL_DUMP_SCHEMAFILE"
@@ -347,6 +371,7 @@ function dumpMysqlDatabase {
 }
 
 function dumpMysqlDatabasesSchema {
+    displayDebugMessage "base_mysql : dumpMysqlDatabasesSchema()"
     if [ ! -z "$MYSQL_DATABASE" ]; then
         for DATABASE in $(echo $MYSQL_DATABASE | tr "," "\n")
         do
@@ -358,12 +383,14 @@ function dumpMysqlDatabasesSchema {
     fi 
 }
 function runDumpMysqlDatabaseSchema {
+    displayDebugMessage "base_mysql : runDumpMysqlDatabaseSchema( $1, $2 )"
     displayDebugMessage "base mysql : Dumping mysql schema for database $1"
     mysqldump --events --lock-all-tables --set-charset --default-character-set=utf8 -d \
     --host $MYSQL_HOST --user $MYSQL_USER -p$MYSQL_PASSWORD $1 > $2
 }
 
 function dumpMysqlDatabasesData {
+    displayDebugMessage "base_mysql : dumpMysqlDatabasesData()"
     if [ ! -z "$MYSQL_DATABASE" ]; then
         for DATABASE in $(echo $MYSQL_DATABASE | tr "," "\n")
         do
@@ -375,6 +402,7 @@ function dumpMysqlDatabasesData {
     fi 
 }
 function runDumpMysqlDatabaseData {
+    displayDebugMessage "base_mysql : runDumpMysqlDatabaseData( $1, $2 )"
     if [[ ! -z "$MYSQL_DUMP_ISEXTENDED" && $MYSQL_DUMP_ISEXTENDED == *"true"* ]]; then
         displayDebugMessage "base mysql : enable mysql extended option"
         displayDebugMessage "base mysql : Dumping mysql data for database $1 (extended)"
