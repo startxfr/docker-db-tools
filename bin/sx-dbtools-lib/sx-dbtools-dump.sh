@@ -32,6 +32,7 @@ exit 0;
 # Execute dump for all databases
 #######################################
 function doDumpGlobal {
+    displayDebugMessage "dump : doDumpGlobal()"
     doDumpMysqlAll
     doDumpCouchbaseAll
 }
@@ -41,6 +42,7 @@ function doDumpGlobal {
 # Execute dump for all mysql databases
 #######################################
 function doDumpMysqlAll {
+    displayDebugMessage "dump : doDumpMysqlAll()"
     echo "- Dump all mysql database"
     checkMysqlEnv
     if checkMysqlDatabasesExist; then
@@ -57,6 +59,7 @@ function doDumpMysqlAll {
 # Execute dump for one mysql database
 #######################################
 function doDumpMysqlOne {
+    displayDebugMessage "dump : doDumpMysqlOne()"
     echo "- Dump '$1' mysql database"
     checkMysqlEnv
     if checkMysqlDatabaseExist $1; then
@@ -74,6 +77,7 @@ function doDumpMysqlOne {
 # Execute dump for all couchbase buckets
 #######################################
 function doDumpCouchbaseAll {
+    displayDebugMessage "dump : doDumpCouchbaseAll()"
     echo "- Dump all couchbase buckets"
     checkCouchbaseEnv
     if checkCouchbaseIsNotInitialized; then
@@ -92,6 +96,7 @@ function doDumpCouchbaseAll {
 # Execute dump for one couchbase bucket
 #######################################
 function doDumpCouchbaseOne {
+    displayDebugMessage "dump : doDumpCouchbaseOne()"
     echo "- Dump '$1' couchbase bucket"
     checkCouchbaseEnv
     if checkCouchbaseIsNotInitialized; then
