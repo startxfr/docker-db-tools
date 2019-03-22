@@ -79,7 +79,7 @@ UNLOCK TABLES;
 #### Example for `~/dump/couchbase/data.json`
 ```javascript
 [
-    {"_id":"app::version","app":"sx-dbtools","stage":"dev","version":"0.1.27"}
+    {"_id":"app::version","app":"sx-dbtools","stage":"dev","version":"0.1.28"}
 ]
 ```
 
