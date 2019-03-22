@@ -308,32 +308,30 @@ function importMysqlDatabaseSchema {
     displayDebugMessage "base_mysql : importMysqlDatabaseSchema($1)"
     dt1=`ls $MYSQL_DUMP_DIR/${1}*.$MYSQL_DUMP_SCHEMAFILE 2> /dev/null`
     rtdt1=$?
-    displayDebugMessage "base_mysql : Tested existence of $MYSQL_DUMP_DIR/${1}*.$MYSQL_DUMP_SCHEMAFILE file(s) =$rtdt1"
+    displayDebugMessage "base_mysql : Tested existence of $MYSQL_DUMP_DIR/${1}*.$MYSQL_DUMP_SCHEMAFILE files  = $rtdt1"
     dt2=`ls $MYSQL_DUMP_DIR/schema-${1}*.sql 2> /dev/null`
     rtdt2=$?
-    displayDebugMessage "base_mysql : Tested existence of $MYSQL_DUMP_DIR/schema-${1}*.sql file(s) =$rtdt2"
+    displayDebugMessage "base_mysql : Tested existence of $MYSQL_DUMP_DIR/schema-${1}*.sql files  = $rtdt2"
     if [[ "$rtdt1" == "0" ]]; then
-        if [[ -r $MYSQL_DUMP_DIR/${1}*.$MYSQL_DUMP_SCHEMAFILE ]]; then
-            displayDebugMessage "base mysql : importing data from $MYSQL_DUMP_DIR/${1}*.$MYSQL_DUMP_SCHEMAFILE file(s)"
-            for SQLFILE in $dt1
-            do
-                echo "  - import $SQLFILE schema into $DATABASE
-                runDumpMysqlDatabaseSchema $DATABASE $SQLFILE
-            done
-        elif [[ "$rtdt2" == "0" ]]; then
-            displayDebugMessage "base mysql : importing schema from $MYSQL_DUMP_DIR/schema-${1}*.sql file(s)"
-            for SQLFILE in $dt2
-            do
-                echo "  - import $SQLFILE schema into $DATABASE
-                runDumpMysqlDatabaseSchema $DATABASE $SQLFILE
-            done
-        elif [[ -r $MYSQL_DUMP_DIR/$MYSQL_DUMP_SCHEMAFILE ]]; then
-            echo "  - importing schema $MYSQL_DUMP_SCHEMAFILE > $1 LOADED"
-            runImportMysqlDatabaseSqlDump $1 $MYSQL_DUMP_DIR/$MYSQL_DUMP_SCHEMAFILE
-        else
-          displayDebugMessage "base mysql : No database schema import because no $1.$MYSQL_DUMP_SCHEMAFILE, schema-${1}*.sql or $MYSQL_DUMP_DIR/$MYSQL_DUMP_SCHEMAFILE file not found"
-        fi
-    fi 
+        displayDebugMessage "base mysql : importing data from $MYSQL_DUMP_DIR/${1}*.$MYSQL_DUMP_SCHEMAFILE files"
+        for SQLFILE in $dt1
+        do
+            echo "  - import $SQLFILE schema into $DATABASE
+            runDumpMysqlDatabaseSchema $DATABASE $SQLFILE
+        done
+    elif [[ "$rtdt2" == "0" ]]; then
+        displayDebugMessage "base mysql : importing schema from $MYSQL_DUMP_DIR/schema-${1}*.sql files"
+        for SQLFILE in $dt2
+        do
+            echo "  - import $SQLFILE schema into $DATABASE
+            runDumpMysqlDatabaseSchema $DATABASE $SQLFILE
+        done
+    elif [[ -r $MYSQL_DUMP_DIR/$MYSQL_DUMP_SCHEMAFILE ]]; then
+        echo "  - importing schema $MYSQL_DUMP_SCHEMAFILE > $1 LOADED"
+        runImportMysqlDatabaseSqlDump $1 $MYSQL_DUMP_DIR/$MYSQL_DUMP_SCHEMAFILE
+    else
+      displayDebugMessage "base mysql : No database schema import because no $1.$MYSQL_DUMP_SCHEMAFILE, schema-${1}*.sql or $MYSQL_DUMP_DIR/$MYSQL_DUMP_SCHEMAFILE file not found"
+    fi
 }
 function runImportMysqlDatabaseSqlDump {
     displayDebugMessage "base_mysql : runImportMysqlDatabaseSqlDump( $1, $2 )"
@@ -356,19 +354,19 @@ function importMysqlDatabaseData {
     displayDebugMessage "base_mysql : importMysqlDatabaseData($1)"
     dt1=`ls $MYSQL_DUMP_DIR/${1}*.$MYSQL_DUMP_DATAFILE 2> /dev/null`
     rtdt1=$?
-    displayDebugMessage "base_mysql : Tested existence of $MYSQL_DUMP_DIR/${1}*.$MYSQL_DUMP_DATAFILE file(s) =$rtdt1"
+    displayDebugMessage "base_mysql : Tested existence of $MYSQL_DUMP_DIR/${1}*.$MYSQL_DUMP_DATAFILE files  = $rtdt1"
     dt2=`ls $MYSQL_DUMP_DIR/data-${1}*.sql 2> /dev/null`
     rtdt2=$?
-    displayDebugMessage "base_mysql : Tested existence of $MYSQL_DUMP_DIR/data-${1}*.sql file(s) =$rtdt2"
+    displayDebugMessage "base_mysql : Tested existence of $MYSQL_DUMP_DIR/data-${1}*.sql files  = $rtdt2"
     if [[ "$rtdt1" == "0" ]]; then
-        displayDebugMessage "base mysql : importing data from $MYSQL_DUMP_DIR/${1}*.$MYSQL_DUMP_DATAFILE file(s)"
+        displayDebugMessage "base mysql : importing data from $MYSQL_DUMP_DIR/${1}*.$MYSQL_DUMP_DATAFILE files"
         for SQLFILE in $dt1
         do
             echo "  - import $SQLFILE data into $DATABASE
             runDumpMysqlDatabaseData $DATABASE $SQLFILE
         done
     elif [[ "$rtdt2" == "0" ]]; then
-        displayDebugMessage "base mysql : importing data from $MYSQL_DUMP_DIR/data-${1}*.sql file(s)"
+        displayDebugMessage "base mysql : importing data from $MYSQL_DUMP_DIR/data-${1}*.sql files"
         for SQLFILE in $dt2
         do
             echo "  - import $SQLFILE data into $DATABASE
