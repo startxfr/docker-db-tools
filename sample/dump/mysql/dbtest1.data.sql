@@ -16,7 +16,7 @@ SET names 'utf8';
 
 LOCK TABLES `app` WRITE;
 INSERT INTO `app` VALUES 
-(1,'version','0.1.23');
+(1,'version','0.1.26');
 UNLOCK TABLES;
 
 --
