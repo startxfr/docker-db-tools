@@ -306,19 +306,25 @@ function importMysqlDatabasesSchema {
 }
 function importMysqlDatabaseSchema {
     displayDebugMessage "base_mysql : importMysqlDatabaseSchema($1)"
-    if [ ! -z "$1" ]; then
+    dt1=`ls $MYSQL_DUMP_DIR/${1}*.$MYSQL_DUMP_SCHEMAFILE 2> /dev/null`
+    rtdt1=$?
+    displayDebugMessage "base_mysql : Tested existence of $MYSQL_DUMP_DIR/${1}*.$MYSQL_DUMP_SCHEMAFILE file(s) =$rtdt1"
+    dt2=`ls $MYSQL_DUMP_DIR/schema-${1}*.sql 2> /dev/null`
+    rtdt2=$?
+    displayDebugMessage "base_mysql : Tested existence of $MYSQL_DUMP_DIR/schema-${1}*.sql file(s) =$rtdt2"
+    if [[ "$rtdt1" == "0" ]]; then
         if [[ -r $MYSQL_DUMP_DIR/${1}*.$MYSQL_DUMP_SCHEMAFILE ]]; then
-            echo "  - importing schema $1.$MYSQL_DUMP_SCHEMAFILE > $1 LOADED"
-            for SQLFILE in $(ls --format=commas $MYSQL_DUMP_DIR/${1}*.$MYSQL_DUMP_SCHEMAFILE | tr "," "\n")
+            displayDebugMessage "base mysql : importing data from $MYSQL_DUMP_DIR/${1}*.$MYSQL_DUMP_SCHEMAFILE file(s)"
+            for SQLFILE in $dt1
             do
-                echo "  - dump schema $DATABASE > $SQLFILE
+                echo "  - import $SQLFILE schema into $DATABASE
                 runDumpMysqlDatabaseSchema $DATABASE $SQLFILE
             done
-        elif [[ -r $MYSQL_DUMP_DIR/schema-${1}*.sql ]]; then
-            echo "  - importing schema schema-${1}*.sql > $1 LOADED"
-            for SQLFILE in $(ls --format=commas $MYSQL_DUMP_DIR/schema-${1}*.sql | tr "," "\n")
+        elif [[ "$rtdt2" == "0" ]]; then
+            displayDebugMessage "base mysql : importing schema from $MYSQL_DUMP_DIR/schema-${1}*.sql file(s)"
+            for SQLFILE in $dt2
             do
-                echo "  - dump schema $DATABASE > $SQLFILE
+                echo "  - import $SQLFILE schema into $DATABASE
                 runDumpMysqlDatabaseSchema $DATABASE $SQLFILE
             done
         elif [[ -r $MYSQL_DUMP_DIR/$MYSQL_DUMP_SCHEMAFILE ]]; then
@@ -348,18 +354,24 @@ function importMysqlDatabasesData {
 }
 function importMysqlDatabaseData {
     displayDebugMessage "base_mysql : importMysqlDatabaseData($1)"
-    if [[ -r $MYSQL_DUMP_DIR/${1}*.$MYSQL_DUMP_DATAFILE ]]; then
-        echo "  - importing data $1.$MYSQL_DUMP_DATAFILE > $1 LOADED"
-        for SQLFILE in $(ls --format=commas $MYSQL_DUMP_DIR/${1}*.$MYSQL_DUMP_DATAFILE | tr "," "\n")
+    dt1=`ls $MYSQL_DUMP_DIR/${1}*.$MYSQL_DUMP_DATAFILE 2> /dev/null`
+    rtdt1=$?
+    displayDebugMessage "base_mysql : Tested existence of $MYSQL_DUMP_DIR/${1}*.$MYSQL_DUMP_DATAFILE file(s) =$rtdt1"
+    dt2=`ls $MYSQL_DUMP_DIR/data-${1}*.sql 2> /dev/null`
+    rtdt2=$?
+    displayDebugMessage "base_mysql : Tested existence of $MYSQL_DUMP_DIR/data-${1}*.sql file(s) =$rtdt2"
+    if [[ "$rtdt1" == "0" ]]; then
+        displayDebugMessage "base mysql : importing data from $MYSQL_DUMP_DIR/${1}*.$MYSQL_DUMP_DATAFILE file(s)"
+        for SQLFILE in $dt1
         do
-            echo "  - dump data $DATABASE > $SQLFILE
+            echo "  - import $SQLFILE data into $DATABASE
             runDumpMysqlDatabaseData $DATABASE $SQLFILE
         done
-    elif [[ -r $MYSQL_DUMP_DIR/data-${1}*.sql ]]; then
-        echo "  - importing data data-${1}*.sql > $1 LOADED"
-        for SQLFILE in $(ls --format=commas $MYSQL_DUMP_DIR/data-${1}*.sql | tr "," "\n")
+    elif [[ "$rtdt2" == "0" ]]; then
+        displayDebugMessage "base mysql : importing data from $MYSQL_DUMP_DIR/data-${1}*.sql file(s)"
+        for SQLFILE in $dt2
         do
-            echo "  - dump data $DATABASE > $SQLFILE
+            echo "  - import $SQLFILE data into $DATABASE
             runDumpMysqlDatabaseData $DATABASE $SQLFILE
         done
     elif [[ -r $MYSQL_DUMP_DIR/$MYSQL_DUMP_DATAFILE ]]; then
