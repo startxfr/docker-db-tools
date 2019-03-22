@@ -319,14 +319,14 @@ function importMysqlDatabaseSchema {
     dt2=`ls $MYSQL_DUMP_DIR/schema-${1}*.sql 2> /dev/null`
     rtdt2=$?
     displayDebugMessage "base_mysql : Tested existence of $MYSQL_DUMP_DIR/schema-${1}*.sql files  = $rtdt2"
-    if [[ "$rtdt1" -gt "0" ]]; then
+    if [[ "$rtdt1" == "0" ]]; then
         displayDebugMessage "base mysql : importing data from $MYSQL_DUMP_DIR/${1}*.$MYSQL_DUMP_SCHEMAFILE files"
         for SQLFILE in $dt1
         do
             echo "  - import $SQLFILE schema into $DATABASE"
             runImportMysqlDatabaseSqlDump $DATABASE $SQLFILE
         done
-    elif [[ "$rtdt2" -gt "0" ]]; then
+    elif [[ "$rtdt2" == "0" ]]; then
         displayDebugMessage "base mysql : importing schema from $MYSQL_DUMP_DIR/schema-${1}*.sql files"
         for SQLFILE in $dt2
         do
@@ -367,14 +367,14 @@ function importMysqlDatabaseData {
     dt2=`ls $MYSQL_DUMP_DIR/data-${1}*.sql 2> /dev/null`
     rtdt2=$?
     displayDebugMessage "base_mysql : Tested existence of $MYSQL_DUMP_DIR/data-${1}*.sql files  = $rtdt2"
-    if [[ "$rtdt1" -gt "0" ]]; then
+    if [[ "$rtdt1" == "0" ]]; then
         displayDebugMessage "base mysql : importing data from $MYSQL_DUMP_DIR/${1}*.$MYSQL_DUMP_DATAFILE files"
         for SQLFILE in $dt1
         do
             echo "  - import $SQLFILE data into $DATABASE"
             runImportMysqlDatabaseSqlDump $DATABASE $SQLFILE
         done
-    elif [[ "$rtdt2" -gt "0" ]]; then
+    elif [[ "$rtdt2" == "0" ]]; then
         displayDebugMessage "base mysql : importing data from $MYSQL_DUMP_DIR/data-${1}*.sql files"
         for SQLFILE in $dt2
         do
