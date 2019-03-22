@@ -32,6 +32,7 @@ exit 0;
 # Execute delete for all database(s), user(s) and data
 #######################################
 function doDeleteGlobal {
+    displayDebugMessage "delete : doDeleteGlobal()"
     doDeleteMysqlAll
     doDeleteCouchbaseAll
 }
@@ -41,6 +42,7 @@ function doDeleteGlobal {
 # Execute delete for all mysql database(s), user(s) and data
 #######################################
 function doDeleteMysqlAll {
+    displayDebugMessage "delete : doDeleteMysqlAll()"
     echo "- Delete all mysql database(s) and user(s)"
     checkMysqlEnv
     displayMysqlTabInfoBlock
@@ -55,6 +57,7 @@ function doDeleteMysqlAll {
 # Execute delete for all couchbase bucket(s), user(s) and data
 #######################################
 function doDeleteCouchbaseAll {
+    displayDebugMessage "delete : doDeleteCouchbaseAll()"
     echo "- Delete all couchbase bucket(s) and user(s)"
     checkCouchbaseEnv
     displayCouchbaseTabInfoBlock

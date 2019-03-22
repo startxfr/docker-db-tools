@@ -32,6 +32,7 @@ exit 0;
 # Execute import for all databases
 #######################################
 function doImportGlobal {
+    displayDebugMessage "import : doImportGlobal()"
     doImportMysqlAll
     doImportCouchbaseAll
 }
@@ -41,6 +42,7 @@ function doImportGlobal {
 # Execute import for all mysql databases
 #######################################
 function doImportMysqlAll {
+    displayDebugMessage "import : doImportMysqlAll()"
     echo "- Import all mysql database"
     checkMysqlEnv
     if checkMysqlDatabasesExist; then
@@ -57,6 +59,7 @@ function doImportMysqlAll {
 # Execute import for one mysql database
 #######################################
 function doImportMysqlOne {
+    displayDebugMessage "import : doImportMysqlOne()"
     echo "- Import '$1' mysql database"
     checkMysqlEnv
     if checkMysqlDatabaseExist $1; then
@@ -74,6 +77,7 @@ function doImportMysqlOne {
 # Execute import for all couchbase buckets
 #######################################
 function doImportCouchbaseAll {
+    displayDebugMessage "import : doImportCouchbaseAll()"
     echo "- Import all couchbase buckets"
     checkCouchbaseEnv
     if checkCouchbaseIsNotInitialized; then
@@ -92,6 +96,7 @@ function doImportCouchbaseAll {
 # Execute import for one couchbase bucket
 #######################################
 function doImportCouchbaseOne {
+    displayDebugMessage "import : doImportCouchbaseOne()"
     echo "- Import '$1' couchbase bucket"
     checkCouchbaseEnv
     if checkCouchbaseIsNotInitialized; then

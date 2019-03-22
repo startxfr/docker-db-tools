@@ -32,6 +32,7 @@ exit 0;
 # Execute restore for all databases
 #######################################
 function doRestoreGlobal {
+    displayDebugMessage "restore : doRestoreGlobal()"
     checkMysqlEnv
     displayMysqlTabInfoBlock
     echo "  - database(s) : $MYSQL_DATABASE"
@@ -50,6 +51,7 @@ function doRestoreGlobal {
 # Execute restore for all mysql databases
 #######################################
 function doRestoreMysqlAll {
+    displayDebugMessage "restore : doRestoreMysqlAll()"
     echo "- Restore all mysql database"
     checkMysqlEnv
     displayMysqlTabInfoBlock
@@ -62,6 +64,7 @@ function doRestoreMysqlAll {
 # Execute restore for one mysql database
 #######################################
 function doRestoreMysqlOne {
+    displayDebugMessage "restore : doRestoreMysqlOne()"
     echo "- Restore '$1' mysql database"
     checkMysqlEnv
     displayMysqlTabInfoBlock
@@ -75,6 +78,7 @@ function doRestoreMysqlOne {
 # Execute restore for all couchbase buckets
 #######################################
 function doRestoreCouchbaseAll {
+    displayDebugMessage "restore : doRestoreCouchbaseAll()"
     echo "- Restore all couchbase buckets"
     checkCouchbaseEnv
     displayCouchbaseTabInfoBlock
@@ -87,6 +91,7 @@ function doRestoreCouchbaseAll {
 # Execute restore for one couchbase bucket
 #######################################
 function doRestoreCouchbaseOne {
+    displayDebugMessage "restore : doRestoreCouchbaseOne()"
     echo "- Restore '$1' couchbase bucket"
     checkCouchbaseEnv
     displayCouchbaseTabInfoBlock
