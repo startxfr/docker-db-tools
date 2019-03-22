@@ -2,7 +2,7 @@ FROM couchbase:enterprise-5.0.1
 
 MAINTAINER Startx <dev@startx.fr>
 
-ENV SXDBTOOLS_VERSION="0.1.27" \
+ENV SXDBTOOLS_VERSION="0.1.28" \
     SXDBTOOLS_BACKUP_DIR=/backup \
     SXDBTOOLS_DUMP_DIR=/dump \
     SXDBTOOLS_DEBUG=false \
