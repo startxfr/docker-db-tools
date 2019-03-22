@@ -248,47 +248,59 @@ function deleteMysqlUser {
 }
 function runDeleteMysqlUser {
     mysql -h $MYSQL_HOST -u $MYSQL_USER --password=$MYSQL_PASSWORD -e "DROP USER '$1'@'%';"
-    displayDebugMessage "del user : $1 DELETED"
+    displayDebugMessage "base mysql : user $1 DELETED"
     mysql -h $MYSQL_HOST -u $MYSQL_USER --password=$MYSQL_PASSWORD -e "FLUSH PRIVILEGES;"
 }
 
 
 
 function importMysqlDatabases {
+    displayDebugMessage "base mysql : Import databases $MYSQL_DATABASE"
     if [ ! -z "$MYSQL_DATABASE" ]; then
         for DATABASE in $(echo $MYSQL_DATABASE | tr "," "\n")
         do
             importMysqlDatabase $DATABASE
         done
+    else
+      displayDebugMessage "base mysql : No database \$MYSQL_DATABASE defined"
     fi 
 }
 function importMysqlDatabase {
+    displayDebugMessage "base mysql : Import database $1"
     if [ ! -z "$1" ]; then
         importMysqlDatabaseSchema $1
         importMysqlDatabaseData $1
+    else
+      displayDebugMessage "base mysql : No database name found"
     fi 
 }
 
 function importMysqlDatabasesSchema {
+    displayDebugMessage "base mysql : Import databases $MYSQL_DATABASE"
     if [ ! -z "$MYSQL_DATABASE" ]; then
         for DATABASE in $(echo $MYSQL_DATABASE | tr "," "\n")
         do
             importMysqlDatabaseSchema $DATABASE
         done
+    else
+      displayDebugMessage "base mysql : No databases schema import because \$MYSQL_DATABASE not found"
     fi 
 }
 function importMysqlDatabaseSchema {
     if [ ! -z "$1" ]; then
         if [[ -r $MYSQL_DUMP_DIR/$1.$MYSQL_DUMP_SCHEMAFILE ]]; then
-            echo "  - importing schema $1.$MYSQL_DUMP_SCHEMAFILE > $1"
+            echo "  - importing schema $1.$MYSQL_DUMP_SCHEMAFILE > $1 LOADED"
             runImportMysqlDatabaseSqlDump $1 $MYSQL_DUMP_DIR/$1.$MYSQL_DUMP_SCHEMAFILE
         elif [[ -r $MYSQL_DUMP_DIR/$MYSQL_DUMP_SCHEMAFILE ]]; then
             echo "  - importing schema $MYSQL_DUMP_SCHEMAFILE > $1 LOADED"
             runImportMysqlDatabaseSqlDump $1 $MYSQL_DUMP_DIR/$MYSQL_DUMP_SCHEMAFILE
-        fi 
+        else
+          displayDebugMessage "base mysql : No database schema import because no $1.$MYSQL_DUMP_SCHEMAFILE file not found"
+        fi
     fi 
 }
 function runImportMysqlDatabaseSqlDump {
+    displayDebugMessage "base mysql : Import mysql dump $2 in $1"
     mysql -h $MYSQL_HOST -u $MYSQL_USER --password=$MYSQL_PASSWORD $1 < $2
 }
 
@@ -298,6 +310,8 @@ function importMysqlDatabasesData {
         do
             importMysqlDatabaseData $DATABASE
         done
+    else
+      displayDebugMessage "base mysql : No databases data import because \$MYSQL_DATABASE not found"
     fi 
 }
 function importMysqlDatabaseData {
@@ -308,6 +322,8 @@ function importMysqlDatabaseData {
         elif [[ -r $MYSQL_DUMP_DIR/$MYSQL_DUMP_DATAFILE ]]; then
             echo "  - importing data $MYSQL_DUMP_DATAFILE > $1 LOADED"
             runImportMysqlDatabaseSqlDump $1 $MYSQL_DUMP_DIR/$MYSQL_DUMP_DATAFILE
+        else
+          displayDebugMessage "base mysql : No database data import because no $1.$MYSQL_DUMP_DATAFILE file not found"
         fi 
     fi 
 }
@@ -319,6 +335,8 @@ function dumpMysqlDatabases {
         do
             dumpMysqlDatabase $DATABASE
         done
+    else
+      displayDebugMessage "base mysql : No databases dump because \$MYSQL_DATABASE not found"
     fi 
 }
 function dumpMysqlDatabase {
@@ -335,9 +353,12 @@ function dumpMysqlDatabasesSchema {
             echo "  - dump schema $DATABASE > $DATABASE.$MYSQL_DUMP_SCHEMAFILE"
             runDumpMysqlDatabaseSchema $DATABASE $MYSQL_DUMP_DIR/$DATABASE.$MYSQL_DUMP_SCHEMAFILE
         done
+    else
+      displayDebugMessage "base mysql : No databases schema dump because \$MYSQL_DATABASE not found"
     fi 
 }
 function runDumpMysqlDatabaseSchema {
+    displayDebugMessage "base mysql : Dumping mysql schema for database $1"
     mysqldump --events --lock-all-tables --set-charset --default-character-set=utf8 -d \
     --host $MYSQL_HOST --user $MYSQL_USER -p$MYSQL_PASSWORD $1 > $2
 }
@@ -349,39 +370,34 @@ function dumpMysqlDatabasesData {
             echo "  - dump data $DATABASE > $DATABASE.$MYSQL_DUMP_SCHEMAFILE"
             runDumpMysqlDatabaseData $DATABASE $MYSQL_DUMP_DIR/$DATABASE.$MYSQL_DUMP_DATAFILE
         done
+    else
+      displayDebugMessage "base mysql : No databases data dump because \$MYSQL_DATABASE not found"
     fi 
 }
 function runDumpMysqlDatabaseData {
-    if [ ! -z "$MYSQL_DUMP_ISEXTENDED" ]; then
-        if [[ $MYSQL_DUMP_ISEXTENDED == *"true"* ]]; then
-            displayDebugMessage "enable mysql extended option"
-            mysqldump --events --lock-all-tables --set-charset --default-character-set=utf8 \
-            --skip-opt --add-locks --lock-tables --no-create-info --extended-insert \
-            --host $MYSQL_HOST --user $MYSQL_USER -p$MYSQL_PASSWORD \
-            $1 > $MYSQL_DUMP_DIR/dd.sql
-            echo -e "SET names 'utf8';\n$(cat $MYSQL_DUMP_DIR/dd.sql)" > $MYSQL_DUMP_DIR/dd2.sql
-            if(/bin/sx-dbtools-process-mysqldump $MYSQL_DUMP_DIR/dd2.sql >  $MYSQL_DUMP_DIR/dd3.sql == 0) then 
-                displayDebugMessage "OK mysql extended worked fine. Get a multiple line dump"
-                mv $MYSQL_DUMP_DIR/dd3.sql $2
-            else
-                displayErrorMessage "mysql extended option returned error. Use single line dump"
-                mv $MYSQL_DUMP_DIR/dd2.sql $2
-            fi
-            rm -f $MYSQL_DUMP_DIR/dd*.sql;
+    if [[ ! -z "$MYSQL_DUMP_ISEXTENDED" && $MYSQL_DUMP_ISEXTENDED == *"true"* ]]; then
+        displayDebugMessage "base mysql : enable mysql extended option"
+        displayDebugMessage "base mysql : Dumping mysql data for database $1 (extended)"
+        mysqldump --events --lock-all-tables --set-charset --default-character-set=utf8 \
+        --skip-opt --add-locks --lock-tables --no-create-info --extended-insert \
+        --host $MYSQL_HOST --user $MYSQL_USER -p$MYSQL_PASSWORD \
+        $1 > /tmp/dd.sql
+        echo -e "SET names 'utf8';\n$(cat /tmp/dd.sql)" > /tmp/dd2.sql
+        if(/bin/sx-dbtools-process-mysqldump /tmp/dd2.sql >  /tmp/dd3.sql == 0) then 
+            displayDebugMessage "base mysql : OK mysql extended worked fine. Get a multiple line dump"
+            mv /tmp/dd3.sql $2
         else
-            mysqldump --events --lock-all-tables --set-charset --default-character-set=utf8 \
-            --skip-opt --add-locks --lock-tables --no-create-info \
-            --host $MYSQL_HOST --user $MYSQL_USER -p$MYSQL_PASSWORD \
-            $1 > $MYSQL_DUMP_DIR/dd.sql
-            echo -e "SET names 'utf8';\n$(cat $MYSQL_DUMP_DIR/dd.sql)" > $2
-            rm -f $MYSQL_DUMP_DIR/dd.sql;
-        fi 
+            displayErrorMessage "base mysql : mysql extended option returned error. Use single line dump"
+            mv /tmp/dd2.sql $2
+        fi
+        rm -f /tmp/dd*.sql;
     else
+        displayDebugMessage "base mysql : Dumping mysql data for database $1 (raw)"
         mysqldump --events --lock-all-tables --set-charset --default-character-set=utf8 \
         --skip-opt --add-locks --lock-tables --no-create-info \
         --host $MYSQL_HOST --user $MYSQL_USER -p$MYSQL_PASSWORD \
-        $1 > $MYSQL_DUMP_DIR/dd.sql
-        echo -e "SET names 'utf8';\n$(cat $MYSQL_DUMP_DIR/dd.sql)" > $2
-        rm -f $MYSQL_DUMP_DIR/dd.sql;
+        $1 > /tmp/dd.sql
+        echo -e "SET names 'utf8';\n$(cat /tmp/dd.sql)" > $2
+        rm -f /tmp/dd.sql;
     fi 
 }
