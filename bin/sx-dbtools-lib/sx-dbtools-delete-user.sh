@@ -32,6 +32,7 @@ exit 0;
 # Execute delete-user for all database(s) user(s)
 #######################################
 function doDeleteUserGlobal {
+    displayDebugMessage "delete-user : doDeleteUserGlobal()"
     doDeleteUserMysqlAll
     doDeleteUserCouchbaseAll
 }
@@ -41,6 +42,7 @@ function doDeleteUserGlobal {
 # Execute delete-user for all mysql user(s)
 #######################################
 function doDeleteUserMysqlAll {
+    displayDebugMessage "delete-user : doDeleteUserMysqlAll()"
     echo "- Delete all mysql user(s)"
     checkMysqlEnv
     displayMysqlTabInfoBlock
@@ -52,6 +54,7 @@ function doDeleteUserMysqlAll {
 # Execute delete-user for one mysql user
 #######################################
 function doDeleteUserMysqlOne {
+    displayDebugMessage "delete-user : doDeleteUserMysqlOne()"
     echo "- Delete '$1' mysql user"
     checkMysqlEnv
     displayMysqlTabInfoBlock
@@ -64,6 +67,7 @@ function doDeleteUserMysqlOne {
 # Execute delete-user for all couchbase user(s)
 #######################################
 function doDeleteUserCouchbaseAll {
+    displayDebugMessage "delete-user : doDeleteUserCouchbaseAll()"
     echo "- Delete all couchbase user(s)"
     checkCouchbaseEnv
     displayCouchbaseTabInfoBlock
@@ -75,6 +79,7 @@ function doDeleteUserCouchbaseAll {
 # Execute delete-user for one couchbase user
 #######################################
 function doDeleteUserCouchbaseOne {
+    displayDebugMessage "delete-user : doDeleteUserCouchbaseOne()"
     echo "- Delete '$1' couchbase user"
     checkCouchbaseEnv
     displayCouchbaseTabInfoBlock

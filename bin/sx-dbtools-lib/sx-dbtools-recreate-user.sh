@@ -32,6 +32,7 @@ exit 0;
 # Execute recreate-user for all database(s) user(s)
 #######################################
 function doRecreateUserGlobal {
+    displayDebugMessage "recreate-user : doRecreateUserGlobal()"
     doRecreateUserMysqlAll
     doRecreateUserCouchbaseAll
 }
@@ -41,6 +42,7 @@ function doRecreateUserGlobal {
 # Execute recreate-user for all mysql user(s)
 #######################################
 function doRecreateUserMysqlAll {
+    displayDebugMessage "recreate-user : doRecreateUserMysqlAll()"
     echo "- Recreate all mysql user(s)"
     checkMysqlEnv
     displayMysqlTabInfoBlock
@@ -53,6 +55,7 @@ function doRecreateUserMysqlAll {
 # Execute recreate-user for one mysql user
 #######################################
 function doRecreateUserMysqlOne {
+    displayDebugMessage "recreate-user : doRecreateUserMysqlOne()"
     echo "- Recreate '$1' mysql user"
     checkMysqlEnv
     displayMysqlTabInfoBlock
@@ -66,6 +69,7 @@ function doRecreateUserMysqlOne {
 # Execute recreate-user for all couchbase user(s)
 #######################################
 function doRecreateUserCouchbaseAll {
+    displayDebugMessage "recreate-user : doRecreateUserCouchbaseAll()"
     echo "- Recreate all couchbase user(s)"
     checkCouchbaseEnv
     displayCouchbaseTabInfoBlock
@@ -78,6 +82,7 @@ function doRecreateUserCouchbaseAll {
 # Execute recreate-user for one couchbase user
 #######################################
 function doRecreateUserCouchbaseOne {
+    displayDebugMessage "recreate-user : doRecreateUserCouchbaseOne()"
     echo "- Recreate '$1' couchbase user"
     checkCouchbaseEnv
     displayCouchbaseTabInfoBlock
