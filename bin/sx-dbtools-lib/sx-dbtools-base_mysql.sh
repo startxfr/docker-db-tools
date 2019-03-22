@@ -307,9 +307,20 @@ function importMysqlDatabasesSchema {
 function importMysqlDatabaseSchema {
     displayDebugMessage "base_mysql : importMysqlDatabaseSchema($1)"
     if [ ! -z "$1" ]; then
-        if [[ -r $MYSQL_DUMP_DIR/$1.$MYSQL_DUMP_SCHEMAFILE ]]; then
+        if [[ -r $MYSQL_DUMP_DIR/${1}*.$MYSQL_DUMP_SCHEMAFILE ]]; then
             echo "  - importing schema $1.$MYSQL_DUMP_SCHEMAFILE > $1 LOADED"
-            runImportMysqlDatabaseSqlDump $1 $MYSQL_DUMP_DIR/$1.$MYSQL_DUMP_SCHEMAFILE
+            for SQLFILE in $(ls --format=commas $MYSQL_DUMP_DIR/${1}*.$MYSQL_DUMP_SCHEMAFILE | tr "," "\n")
+            do
+                echo "  - dump schema $DATABASE > $SQLFILE
+                runDumpMysqlDatabaseSchema $DATABASE $SQLFILE
+            done
+        elif [[ -r $MYSQL_DUMP_DIR/schema-${1}*.sql ]]; then
+            echo "  - importing schema schema-${1}*.sql > $1 LOADED"
+            for SQLFILE in $(ls --format=commas $MYSQL_DUMP_DIR/schema-${1}*.sql | tr "," "\n")
+            do
+                echo "  - dump schema $DATABASE > $SQLFILE
+                runDumpMysqlDatabaseSchema $DATABASE $SQLFILE
+            done
         elif [[ -r $MYSQL_DUMP_DIR/$MYSQL_DUMP_SCHEMAFILE ]]; then
             echo "  - importing schema $MYSQL_DUMP_SCHEMAFILE > $1 LOADED"
             runImportMysqlDatabaseSqlDump $1 $MYSQL_DUMP_DIR/$MYSQL_DUMP_SCHEMAFILE
@@ -337,16 +348,25 @@ function importMysqlDatabasesData {
 }
 function importMysqlDatabaseData {
     displayDebugMessage "base_mysql : importMysqlDatabaseData($1)"
-    if [ ! -z "$1" ]; then
-        if [[ -r $MYSQL_DUMP_DIR/$1.$MYSQL_DUMP_DATAFILE ]]; then
-            echo "  - importing data $1.$MYSQL_DUMP_DATAFILE > $1 LOADED"
-            runImportMysqlDatabaseSqlDump $1 $MYSQL_DUMP_DIR/$1.$MYSQL_DUMP_DATAFILE
-        elif [[ -r $MYSQL_DUMP_DIR/$MYSQL_DUMP_DATAFILE ]]; then
-            echo "  - importing data $MYSQL_DUMP_DATAFILE > $1 LOADED"
-            runImportMysqlDatabaseSqlDump $1 $MYSQL_DUMP_DIR/$MYSQL_DUMP_DATAFILE
-        else
-          displayDebugMessage "base mysql : No database data import because no $1.$MYSQL_DUMP_DATAFILE file not found"
-        fi 
+    if [[ -r $MYSQL_DUMP_DIR/${1}*.$MYSQL_DUMP_DATAFILE ]]; then
+        echo "  - importing data $1.$MYSQL_DUMP_DATAFILE > $1 LOADED"
+        for SQLFILE in $(ls --format=commas $MYSQL_DUMP_DIR/${1}*.$MYSQL_DUMP_DATAFILE | tr "," "\n")
+        do
+            echo "  - dump data $DATABASE > $SQLFILE
+            runDumpMysqlDatabaseData $DATABASE $SQLFILE
+        done
+    elif [[ -r $MYSQL_DUMP_DIR/data-${1}*.sql ]]; then
+        echo "  - importing data data-${1}*.sql > $1 LOADED"
+        for SQLFILE in $(ls --format=commas $MYSQL_DUMP_DIR/data-${1}*.sql | tr "," "\n")
+        do
+            echo "  - dump data $DATABASE > $SQLFILE
+            runDumpMysqlDatabaseData $DATABASE $SQLFILE
+        done
+    elif [[ -r $MYSQL_DUMP_DIR/$MYSQL_DUMP_DATAFILE ]]; then
+        echo "  - importing data $MYSQL_DUMP_DATAFILE > $1 LOADED"
+        runImportMysqlDatabaseSqlDump $1 $MYSQL_DUMP_DIR/$MYSQL_DUMP_DATAFILE
+    else
+      displayDebugMessage "base mysql : No database data import because no $1.$MYSQL_DUMP_DATAFILE file not found"
     fi 
 }
 
