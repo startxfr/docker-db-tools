@@ -112,7 +112,6 @@ function runDumpCouchbaseBucket {
 }
 
 function checkCouchbaseIsNotInitialized {
-    displayDebugMessage "base_couchbase : checkCouchbaseIsNotInitialized()"
     RESULT=`couchbase-cli bucket-list -c couchbase://$COUCHBASE_HOST:$COUCHBASE_PORT -u $COUCHBASE_ADMIN -p $COUCHBASE_PASSWORD`
     if [[ $RESULT == *"Cluster is not initialized"* ]]; then
         return 0; # no error
@@ -122,7 +121,6 @@ function checkCouchbaseIsNotInitialized {
 }
 
 function checkCouchbaseBucketsExist {
-    displayDebugMessage "base_couchbase : checkCouchbaseBucketsExist()"
     if [ ! -z "$COUCHBASE_BUCKET" ]; then
         for BUCKET in $(echo $COUCHBASE_BUCKET | tr "," "\n")
         do
@@ -133,7 +131,6 @@ function checkCouchbaseBucketsExist {
 }
 
 function checkCouchbaseBucketExist {
-    displayDebugMessage "base_couchbase : checkCouchbaseBucketExist($1)"
     if [ ! -z "$1" ]; then
         echo $(runCheckCouchbaseBucketExist $1)
         return;
@@ -141,7 +138,6 @@ function checkCouchbaseBucketExist {
 }
 
 function runCheckCouchbaseBucketExist {
-    displayDebugMessage "base_couchbase : runCheckCouchbaseBucketExist($1)"
     RESULT=`couchbase-cli bucket-list -c couchbase://$COUCHBASE_HOST:$COUCHBASE_PORT -u $COUCHBASE_ADMIN -p $COUCHBASE_PASSWORD | grep $1`
     if [ "$RESULT" == "$1" ]; then
         return 0; # no error

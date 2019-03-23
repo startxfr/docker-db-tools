@@ -112,7 +112,6 @@ function checkMysqlEnv {
 }
 
 function checkMysqlDatabasesExist {
-    displayDebugMessage "base_mysql : checkMysqlDatabasesExist()"
     if [ ! -z "$MYSQL_DATABASE" ]; then
         for DATABASE in $(echo $MYSQL_DATABASE | tr "," "\n")
         do
@@ -127,7 +126,6 @@ function checkMysqlDatabasesExist {
 }
 
 function checkMysqlDatabaseExist {
-    displayDebugMessage "base_mysql : checkMysqlDatabaseExist($1)"
     RESULT=`mysql -h $MYSQL_HOST -u $MYSQL_USER --password=$MYSQL_PASSWORD --skip-column-names -e "SHOW DATABASES LIKE '$1'"`
     if [ "$RESULT" == "$1" ]; then
         return 0; # no error
