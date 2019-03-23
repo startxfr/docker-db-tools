@@ -3,6 +3,6 @@
     "_id":"app::version",
     "stage":"latest",
     "app":"sx-dbtools",
-    "version":"0.1.29"
+    "version":"0.1.30"
   }
 ]
