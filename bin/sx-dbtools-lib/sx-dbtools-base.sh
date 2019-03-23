@@ -43,6 +43,21 @@ function displayEndMessage {
 }
 
 #######################################
+# temporize with a balanced sleep
+#######################################
+function temporize {
+  x=$1
+  cad=$2
+  echo "temporize during ${x}sec"
+  while [ $x -gt 0 ]
+  do
+    sleep $cad
+    x=$(( $x - $cad ))
+    echo "wait for ${x}sec..."
+  done
+}
+
+#######################################
 # Display not implemented message
 #######################################
 function displayNotImplementedMessage {
