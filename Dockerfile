@@ -2,7 +2,7 @@ FROM couchbase:enterprise-5.0.1
 
 MAINTAINER Startx <dev@startx.fr>
 
-ENV SXDBTOOLS_VERSION="0.1.30" \
+ENV SXDBTOOLS_VERSION="0.1.31" \
     SXDBTOOLS_BACKUP_DIR=/backup \
     SXDBTOOLS_DUMP_DIR=/dump \
     SXDBTOOLS_DEBUG=true \
@@ -50,7 +50,7 @@ RUN apt-get update -y && \
 
 WORKDIR /tmp
 
-USER couchbase
+USER 1001
 
 VOLUME $SXDBTOOLS_DUMP_DIR
 VOLUME $SXDBTOOLS_BACKUP_DIR
