@@ -32,6 +32,7 @@ exit 0;
 # Execute create-user for all database(s) user(s)
 #######################################
 function doCreateUserGlobal {
+    displayDebugMessage "create-user : doCreateUserGlobal()"
     doCreateUserMysqlAll
     doCreateUserCouchbaseAll
 }
@@ -41,6 +42,7 @@ function doCreateUserGlobal {
 # Execute create-user for all mysql user(s)
 #######################################
 function doCreateUserMysqlAll {
+    displayDebugMessage "create-user : doCreateUserMysqlAll()"
     echo "- Create all mysql user(s)"
     checkMysqlEnv
     displayMysqlTabInfoBlock
@@ -52,6 +54,7 @@ function doCreateUserMysqlAll {
 # Execute create-user for one mysql user
 #######################################
 function doCreateUserMysqlOne {
+    displayDebugMessage "create-user : doCreateUserMysqlOne()"
     echo "- Create '$1' mysql user"
     checkMysqlEnv
     displayMysqlTabInfoBlock
@@ -64,6 +67,7 @@ function doCreateUserMysqlOne {
 # Execute create-user for all couchbase user(s)
 #######################################
 function doCreateUserCouchbaseAll {
+    displayDebugMessage "create-user : doCreateUserCouchbaseAll()"
     echo "- Create all couchbase user(s)"
     checkCouchbaseEnv
     displayCouchbaseTabInfoBlock
@@ -75,6 +79,7 @@ function doCreateUserCouchbaseAll {
 # Execute create-user for one couchbase user
 #######################################
 function doCreateUserCouchbaseOne {
+    displayDebugMessage "create-user : doCreateUserCouchbaseOne()"
     echo "- Create '$1' couchbase user"
     checkCouchbaseEnv
     displayCouchbaseTabInfoBlock

@@ -32,6 +32,7 @@ exit 0;
 # Execute create for all database(s), user(s) and data
 #######################################
 function doCreateGlobal {
+    displayDebugMessage "create : doCreateGlobal()"
     doCreateMysqlAll
     doCreateCouchbaseAll
 }
@@ -41,6 +42,7 @@ function doCreateGlobal {
 # Execute create for all mysql database(s), user(s) and data
 #######################################
 function doCreateMysqlAll {
+    displayDebugMessage "create : doCreateMysqlAll()"
     echo "- Create all mysql database(s), user(s) and data"
     checkMysqlEnv
     displayMysqlTabInfoBlock
@@ -57,6 +59,7 @@ function doCreateMysqlAll {
 # Execute create for all couchbase bucket(s), user(s) and data
 #######################################
 function doCreateCouchbaseAll {
+    displayDebugMessage "create : doCreateCouchbaseAll()"
     echo "- Create all couchbase bucket(s), user(s) and data"
     checkCouchbaseEnv
     displayCouchbaseTabInfoBlock

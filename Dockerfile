@@ -1,8 +1,6 @@
-FROM couchbase:enterprise-5.0.1
+FROM couchbase:enterprise-5.5.2
 
-MAINTAINER Startx <dev@startx.fr>
-
-ENV SXDBTOOLS_VERSION="0.1.22" \
+ENV SXDBTOOLS_VERSION="0.1.34" \
     SXDBTOOLS_BACKUP_DIR=/backup \
     SXDBTOOLS_DUMP_DIR=/dump \
     SXDBTOOLS_DEBUG=false \
@@ -16,26 +14,26 @@ ENV SXDBTOOLS_VERSION="0.1.22" \
     COUCHBASE_HOST=dbc \
     SUMMARY="Database tools for manipulating couchbase and mariadb container" \
     DESCRIPTION="The s2i-dbtools image, provides any command for creating, import and export \
-backup and restore, deleting and recreating both mysql and / or couchbase linked container"
+    backup and restore, deleting and recreating both mysql and / or couchbase linked container"
 
 LABEL name="startx/db-tools" \
-      summary="$SUMMARY" \
-      description="$SUMMARY" \
-      version="$SXDBTOOLS_VERSION" \
-      release="1" \
-      maintainer="Startx <dev@startx.fr>" \
-      usage="s2i build https://github.com/startxfr/docker-db-tools-example.git startx/sx-dbtools test-dbtools" \
-      io.k8s.description="$SUMMARY" \
-      io.k8s.display-name="sx-dbtools" \
-      io.openshift.tags="builder,db,mysql,couchbase" \
-      io.openshift.wants="mysql,couchbase" \
-      io.openshift.non-scalable="true" \
-      io.openshift.min-memory="500Mi" \
-      io.openshift.min-cpu="500m" \
-      io.openshift.s2i.destination="/tmp" \
-      io.openshift.s2i.scripts-url=image:///usr/local/s2i \
-      io.s2i.scripts-url=image:///usr/local/s2i \
-      fr.startx.component="sx-dbtools"
+    summary="$SUMMARY" \
+    description="$SUMMARY" \
+    version="$SXDBTOOLS_VERSION" \
+    release="1" \
+    maintainer="Startx <dev@startx.fr>" \
+    usage="s2i build https://github.com/startxfr/docker-db-tools-example.git startx/sx-dbtools test-dbtools" \
+    io.k8s.description="$SUMMARY" \
+    io.k8s.display-name="sx-dbtools" \
+    io.openshift.tags="db,mysql,couchbase" \
+    io.openshift.wants="mysql,couchbase" \
+    io.openshift.non-scalable="true" \
+    io.openshift.min-memory="500Mi" \
+    io.openshift.min-cpu="500m" \
+    io.openshift.s2i.destination="/tmp" \
+    io.openshift.s2i.scripts-url=image:///usr/local/s2i \
+    io.s2i.scripts-url=image:///usr/local/s2i \
+    fr.startx.component="sx-dbtools"
 
 COPY ./.s2i/bin/ /usr/local/s2i
 COPY ./bin /tmp/sxbin

@@ -35,10 +35,10 @@ if [ ! -z "$SXCMD" ]; then
     set -- ${s[0]} ${s[1]} ${s[2]} ${s[3]} ${s[4]} ${s[5]}
 fi
 
-
-if [[ $SXDBTOOLS_DELAY =~ ^?[0-9]+$ ]]; then
+# if SXDBTOOLS_DELAY environement found, delay execution
+if [[ $SXDBTOOLS_DELAY =~ ^[0-9]+$ ]]; then
     echo "Delay execution in $SXDBTOOLS_DELAY seconds"
-    sleep $SXDBTOOLS_DELAY
+    temporize $SXDBTOOLS_DELAY 5
 fi
 
 # Dispatch input arguments

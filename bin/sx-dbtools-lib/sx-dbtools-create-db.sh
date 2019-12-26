@@ -32,6 +32,7 @@ exit 0;
 # Execute create-db for all databases
 #######################################
 function doCreateDbGlobal {
+    displayDebugMessage "create-db : doCreateDbGlobal()"
     doCreateDbMysqlAll
     doCreateDbCouchbaseAll
 }
@@ -41,6 +42,7 @@ function doCreateDbGlobal {
 # Execute create-db for all mysql databases
 #######################################
 function doCreateDbMysqlAll {
+    displayDebugMessage "create-db : doCreateDbMysqlAll()"
     echo "- Create all mysql database"
     checkMysqlEnv
     if ! checkMysqlDatabasesExist; then
@@ -56,6 +58,7 @@ function doCreateDbMysqlAll {
 # Execute create-db for one mysql database
 #######################################
 function doCreateDbMysqlOne {
+    displayDebugMessage "create-db : doCreateDbMysqlOne()"
     echo "- Create '$1' mysql database"
     checkMysqlEnv
     if ! checkMysqlDatabaseExist $1; then
@@ -72,6 +75,7 @@ function doCreateDbMysqlOne {
 # Execute create-db for all couchbase buckets
 #######################################
 function doCreateDbCouchbaseAll {
+    displayDebugMessage "create-db : doCreateDbCouchbaseAll()"
     echo "- Create all couchbase buckets"
     checkCouchbaseEnv
     if $(checkCouchbaseBucketsExist); then
@@ -87,6 +91,7 @@ function doCreateDbCouchbaseAll {
 # Execute create-db for one couchbase bucket
 #######################################
 function doCreateDbCouchbaseOne {
+    displayDebugMessage "create-db : doCreateDbCouchbaseOne()"
     echo "- Create '$1' couchbase bucket"
     checkCouchbaseEnv
     if $(checkCouchbaseBucketExist $1); then
