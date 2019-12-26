@@ -4,9 +4,9 @@
 # Display backup help message
 #######################################
 function displayBackupHelp {
-if  [ ! "$1" == ""  ]; then
-    displayErrorMessage "database type '$1' IS NOT SUPPORTED"
-fi
+    if  [ ! "$1" == ""  ]; then
+        displayErrorMessage "database type '$1' IS NOT SUPPORTED"
+    fi
 cat <<EOF
 Backup one or all type of database
 
@@ -25,7 +25,7 @@ Examples:
   # Backup only couchbase buckets
   sx-dbtools backup couchbase
 EOF
-exit 0;
+    exit 0;
 }
 
 #######################################
@@ -43,8 +43,8 @@ function doBackupGlobal {
     echo "  - bucket(s) : $COUCHBASE_BUCKET"
     echo "  - destination : $SXDBTOOLS_BACKUP_DIR"
     displayNotImplementedMessage
-#    doBackupMysqlAll
-#    doBackupCouchbaseAll
+    #    doBackupMysqlAll
+    #    doBackupCouchbaseAll
 }
 
 
@@ -108,32 +108,32 @@ function doBackupCouchbaseOne {
 function dispatcherBackup {
     displayStartupMessage
     case $2 in
-        "") 
+        "")
             displayCommandMessage $1 close
-            doBackupGlobal; 
-            displayEndMessage "backuping all mysql and couchbase database(s)" ;;
+            doBackupGlobal;
+        displayEndMessage "backuping all mysql and couchbase database(s)" ;;
         mysql)
             displayCommandMessage $1
             displayDbtypeMessage $2 close
             case $3 in
                 "")
-                    doBackupMysqlAll; 
-                    displayEndMessage "backuping all mysql database(s)" ;;
+                    doBackupMysqlAll;
+                displayEndMessage "backuping all mysql database(s)" ;;
                 *)
-                    doBackupMysqlOne $3; 
-                    displayEndMessage "backuping mysql database $3" ;;
+                    doBackupMysqlOne $3;
+                displayEndMessage "backuping mysql database $3" ;;
             esac
         ;;
-        couchbase)  
+        couchbase)
             displayCommandMessage $1
             displayDbtypeMessage $2 close;
             case $3 in
                 "")
-                    doBackupCouchbaseAll; 
-                    displayEndMessage "backuping all couchbase bucket(s)" ;;
+                    doBackupCouchbaseAll;
+                displayEndMessage "backuping all couchbase bucket(s)" ;;
                 *)
-                    doBackupCouchbaseOne $3; 
-                    displayEndMessage "backuping couchbase bucket $3" ;;
+                    doBackupCouchbaseOne $3;
+                displayEndMessage "backuping couchbase bucket $3" ;;
             esac
         ;;
         help|--help)
@@ -142,7 +142,7 @@ function dispatcherBackup {
         ;;
         *)
             displayCommandMessage unknown close
-            displayBackupHelp $2 
+            displayBackupHelp $2
         ;;
     esac
 }
