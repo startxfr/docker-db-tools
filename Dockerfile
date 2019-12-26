@@ -39,7 +39,7 @@ COPY ./.s2i/bin/ /usr/local/s2i
 COPY ./bin /tmp/sxbin
 RUN apt-get update -y && \
     apt-get dist-upgrade -y && \
-    apt-get install -y mariadb-server-5.5 mariadb-client-5.5 tar gzip && \
+    apt-get install -y mariadb-server-10.0 mariadb-client-10.0 tar gzip && \
     apt-get clean && \
     mv /tmp/sxbin/* /bin/ && \
     rm -rf /tmp/sxbin && \
