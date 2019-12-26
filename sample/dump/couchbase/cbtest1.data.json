@@ -1,1 +1,6 @@
-[{"_id":"app::version","app":"sx-dbtools","stage":"dev","version":"0.1.22"}]
+[{
+    "_id": "app::version",
+    "stage": "test",
+    "app": "sx-dbtools",
+    "version": "0.1.32"
+}]

@@ -32,6 +32,7 @@ exit 0;
 # Execute recreate-db for all databases
 #######################################
 function doRecreateDbGlobal {
+    displayDebugMessage "recreate-db : doRecreateDbGlobal()"
     doRecreateDbMysqlAll
     doRecreateDbCouchbaseAll
 }
@@ -41,6 +42,7 @@ function doRecreateDbGlobal {
 # Execute recreate-db for all mysql databases
 #######################################
 function doRecreateDbMysqlAll {
+    displayDebugMessage "recreate-db : doRecreateDbMysqlAll()"
     echo "- Recreate all mysql database"
     checkMysqlEnv
     if checkMysqlDatabasesExist; then
@@ -57,6 +59,7 @@ function doRecreateDbMysqlAll {
 # Execute recreate-db for one mysql database
 #######################################
 function doRecreateDbMysqlOne {
+    displayDebugMessage "recreate-db : doRecreateDbMysqlOne()"
     echo "- Recreate '$1' mysql database"
     checkMysqlEnv
     if checkMysqlDatabaseExist $1; then
@@ -74,6 +77,7 @@ function doRecreateDbMysqlOne {
 # Execute recreate-db for all couchbase buckets
 #######################################
 function doRecreateDbCouchbaseAll {
+    displayDebugMessage "recreate-db : doRecreateDbCouchbaseAll()"
     echo "- Recreate all couchbase buckets"
     checkCouchbaseEnv
     if $(checkCouchbaseBucketsExist); then
@@ -90,6 +94,7 @@ function doRecreateDbCouchbaseAll {
 # Execute recreate-db for one couchbase bucket
 #######################################
 function doRecreateDbCouchbaseOne {
+    displayDebugMessage "recreate-db : doRecreateDbCouchbaseOne()"
     echo "- Recreate '$1' couchbase bucket"
     checkCouchbaseEnv
     if $(checkCouchbaseBucketExist $1); then

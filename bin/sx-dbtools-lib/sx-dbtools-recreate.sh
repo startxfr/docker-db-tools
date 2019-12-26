@@ -32,6 +32,7 @@ exit 0;
 # Execute recreate for all database(s), user(s) and data
 #######################################
 function doRecreateGlobal {
+    displayDebugMessage "recreate : doRecreateGlobal()"
     doRecreateMysqlAll
     doRecreateCouchbaseAll
 }
@@ -41,6 +42,7 @@ function doRecreateGlobal {
 # Execute recreate for all mysql database(s), user(s) and data
 #######################################
 function doRecreateMysqlAll {
+    displayDebugMessage "recreate : doRecreateMysqlAll()"
     echo "- Recreate all mysql database(s), user(s) and data"
     checkMysqlEnv
     displayMysqlTabInfoBlock
@@ -59,6 +61,7 @@ function doRecreateMysqlAll {
 # Execute recreate for all couchbase bucket(s), user(s) and data
 #######################################
 function doRecreateCouchbaseAll {
+    displayDebugMessage "recreate : doRecreateCouchbaseAll()"
     echo "- Recreate all couchbase bucket(s), user(s) and data"
     checkCouchbaseEnv
     displayCouchbaseTabInfoBlock

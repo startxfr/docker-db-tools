@@ -1,8 +1,6 @@
-FROM couchbase:enterprise-5.0.1
+FROM couchbase:enterprise-5.5.2
 
-MAINTAINER Startx <dev@startx.fr>
-
-ENV SXDBTOOLS_VERSION="0.1.22" \
+ENV SXDBTOOLS_VERSION="0.1.32" \
     SXDBTOOLS_BACKUP_DIR=/backup \
     SXDBTOOLS_DUMP_DIR=/dump \
     SXDBTOOLS_DEBUG=false \
@@ -17,20 +15,20 @@ ENV SXDBTOOLS_VERSION="0.1.22" \
     SUMMARY="Database tools for manipulating couchbase and mariadb container"
 
 LABEL name="startx/db-tools" \
-      summary="$SUMMARY" \
-      description="$SUMMARY" \
-      version="$SXDBTOOLS_VERSION" \
-      release="1" \
-      maintainer="Startx <dev@startx.fr>" \
-      io.k8s.description="$SUMMARY" \
-      io.k8s.display-name="sx-dbtools" \
-      io.openshift.tags="db,mysql,couchbase" \
-      io.openshift.wants="mysql,couchbase" \
-      io.openshift.non-scalable="true" \
-      io.openshift.min-memory="500Mi" \
-      io.openshift.min-cpu="500m" \
-      io.openshift.s2i.destination="/tmp" \
-      fr.startx.component="sx-dbtools"
+    summary="$SUMMARY" \
+    description="$SUMMARY" \
+    version="$SXDBTOOLS_VERSION" \
+    release="1" \
+    maintainer="Startx <dev@startx.fr>" \
+    io.k8s.description="$SUMMARY" \
+    io.k8s.display-name="sx-dbtools" \
+    io.openshift.tags="db,mysql,couchbase" \
+    io.openshift.wants="mysql,couchbase" \
+    io.openshift.non-scalable="true" \
+    io.openshift.min-memory="500Mi" \
+    io.openshift.min-cpu="500m" \
+    io.openshift.s2i.destination="/tmp" \
+    fr.startx.component="sx-dbtools"
 
 COPY ./bin /tmp/sxbin
 RUN apt-get update -y && \
@@ -50,7 +48,7 @@ RUN apt-get update -y && \
 
 WORKDIR /tmp
 
-USER couchbase
+USER 1001
 
 VOLUME $SXDBTOOLS_DUMP_DIR
 VOLUME $SXDBTOOLS_BACKUP_DIR
