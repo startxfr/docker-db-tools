@@ -21,7 +21,14 @@ echo "========> waiting for database startup (10sec)" && sleep 10
 echo "========> waiting for database startup (0sec)"
 
 echo "========> STARTING APPLICATION Containers (dev)"
-sudo docker-compose -f travis-docker-compose.yml up app
+echo "========> Testing container info"
+sudo docker-compose -f travis-docker-compose.yml up app-info
+sleep 2
+echo "========> Testing container create all database(s), user(s) and data"
+sudo docker-compose -f travis-docker-compose.yml up app-create
+sleep 2
+echo "========> Testing container delete all database(s), user(s) and data"
+sudo docker-compose -f travis-docker-compose.yml up app-delete
 
 echo "========> END TESTING APPLICATIONS"
 exit 0;
