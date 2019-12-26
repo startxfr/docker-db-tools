@@ -9,26 +9,31 @@
 PREFIX="---> S2I assemble sx-dbtools : "
 
 echo "$PREFIX Installing application source"
-if [[ -r /tmp/src/backup ]]; then
+if [[ -r /tmp/src/backup ]]
+then
     echo "$PREFIX copy source from /tmp/src/backup > $SXDBTOOLS_BACKUP_DIR"
     cp /tmp/src/backup/. $SXDBTOOLS_BACKUP_DIR/
-elif [[ -r /tmp/backup ]]; then
+elif [[ -r /tmp/backup ]]
+then
     echo "$PREFIX copy source from /tmp/backup > $SXDBTOOLS_BACKUP_DIR"
     cp /tmp/backup/. $SXDBTOOLS_BACKUP_DIR/
-else; then
+else
     echo "$PREFIX no source backup directory. Create $SXDBTOOLS_BACKUP_DIR"
     mkdir -p $SXDBTOOLS_BACKUP_DIR
-fi 
-if [[ -r /tmp/src/dump ]]; then
+fi
+if [[ -r /tmp/src/dump ]]
+then
     echo "$PREFIX copy source from /tmp/src/dump > $SXDBTOOLS_DUMP_DIR"
     cp /tmp/src/dump/. $SXDBTOOLS_DUMP_DIR/
-elif [[ -r /tmp/dump ]]; then
+elif [[ -r /tmp/dump ]]
+then
     echo "$PREFIX copy source from /tmp/dump > $SXDBTOOLS_DUMP_DIR"
     cp /tmp/dump/. $SXDBTOOLS_DUMP_DIR/
-else; then
+else
     echo "$PREFIX no source dump directory. Create $SXDBTOOLS_DUMP_DIR"
     mkdir -p $SXDBTOOLS_DUMP_DIR
-fi 
+fi
 echo "$PREFIX Fixing perm"
 chown 1001:0 -R /tmp $SXDBTOOLS_DUMP_DIR $SXDBTOOLS_BACKUP_DIR
 chmod g=u -R /tmp $SXDBTOOLS_DUMP_DIR $SXDBTOOLS_BACKUP_DIR
+exit 0;
