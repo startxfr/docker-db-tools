@@ -13,7 +13,7 @@ function displayMysqlTabInfoBlock {
     if [ `isDebug` == "true" ]; then
         echo "  - mysql admin : $MYSQL_ADMIN"
         echo "  - mysql user(s) : $MYSQL_USERS"
-    fi 
+    fi
 }
 
 function checkMysqlEnv {
@@ -23,7 +23,7 @@ function checkMysqlEnv {
         if [ -z "$DBM_PORT_3306_TCP_ADDR" ]; then
             displayErrorMessage "Need to expose port 3306 in your mysql container"
             exit 128;
-        fi 
+        fi
         MYSQL_HOST="$DBM_PORT_3306_TCP_ADDR"
         displayDebugMessage "mysql host set to $MYSQL_HOST"
         if [ -z "$MYSQL_ADMIN" ]; then
@@ -32,27 +32,27 @@ function checkMysqlEnv {
             if [ -z "$DBM_ENV_MYSQL_ROOT_PASSWORD" ]; then
                 displayErrorMessage "Need to set MYSQL_ROOT_PASSWORD environment var in your mysql container"
                 exit 128;
-            fi 
+            fi
             displayDebugMessage "mysql admin password set to $MYSQL_PASSWORD"
             MYSQL_PASSWORD="$DBM_ENV_MYSQL_ROOT_PASSWORD"
         else
             set -f; IFS=':'; set -- $MYSQL_ADMIN
-            MYSQL_USER=$1; 
-            MYSQL_PASSWORD=$2; 
+            MYSQL_USER=$1;
+            MYSQL_PASSWORD=$2;
             set +f; unset IFS;
             if [ -z "$MYSQL_PASSWORD" ]; then
                 displayErrorMessage "Need to set MYSQL_ADMIN with username:password"
                 exit 128;
-            fi 
+            fi
             displayDebugMessage "mysql admin user set to $MYSQL_USER"
             displayDebugMessage "mysql admin password set to $MYSQL_PASSWORD"
-        fi 
-    elif [ ! -z "$DBM_SERVICE_HOST" ]; then
+        fi
+        elif [ ! -z "$DBM_SERVICE_HOST" ]; then
         displayDebugMessage "mysql linked container labeled 'dbm' via kubernetes"
         if [ -z "$DBM_PORT_3306_TCP_PORT" ]; then
             displayErrorMessage "Need to expose port 3306 in your mysql container"
             exit 128;
-        fi 
+        fi
         MYSQL_HOST="$DBM_SERVICE_HOST"
         displayDebugMessage "mysql host set to $MYSQL_HOST"
         if [ -z "$MYSQL_ADMIN" ]; then
@@ -60,55 +60,55 @@ function checkMysqlEnv {
             exit 128;
         else
             set -f; IFS=':'; set -- $MYSQL_ADMIN
-            MYSQL_USER=$1; 
-            MYSQL_PASSWORD=$2; 
+            MYSQL_USER=$1;
+            MYSQL_PASSWORD=$2;
             set +f; unset IFS;
             if [ -z "$MYSQL_PASSWORD" ]; then
                 displayErrorMessage "Need to set MYSQL_ADMIN with username:password"
                 exit 128;
-            fi 
+            fi
             displayDebugMessage "mysql admin user set to $MYSQL_USER"
             displayDebugMessage "mysql admin password set to $MYSQL_PASSWORD"
-        fi 
+        fi
     else
         displayDebugMessage "No mysql linked container labeled 'dbm'"
         if [ -z "$MYSQL_HOST" ]; then
             displayErrorMessage "Need to set MYSQL_HOST"
             exit 128;
-        fi 
+        fi
         if [ -z "$MYSQL_ADMIN" ]; then
             displayErrorMessage "Need to set MYSQL_ADMIN"
             exit 128;
         else
             set -f; IFS=':'; set -- $MYSQL_ADMIN
-            MYSQL_USER=$1; 
-            MYSQL_PASSWORD=$2; 
+            MYSQL_USER=$1;
+            MYSQL_PASSWORD=$2;
             set +f; unset IFS;
             if [ -z "$MYSQL_PASSWORD" ]; then
                 displayErrorMessage "Need to set MYSQL_ADMIN with username:password"
                 exit 128;
-            fi 
-        fi 
+            fi
+        fi
         if [ -z "$MYSQL_PASSWORD" ]; then
             displayErrorMessage "Need to set MYSQL_PASSWORD"
             exit 128;
-        fi 
+        fi
         displayDebugMessage "mysql admin user set to $MYSQL_USER"
         displayDebugMessage "mysql admin password set to $MYSQL_PASSWORD"
-    fi 
+    fi
     if [ -z "$MYSQL_DATABASE" ]; then
         displayErrorMessage "Need to set MYSQL_DATABASE"
         exit 128;
-    fi 
+    fi
     if [ -z "$MYSQL_DUMP_DIR" ]; then
         displayErrorMessage "Need to set MYSQL_DUMP_DIR"
         exit 128;
-    fi 
+    fi
     mkdir -p $MYSQL_DUMP_DIR
     if [ -z "$MYSQL_USERS" ]; then
         displayErrorMessage "Need to set MYSQL_USERS"
         exit 128;
-    fi 
+    fi
 }
 
 function checkMysqlDatabasesExist {
@@ -122,7 +122,7 @@ function checkMysqlDatabasesExist {
                 return 1; # error code
             fi
         done
-    fi 
+    fi
 }
 
 function checkMysqlDatabaseExist {
@@ -142,7 +142,7 @@ function createMysqlDatabases {
             echo "  - create database $DATABASE"
             runCreateMysqlDatabase $DATABASE
         done
-    fi 
+    fi
 }
 
 function createMysqlDatabase {
@@ -150,7 +150,7 @@ function createMysqlDatabase {
     if [ ! -z "$1" ]; then
         echo "  - create database $1"
         runCreateMysqlDatabase $1
-    fi 
+    fi
 }
 
 function runCreateMysqlDatabase {
@@ -168,7 +168,7 @@ function createMysqlUsers {
             USER=$1; PWD=$2; set +f; unset IFS
             createMysqlUser $USER $PWD
         done
-    fi 
+    fi
     if [[ -r $MYSQL_DUMP_DIR/USER ]]; then
         for userInfo in $(cat $MYSQL_DUMP_DIR/USER | tr "," "\n")
         do
@@ -176,14 +176,14 @@ function createMysqlUsers {
             USER=$1; PWD=$2; set +f; unset IFS
             createMysqlUser $USER $PWD
         done
-    fi 
+    fi
 }
 
 function createMysqlUser {
     displayDebugMessage "base_mysql : createMysqlUser( $1, $2 )"
     if [[ ! -z "$1" &&  ! -z "$2" ]]; then
         runCreateMysqlUser $USER $PWD
-    fi 
+    fi
 }
 
 function runCreateMysqlUser {
@@ -196,7 +196,7 @@ function runCreateMysqlUser {
         PWD=$(openssl rand -base64 32 | sha256sum | base64 | head -c 16 ; echo)
         echo "    - with pwd    : [generated]"
         echo "    - password    : $PWD \( \! NOTICE : display only once\)"
-    else 
+    else
         echo "    - with pwd    : [user given]"
     fi
     mysql -h $MYSQL_HOST -u $MYSQL_USER --password=$MYSQL_PASSWORD \
@@ -206,9 +206,9 @@ function runCreateMysqlUser {
         do
             echo "    - grant       : $USER access to $DATABASE"
             mysql -h $MYSQL_HOST -u $MYSQL_USER --password=$MYSQL_PASSWORD \
-            -e "GRANT ALL PRIVILEGES ON $DATABASE.* TO '$USER' WITH GRANT OPTION;"
+            -e "GRANT ALL PRIVILEGES ON $DATABASE.* TO '$USER'@'%' WITH GRANT OPTION;"
         done
-    fi 
+    fi
 }
 
 function deleteMysqlDatabases {
@@ -219,7 +219,7 @@ function deleteMysqlDatabases {
             echo "  - delete database $DATABASE"
             runDeleteMysqlDatabase $DATABASE
         done
-    fi 
+    fi
 }
 
 function deleteMysqlDatabase {
@@ -227,7 +227,7 @@ function deleteMysqlDatabase {
     if [ ! -z "$1" ]; then
         echo "  - delete database $1"
         runDeleteMysqlDatabase $1
-    fi 
+    fi
 }
 
 function runDeleteMysqlDatabase {
@@ -246,7 +246,7 @@ function deleteMysqlUsers {
             echo "  - delete mysql user $1"
             runDeleteMysqlUser $USER
         done
-    fi 
+    fi
     if [[ -r $MYSQL_DUMP_DIR/USER ]]; then
         for userInfo in $(cat $MYSQL_DUMP_DIR/USER | tr "," "\n")
         do
@@ -254,7 +254,7 @@ function deleteMysqlUsers {
             USER=$1; PWD=$2; set +f; unset IFS
             runDeleteMysqlUser $USER
         done
-    fi 
+    fi
 }
 
 function deleteMysqlUser {
@@ -262,7 +262,7 @@ function deleteMysqlUser {
     if [ ! -z "$1" ]; then
         echo "  - delete mysql user $1"
         runDeleteMysqlUser $USER
-    fi 
+    fi
 }
 
 function runDeleteMysqlUser {
@@ -281,8 +281,8 @@ function importMysqlDatabases {
             importMysqlDatabase $DATABASE
         done
     else
-      displayDebugMessage "base mysql : No database \$MYSQL_DATABASE defined"
-    fi 
+        displayDebugMessage "base mysql : No database \$MYSQL_DATABASE defined"
+    fi
 }
 
 function importMysqlDatabase {
@@ -292,8 +292,8 @@ function importMysqlDatabase {
         importMysqlDatabaseSchema $1
         importMysqlDatabaseData $1
     else
-      displayDebugMessage "base mysql : No database name found"
-    fi 
+        displayDebugMessage "base mysql : No database name found"
+    fi
 }
 
 function importMysqlDatabasesSchema {
@@ -305,37 +305,41 @@ function importMysqlDatabasesSchema {
             importMysqlDatabaseSchema $DATABASE
         done
     else
-      displayDebugMessage "base mysql : No databases schema import because \$MYSQL_DATABASE not found"
-    fi 
+        displayDebugMessage "base mysql : No databases schema import because \$MYSQL_DATABASE not found"
+    fi
 }
 
 function importMysqlDatabaseSchema {
     displayDebugMessage "base_mysql : importMysqlDatabaseSchema($1)"
     dt1=`ls $MYSQL_DUMP_DIR/${1}*.$MYSQL_DUMP_SCHEMAFILE 2> /dev/null`
     rtdt1=$?
-    displayDebugMessage "base_mysql : Tested existence of $MYSQL_DUMP_DIR/${1}*.$MYSQL_DUMP_SCHEMAFILE files  = $rtdt1"
+    displayDebugMessage "base_mysql : Tested existence of $MYSQL_DUMP_DIR/${1}*.$MYSQL_DUMP_SCHEMAFILE (files  = $(echo $dt1 | wc -w))"
     dt2=`ls $MYSQL_DUMP_DIR/schema-${1}*.sql 2> /dev/null`
     rtdt2=$?
-    displayDebugMessage "base_mysql : Tested existence of $MYSQL_DUMP_DIR/schema-${1}*.sql files  = $rtdt2"
-    if [[ "$rtdt1" == "0" ]]; then
-        displayDebugMessage "base mysql : importing data from $MYSQL_DUMP_DIR/${1}*.$MYSQL_DUMP_SCHEMAFILE files"
-        for SQLFILE in $dt1
-        do
-            echo "  - import $SQLFILE schema into $DATABASE"
-            runImportMysqlDatabaseSqlDump $DATABASE $SQLFILE
-        done
-    elif [[ "$rtdt2" == "0" ]]; then
-        displayDebugMessage "base mysql : importing schema from $MYSQL_DUMP_DIR/schema-${1}*.sql files"
-        for SQLFILE in $dt2
-        do
-            echo "  - import $SQLFILE schema into $DATABASE"
-            runImportMysqlDatabaseSqlDump $DATABASE $SQLFILE
-        done
-    elif [[ -r $MYSQL_DUMP_DIR/$MYSQL_DUMP_SCHEMAFILE ]]; then
-        echo "  - importing schema $MYSQL_DUMP_SCHEMAFILE > $1 LOADED"
-        runImportMysqlDatabaseSqlDump $1 $MYSQL_DUMP_DIR/$MYSQL_DUMP_SCHEMAFILE
+    displayDebugMessage "base_mysql : Tested existence of $MYSQL_DUMP_DIR/schema-${1}*.sql (files  = $(echo $dt2 | wc -w))"
+    if [[ "$rtdt1" == "0" || "$rtdt2" == "0" || -r $MYSQL_DUMP_DIR/$MYSQL_DUMP_SCHEMAFILE ]]; then
+        if [[ -r $MYSQL_DUMP_DIR/$MYSQL_DUMP_SCHEMAFILE ]]; then
+            echo "  - importing schema $MYSQL_DUMP_SCHEMAFILE > $1 LOADED"
+            runImportMysqlDatabaseSqlDump $1 $MYSQL_DUMP_DIR/$MYSQL_DUMP_SCHEMAFILE
+        fi
+        if [[ "$rtdt1" == "0" ]]; then
+            displayDebugMessage "base mysql : importing data from $MYSQL_DUMP_DIR/${1}*.$MYSQL_DUMP_SCHEMAFILE files"
+            for SQLFILE in $dt1
+            do
+                echo "  - import $SQLFILE schema into $DATABASE"
+                runImportMysqlDatabaseSqlDump $DATABASE $SQLFILE
+            done
+        fi
+        if [[ "$rtdt2" == "0" ]]; then
+            displayDebugMessage "base mysql : importing schema from $MYSQL_DUMP_DIR/schema-${1}*.sql files"
+            for SQLFILE in $dt2
+            do
+                echo "  - import $SQLFILE schema into $DATABASE"
+                runImportMysqlDatabaseSqlDump $DATABASE $SQLFILE
+            done
+        fi
     else
-      displayDebugMessage "base mysql : No database schema import because no $1.$MYSQL_DUMP_SCHEMAFILE, schema-${1}*.sql or $MYSQL_DUMP_DIR/$MYSQL_DUMP_SCHEMAFILE file not found"
+        displayDebugMessage "base mysql : No database schema import because no $1.$MYSQL_DUMP_SCHEMAFILE, schema-${1}*.sql or $MYSQL_DUMP_DIR/$MYSQL_DUMP_SCHEMAFILE file not found"
     fi
 }
 
@@ -353,38 +357,42 @@ function importMysqlDatabasesData {
             importMysqlDatabaseData $DATABASE
         done
     else
-      displayDebugMessage "base mysql : No databases data import because \$MYSQL_DATABASE not found"
-    fi 
+        displayDebugMessage "base mysql : No databases data import because \$MYSQL_DATABASE not found"
+    fi
 }
 
 function importMysqlDatabaseData {
     displayDebugMessage "base_mysql : importMysqlDatabaseData($1)"
     dt1=`ls $MYSQL_DUMP_DIR/${1}*.$MYSQL_DUMP_DATAFILE 2> /dev/null`
     rtdt1=$?
-    displayDebugMessage "base_mysql : Tested existence of $MYSQL_DUMP_DIR/${1}*.$MYSQL_DUMP_DATAFILE files  = $rtdt1"
+    displayDebugMessage "base_mysql : Tested existence of $MYSQL_DUMP_DIR/${1}*.$MYSQL_DUMP_DATAFILE (files  = $(echo $dt1 | wc -w))"
     dt2=`ls $MYSQL_DUMP_DIR/data-${1}*.sql 2> /dev/null`
     rtdt2=$?
-    displayDebugMessage "base_mysql : Tested existence of $MYSQL_DUMP_DIR/data-${1}*.sql files  = $rtdt2"
-    if [[ "$rtdt1" == "0" ]]; then
-        displayDebugMessage "base mysql : importing data from $MYSQL_DUMP_DIR/${1}*.$MYSQL_DUMP_DATAFILE files"
-        for SQLFILE in $dt1
-        do
-            echo "  - import $SQLFILE data into $DATABASE"
-            runImportMysqlDatabaseSqlDump $DATABASE $SQLFILE
-        done
-    elif [[ "$rtdt2" == "0" ]]; then
-        displayDebugMessage "base mysql : importing data from $MYSQL_DUMP_DIR/data-${1}*.sql files"
-        for SQLFILE in $dt2
-        do
-            echo "  - import $SQLFILE data into $DATABASE"
-            runImportMysqlDatabaseSqlDump $DATABASE $SQLFILE
-        done
-    elif [[ -r $MYSQL_DUMP_DIR/$MYSQL_DUMP_DATAFILE ]]; then
-        echo "  - importing data $MYSQL_DUMP_DATAFILE > $1 LOADED"
-        runImportMysqlDatabaseSqlDump $1 $MYSQL_DUMP_DIR/$MYSQL_DUMP_DATAFILE
+    displayDebugMessage "base_mysql : Tested existence of $MYSQL_DUMP_DIR/data-${1}*.sql (files = $(echo $dt2 | wc -w))"
+    if [[ "$rtdt1" == "0" || "$rtdt2" == "0" || -r $MYSQL_DUMP_DIR/$MYSQL_DUMP_DATAFILE ]]; then
+        if [[ -r $MYSQL_DUMP_DIR/$MYSQL_DUMP_DATAFILE ]]; then
+            echo "  - importing data $MYSQL_DUMP_DATAFILE > $1 LOADED"
+            runImportMysqlDatabaseSqlDump $1 $MYSQL_DUMP_DIR/$MYSQL_DUMP_DATAFILE
+        fi
+        if [[ "$rtdt1" == "0" ]]; then
+            displayDebugMessage "base mysql : importing data from $MYSQL_DUMP_DIR/${1}*.$MYSQL_DUMP_DATAFILE files"
+            for SQLFILE in $dt1
+            do
+                echo "  - import $SQLFILE data into $DATABASE"
+                runImportMysqlDatabaseSqlDump $DATABASE $SQLFILE
+            done
+        fi
+        if [[ "$rtdt2" == "0" ]]; then
+            displayDebugMessage "base mysql : importing data from $MYSQL_DUMP_DIR/data-${1}*.sql files"
+            for SQLFILE in $dt2
+            do
+                echo "  - import $SQLFILE data into $DATABASE"
+                runImportMysqlDatabaseSqlDump $DATABASE $SQLFILE
+            done
+        fi
     else
-      displayDebugMessage "base mysql : No database data import because no $1.$MYSQL_DUMP_DATAFILE, data-${1}*.sql or $MYSQL_DUMP_DIR/$MYSQL_DUMP_DATAFILE file not found"
-    fi 
+        displayDebugMessage "base mysql : No database data import because no $1.$MYSQL_DUMP_DATAFILE, data-${1}*.sql or $MYSQL_DUMP_DIR/$MYSQL_DUMP_DATAFILE file not found"
+    fi
 }
 
 function dumpMysqlDatabases {
@@ -395,8 +403,8 @@ function dumpMysqlDatabases {
             dumpMysqlDatabase $DATABASE
         done
     else
-      displayDebugMessage "base mysql : No databases dump because \$MYSQL_DATABASE not found"
-    fi 
+        displayDebugMessage "base mysql : No databases dump because \$MYSQL_DATABASE not found"
+    fi
 }
 
 function dumpMysqlDatabase {
@@ -416,8 +424,8 @@ function dumpMysqlDatabasesSchema {
             runDumpMysqlDatabaseSchema $DATABASE $MYSQL_DUMP_DIR/$DATABASE.$MYSQL_DUMP_SCHEMAFILE
         done
     else
-      displayDebugMessage "base mysql : No databases schema dump because \$MYSQL_DATABASE not found"
-    fi 
+        displayDebugMessage "base mysql : No databases schema dump because \$MYSQL_DATABASE not found"
+    fi
 }
 
 function runDumpMysqlDatabaseSchema {
@@ -436,8 +444,8 @@ function dumpMysqlDatabasesData {
             runDumpMysqlDatabaseData $DATABASE $MYSQL_DUMP_DIR/$DATABASE.$MYSQL_DUMP_DATAFILE
         done
     else
-      displayDebugMessage "base mysql : No databases data dump because \$MYSQL_DATABASE not found"
-    fi 
+        displayDebugMessage "base mysql : No databases data dump because \$MYSQL_DATABASE not found"
+    fi
 }
 
 function runDumpMysqlDatabaseData {
@@ -449,7 +457,7 @@ function runDumpMysqlDatabaseData {
         --host $MYSQL_HOST --user $MYSQL_USER -p$MYSQL_PASSWORD \
         $1 > /tmp/dd.sql
         echo -e "SET names 'utf8';\n$(cat /tmp/dd.sql)" > /tmp/dd2.sql
-        if(/bin/sx-dbtools-process-mysqldump /tmp/dd2.sql >  /tmp/dd3.sql == 0) then 
+        if(/bin/sx-dbtools-process-mysqldump /tmp/dd2.sql >  /tmp/dd3.sql == 0) then
             displayDebugMessage "base mysql : OK mysql extended worked fine. Get a multiple line dump"
             mv /tmp/dd3.sql $2
             displayDebugMessage "base mysql : Dumping mysql data for database $1 into $2 (extended)"
@@ -467,5 +475,5 @@ function runDumpMysqlDatabaseData {
         echo -e "SET names 'utf8';\n$(cat /tmp/dd.sql)" > $2
         rm -f /tmp/dd.sql;
         displayDebugMessage "base mysql : Dumping mysql data for database $1 (raw)"
-    fi 
+    fi
 }

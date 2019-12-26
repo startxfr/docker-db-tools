@@ -12,9 +12,9 @@ services:
   - docker
 
 before_install:
-- docker pull couchbase:enterprise-5.0.1
-- docker pull mariadb:5.5
-- docker images
+  - docker pull couchbase:enterprise-5.5.2
+  - docker pull mariadb:5.5
+  - docker images
 
 script: ./travis-test.sh
 
