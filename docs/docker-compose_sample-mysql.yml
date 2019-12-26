@@ -9,7 +9,7 @@ app:
   command: ["create" , "mysql"]
 
 db-mysql:
-  image: mariadb:5.5
+  image: mariadb:10.0
   container_name: "sx-dbtools_mysql"
   environment:
    - MYSQL_ROOT_PASSWORD=rootPassword

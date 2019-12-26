@@ -4,7 +4,7 @@ app:
     - MYSQL_ADMIN=root:rootPassword
 
 db-mysql:
-  image: mariadb:5.5
+  image: mariadb:10.0
   environment:
     - MYSQL_ROOT_PASSWORD=rootPassword
 
