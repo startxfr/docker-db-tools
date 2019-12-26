@@ -157,7 +157,7 @@ you must tag properly the database service when you link your containers.
 
 | Link tag | Description                                                 |
 | -------- | :---------------------------------------------------------- |
-| dbm      | mysql container running offical `mariadb:5.5` image         |
+| dbm      | mysql container running offical `mariadb:10.0` image         |
 | dbc      | couchbase container running offical `couchbase:5.5.2` image |
 
 #### Examples
