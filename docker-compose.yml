@@ -7,12 +7,13 @@ app:
     - db-mysql:dbm
     - db-couchbase:dbc
   environment:
-   - MYSQL_DATABASE=dbDemo1;dbDemo2;dbDemo3
-   - MYSQL_ADMIN=root:rootPassword
-   - MYSQL_USERS=dbDemoUser1:pwdtest1,dbDemoUser2:pwdtest2,dbDemoUser3
-   - COUCHBASE_ADMIN=root:rootPassword
-   - COUCHBASE_BUCKET=cbDemo1;cbDemo2
-   - COUCHBASE_USERS=cbDemoUser1:pwdtest1,cbDemoUser2
+    - MYSQL_DATABASE=dbDemo1;dbDemo2;dbDemo3
+    - MYSQL_ADMIN=root:rootPassword
+    - MYSQL_USERS=dbDemoUser1:pwdtest1,dbDemoUser2:pwdtest2,dbDemoUser3
+    - COUCHBASE_ADMIN=root:rootPassword
+    - COUCHBASE_BUCKET=cbDemo1;cbDemo2
+    - COUCHBASE_USERS=cbDemoUser1:pwdtest1,cbDemoUser2
+    - SXDBTOOLS_DEBUG=false
   volumes:
     - "./sample/dump:/dump:rw"
     - "./sample/backup:/backup:rw"
@@ -24,8 +25,8 @@ db-mysql:
     service: db-mysql
   container_name: "sx-dbtools_mysql"
   environment:
-   - MYSQL_ROOT_PASSWORD=rootPassword
-   
+    - MYSQL_ROOT_PASSWORD=rootPassword
+
 db-couchbase:
   extends:
     file: docker-compose-abstract.yml

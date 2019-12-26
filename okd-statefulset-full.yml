@@ -475,7 +475,7 @@ parameters:
   value: metadata.namespace
   required: true
 - name: IMAGE_NAME
-  value: couchbase:5.0.1
+  value: couchbase:5.5.2
   required: true
 - name: REGISTRY
   value: "###REGISTRY_IP###:5000"
