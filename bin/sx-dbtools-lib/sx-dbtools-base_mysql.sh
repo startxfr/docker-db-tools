@@ -200,7 +200,7 @@ function runCreateMysqlUser {
         echo "    - with pwd    : [user given]"
     fi
     mysql -h $MYSQL_HOST -u $MYSQL_USER --password=$MYSQL_PASSWORD \
-    -e "CREATE USER '$USER'@'%' IDENTIFIED BY '$PWD';"
+    -e "DROP USER IF EXISTS '$USER'@'%'; FLUSH PRIVILEGES; CREATE USER '$USER'@'%' IDENTIFIED BY '$PWD'; GRANT ALL PRIVILEGES ON *.* TO '$USER'@'%' WITH GRANT OPTION; FLUSH PRIVILEGES;"
     if [ ! -z "$MYSQL_DATABASE" ]; then
         for DATABASE in $(echo $MYSQL_DATABASE | tr "," "\n")
         do
