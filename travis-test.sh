@@ -11,6 +11,15 @@ sudo service docker restart
 echo "========> BUILDING APPLICATIONS Containers (dev)"
 sudo docker-compose -f travis-docker-compose.yml build
 
+echo "========> STARTING DATABASE Containers (dev)"
+sudo docker-compose -f travis-docker-compose.yml up -d db-mysql db-couchbase
+sudo docker-compose logs --tail=500
+
+echo "========> waiting for database startup (30sec)" && sleep 10
+echo "========> waiting for database startup (20sec)" && sleep 10
+echo "========> waiting for database startup (10sec)" && sleep 10
+echo "========> waiting for database startup (0sec)"
+
 echo "========> STARTING APPLICATION Containers (dev)"
 sudo docker-compose -f travis-docker-compose.yml up app
 
