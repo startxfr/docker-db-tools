@@ -18,7 +18,7 @@ LOCK TABLES `app` WRITE;
 INSERT INTO `
 app`
 VALUES
-    (1, 'version', '0.1.32');
+    (1, 'version', '0.1.34');
 UNLOCK TABLES;
 
 --
