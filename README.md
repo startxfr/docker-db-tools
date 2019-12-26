@@ -46,7 +46,7 @@ you must tag properly the database service when you link your containers.
 
 | Link tag | Description                                                 |
 | -------- | :---------------------------------------------------------- |
-| dbm      | mysql container running offical `mariadb:5.5` image         |
+| dbm      | mysql container running offical `mariadb:10.0` image         |
 | dbc      | couchbase container running offical `couchbase:5.5.2` image |
 
 See [docker linked services examples](https://github.com/startxfr/docker-db-tools/tree/master/docs/USE_docker.md#linked-services), [docker-compose linked services examples](https://github.com/startxfr/docker-db-tools/tree/master/docs/USE_compose.md#linked-services) or [openshift linked services examples](https://github.com/startxfr/docker-db-tools/tree/master/docs/USE_openshift.md#linked-services) for copy and paste examples.

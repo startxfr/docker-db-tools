@@ -96,7 +96,7 @@ app: # docker-compose service name for application
   command: ["create"] # sx-dbtools command
 
 db-mysql: # docker-compose service name for mysql database
-  image: mariadb:5.5 # sx-dbtools container image for mysql
+  image: mariadb:10.0 # sx-dbtools container image for mysql
   container_name: "sx-dbtools_mysql" # mysql container name
   environment: # enable configuration of environment variables
     - MYSQL_ROOT_PASSWORD=rootPassword # password of the mysql root user
@@ -116,7 +116,7 @@ If you want to use sx-dbtools with a mysql database, you can run this command to
 
 ```yaml
 db-mysql: # docker-compose service name for mysql database
-  image: mariadb:5.5 # sx-dbtools container image for mysql
+  image: mariadb:10.0 # sx-dbtools container image for mysql
   container_name: "sx-dbtools_mysql" # mysql container name
   environment: # enable configuration of environment variables
     - MYSQL_ROOT_PASSWORD=rootPassword # password of the mysql root user
@@ -199,7 +199,7 @@ you must tag properly the database service when you link your containers.
 
 | Link tag | Description                                                 |
 | -------- | :---------------------------------------------------------- |
-| dbm      | mysql container running offical `mariadb:5.5` image         |
+| dbm      | mysql container running offical `mariadb:10.0` image         |
 | dbc      | couchbase container running offical `couchbase:5.5.2` image |
 
 #### Examples
