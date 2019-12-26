@@ -19,7 +19,7 @@ db-mysql:
    - MYSQL_ROOT_PASSWORD=rootPassword
    
 db-couchbase:
-  image: couchbase:enterprise-5.0.1
+  image: couchbase:enterprise-5.5.2
   container_name: "sx-dbtools_couchbase"
   ports:
     - 8091-8094:8091-8094

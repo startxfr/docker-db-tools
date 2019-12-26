@@ -7,13 +7,13 @@ app:
     - db-mysql:dbm
     - db-couchbase:dbc
   environment:
-   - MYSQL_DATABASE=demo,demo2,demo3
-   - MYSQL_ADMIN=root:rootPassword
-   - MYSQL_USERS=demo:pwd,user3:pwd3,test
-   - COUCHBASE_ADMIN=demo:password
-   - COUCHBASE_BUCKET=demo,demo2
-   - COUCHBASE_USERS=demo1:password1,demo2
-   - SXDBTOOLS_DEBUG=false
+    - MYSQL_DATABASE=demo,demo2,demo3
+    - MYSQL_ADMIN=root:rootPassword
+    - MYSQL_USERS=demo:pwd,user3:pwd3,test
+    - COUCHBASE_ADMIN=demo:password
+    - COUCHBASE_BUCKET=demo,demo2
+    - COUCHBASE_USERS=demo1:password1,demo2
+    - SXDBTOOLS_DEBUG=false
   volumes:
     - "./sample/dump:/dump:z"
     - "./sample/backup:/backup:z"
@@ -28,8 +28,8 @@ db-mysql:
     service: db-mysql
   container_name: "sx-dbtools_mysql"
   environment:
-   - MYSQL_ROOT_PASSWORD=rootPassword
-   
+    - MYSQL_ROOT_PASSWORD=rootPassword
+
 db-couchbase:
   extends:
     file: docker-compose-abstract.yml
@@ -44,6 +44,6 @@ pma:
   links:
     - db-mysql:db
   environment:
-   - PMA_HOST=db
-   - PMA_USER=root
-   - PMA_PASSWORD=rootPassword
+    - PMA_HOST=db
+    - PMA_USER=root
+    - PMA_PASSWORD=rootPassword

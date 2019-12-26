@@ -1,15 +1,15 @@
 app:
   build: ./
   environment:
-   - MYSQL_ADMIN=root:rootPassword
+    - MYSQL_ADMIN=root:rootPassword
 
 db-mysql:
   image: mariadb:5.5
   environment:
-   - MYSQL_ROOT_PASSWORD=rootPassword
-   
+    - MYSQL_ROOT_PASSWORD=rootPassword
+
 db-couchbase:
-  image: couchbase:enterprise-5.0.1
+  image: couchbase:enterprise-5.5.2
   ports:
     - 8091-8094:8091-8094
     - 11210:11210
@@ -17,10 +17,10 @@ db-couchbase:
 pma:
   image: phpmyadmin/phpmyadmin
   environment:
-   - PMA_USER=root
-   - PMA_PASSWORD=rootPassword
-   - PMA_VERBOSE=true
-   - PMA_PORT=3306
-   - PMA_ABSOLUTE_URI=http://localhost:1901
+    - PMA_USER=root
+    - PMA_PASSWORD=rootPassword
+    - PMA_VERBOSE=true
+    - PMA_PORT=3306
+    - PMA_ABSOLUTE_URI=http://localhost:1901
   ports:
     - "1901:80"
