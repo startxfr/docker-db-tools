@@ -10,7 +10,7 @@ function displayCouchbaseTabInfoBlock {
     if [ `isDebug` == "true" ]; then
         echo "  - couchbase admin : $COUCHBASE_ADMIN"
         echo "  - couchbase user(s) : $COUCHBASE_USERS"
-    fi 
+    fi
 }
 
 
@@ -21,16 +21,16 @@ function checkCouchbaseEnv {
         if [ -z "$DBC_PORT_8091_TCP_ADDR" ]; then
             displayErrorMessage "Need to expose port 8091 from your couchbase container"
             exit 128;
-        fi 
+        fi
         COUCHBASE_HOST="$DBC_PORT_8091_TCP_ADDR"
         COUCHBASE_PORT="$DBC_PORT_8091_TCP_PORT_START"
         displayDebugMessage "couchbase host set to $COUCHBASE_HOST"
-    elif [ ! -z "$DBC_SERVICE_HOST" ]; then
+        elif [ ! -z "$DBC_SERVICE_HOST" ]; then
         displayDebugMessage "couchbase linked container labeled 'dbc' via kubernetes"
         if [ -z "$DBC_PORT_8091_TCP_PORT" ]; then
             displayErrorMessage "Need to expose port 8091 from your couchbase container"
             exit 128;
-        fi 
+        fi
         COUCHBASE_HOST="$DBC_SERVICE_HOST"
         COUCHBASE_PORT="$DBC_PORT_8091_TCP_PORT"
         displayDebugMessage "couchbase host set to $COUCHBASE_HOST"
@@ -39,11 +39,11 @@ function checkCouchbaseEnv {
         if [ -z "$COUCHBASE_HOST" ]; then
             displayErrorMessage "Need to set COUCHBASE_HOST"
             exit 128;
-        fi 
+        fi
         displayDebugMessage "couchbase host set to $COUCHBASE_HOST"
         if [ -z "$COUCHBASE_PORT" ]; then
             COUCHBASE_PORT=8091
-        fi 
+        fi
     fi
     if [ -z "$COUCHBASE_BUCKET" ]; then
         displayErrorMessage "Need to set COUCHBASE_BUCKET"
@@ -60,17 +60,20 @@ function checkCouchbaseEnv {
             if [ -z "$PWD" ]; then
                 COUCHBASE_GENERATED="true"
                 COUCHBASE_PASSWORD=$(openssl rand -base64 32 | sha256sum | base64 | head -c 16 ; echo)
-            else 
+            else
                 COUCHBASE_PASSWORD=$PWD
             fi
             displayDebugMessage "couchbase admin user set to $COUCHBASE_ADMIN"
             displayDebugMessage "couchbase admin password set to $COUCHBASE_PASSWORD"
+        else
+            displayDebugMessage "couchbase admin user set to $COUCHBASE_ADMIN"
+            displayDebugMessage "couchbase admin password set to [secret]"
         fi
-    fi 
+    fi
     if [ -z "$COUCHBASE_DUMP_DIR" ]; then
         displayErrorMessage "Need to set COUCHBASE_DUMP_DIR"
         exit 128;
-    fi 
+    fi
     mkdir -p $COUCHBASE_DUMP_DIR
     if checkCouchbaseIsNotInitialized; then
         echo "  - initialize cluster $COUCHBASE_HOST"
@@ -86,7 +89,7 @@ function dumpCouchbaseBucketAll {
             echo "  - dump data $BUCKET > $BUCKET.$COUCHBASE_DUMP_DATAFILE"
             runDumpCouchbaseBucket $BUCKET
         done
-    fi 
+    fi
 }
 
 function dumpCouchbaseBucketOne {
@@ -127,14 +130,14 @@ function checkCouchbaseBucketsExist {
             echo $(runCheckCouchbaseBucketExist $BUCKET)
             return;
         done
-    fi 
+    fi
 }
 
 function checkCouchbaseBucketExist {
     if [ ! -z "$1" ]; then
         echo $(runCheckCouchbaseBucketExist $1)
         return;
-    fi 
+    fi
 }
 
 function runCheckCouchbaseBucketExist {
@@ -162,7 +165,7 @@ function initializeCouchbase {
         echo "  - user : $COUCHBASE_ADMIN created"
         echo "  - with pwd : [generated]"
         echo "  - password : $COUCHBASE_PASSWORD (! NOTICE : display only once)"
-    else 
+    else
         echo "  - user : $COUCHBASE_ADMIN created"
         echo "  - with pwd : [user given]"
     fi
@@ -176,7 +179,7 @@ function createCouchbaseBuckets {
             echo "  - create bucket $1"
             runCreateCouchbaseBucket $BUCKET
         done
-    fi 
+    fi
 }
 
 function createCouchbaseBucket {
@@ -184,7 +187,7 @@ function createCouchbaseBucket {
     if [ ! -z "$1" ]; then
         echo "  - create bucket $1"
         runCreateCouchbaseBucket $1
-    fi 
+    fi
 }
 
 function runCreateCouchbaseBucket {
@@ -212,7 +215,7 @@ function createCouchbaseUsers {
             USER=$1; PWD=$2; set +f; unset IFS
             createCouchbaseUser $USER $PWD
         done
-    fi 
+    fi
     if [[ -r $COUCHBASE_DUMP_DIR/USER ]]; then
         for userInfo in $(cat $COUCHBASE_DUMP_DIR/USER | tr "," "\n")
         do
@@ -220,14 +223,14 @@ function createCouchbaseUsers {
             USER=$1; PWD=$2; set +f; unset IFS
             createCouchbaseUser $USER $PWD
         done
-    fi 
+    fi
 }
 
 function createCouchbaseUser {
     displayDebugMessage "base_couchbase : createCouchbaseUser($1,$2)"
     if [[ ! -z "$1" ]]; then
         runCreateCouchbaseUser $1 $2
-    fi 
+    fi
 }
 
 function runCreateCouchbaseUser {
@@ -240,7 +243,7 @@ function runCreateCouchbaseUser {
         PWD=$(openssl rand -base64 32 | sha256sum | base64 | head -c 16 ; echo)
         echo "    - with pwd    : [generated]"
         echo "    - password    : $PWD (! NOTICE : display only once)"
-    else 
+    else
         echo "    - with pwd    : [user given]"
     fi
     if couchbase-cli user-manage \
@@ -265,23 +268,23 @@ function importCouchbaseBuckets {
         do
             runImportCouchbaseBucketData $BUCKET
         done
-    fi 
+    fi
 }
 
 function importCouchbaseBucket {
     displayDebugMessage "base_couchbase : importCouchbaseBucket($1)"
     if [ ! -z "$1" ]; then
         runImportCouchbaseBucketData $1
-    fi 
+    fi
 }
 
 function runImportCouchbaseBucketData {
     displayDebugMessage "base_couchbase : runImportCouchbaseBucketData($1)"
     if [[ -r $COUCHBASE_DUMP_DIR/$1.$COUCHBASE_DUMP_DATAFILE ]]; then
         FILE=$1.$COUCHBASE_DUMP_DATAFILE
-    elif [[ -r $COUCHBASE_DUMP_DIR/$COUCHBASE_DUMP_DATAFILE ]]; then
+        elif [[ -r $COUCHBASE_DUMP_DIR/$COUCHBASE_DUMP_DATAFILE ]]; then
         FILE=$COUCHBASE_DUMP_DATAFILE
-    fi 
+    fi
     echo "  - load data $FILE > $1"
     if cbimport json \
     -f list \
@@ -305,7 +308,7 @@ function deleteCouchbaseBuckets {
             echo "  - delete bucket $1"
             runDeleteCouchbaseBucket $BUCKET
         done
-    fi 
+    fi
 }
 
 function deleteCouchbaseBucket {
@@ -313,7 +316,7 @@ function deleteCouchbaseBucket {
     if [ ! -z "$1" ]; then
         echo "  - delete bucket $1"
         runDeleteCouchbaseBucket $1
-    fi 
+    fi
 }
 
 function runDeleteCouchbaseBucket {
@@ -339,7 +342,7 @@ function deleteCouchbaseUsers {
             echo "  - delete couchbase user $USER"
             runDeleteCouchbaseUser $USER
         done
-    fi 
+    fi
     if [[ -r $COUCHBASE_DUMP_DIR/USER ]]; then
         for userInfo in $(cat $COUCHBASE_DUMP_DIR/USER | tr "," "\n")
         do
@@ -347,7 +350,7 @@ function deleteCouchbaseUsers {
             USER=$1; PWD=$2; set +f; unset IFS
             runDeleteCouchbaseUser $USER
         done
-    fi 
+    fi
 }
 
 function deleteCouchbaseUser {
@@ -355,7 +358,7 @@ function deleteCouchbaseUser {
     if [ ! -z "$1" ]; then
         echo "  - delete couchbase user $1"
         runDeleteCouchbaseUser $1
-    fi 
+    fi
 }
 
 function runDeleteCouchbaseUser {
