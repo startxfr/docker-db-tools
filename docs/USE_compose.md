@@ -91,7 +91,7 @@ UNLOCK TABLES;
 
 ```javascript
 [
-    {"_id":"app::version","app":"sx-dbtools","stage":"dev","version":"0.1.37"}
+    {"_id":"app::version","app":"sx-dbtools","stage":"dev","version":"0.1.38"}
 ]
 ```
 
@@ -208,10 +208,10 @@ You can connect to your database backend to see created database or look at volu
 
 you must tag properly the database service when you link your containers. 
 
-| Link tag  | Description
-|-----------|:------------
-| dbm       | mysql container running offical `mariadb:10.0` image
-| dbc       | couchbase container running offical `couchbase:5.5.2` image
+| Link tag | Description                                                 |
+| -------- | :---------------------------------------------------------- |
+| dbm      | mysql container running offical `mariadb:10.0` image        |
+| dbc      | couchbase container running offical `couchbase:5.5.2` image |
 
 #### Examples
 
@@ -239,10 +239,10 @@ app:                                        # docker-compose service name
 you must use the appropriate data volumes and fill them with appropriate file to get your data
 loaded or dumped properly.
 
-| Container volume   | Description
-|--------------------|:------------
-| `/dump`            | volume containing a `mysql` directory and/or a `couchbase` directory
-| `/backup`          | volume containing backup files
+| Container volume | Description                                                          |
+| ---------------- | :------------------------------------------------------------------- |
+| `/dump`          | volume containing a `mysql` directory and/or a `couchbase` directory |
+| `/backup`        | volume containing backup files                                       |
 
 ### Examples
 
@@ -278,26 +278,26 @@ app:                                        # docker-compose service name
 Using environement variable you can customize this tools and use it to interact with
 various kind of backend infrastructure (container, host, remote, IaaS, DBaaS)
 
-| Variable                 | Default         | Description
-|--------------------------|:---------------:|:---------------
-| SXCMD                    |                 | If set, container will execute this command instead of the container command (ex: SXCMD="create mysql demo2" for creating the demo2 mysql database)
-| SXDBTOOLS_DEBUG          | true            | Activate debugging display
-| SXDBTOOLS_BACKUP_DIR     | /backup         | The final destination directory for backup
-| SXDBTOOLS_DUMP_DIR       | /dump           | The final destination directory for dump
-| MYSQL_DUMP_DIR           | /dump/mysql     | Directory used for save and restore mysql dump (container internal path)
-| MYSQL_DUMP_DATAFILE      | data.sql        | Filename of the default sql data dump file 
-| MYSQL_DUMP_SCHEMAFILE    | schema.sql      | Filename of the default sql schema dump file
-| MYSQL_DUMP_ISEXTENDED    | true            | Enable smart extended dump for fast load, readibility and versioning
-| MYSQL_HOST               | dbm             | Hostname of the mysql database. Could use whatever public IP or DSN.
-| MYSQL_ADMIN              | [linked user]   | Mysql admin user and password (ex: user:password). Default will use root and MYSQL_ROOT_PASSWORD found into the linked container
-| MYSQL_DATABASE           |                 | Mysql database name to use or create
-| MYSQL_USERS              |                 | Mysql list of users to the database "," is separator between users and ":" between user and his password. ex : user:password,user2:user2Password,user3,user4
-| COUCHBASE_DUMP_DIR       | /dump/couchbase | Directory used for save and restore couchbase dump (container internal path)
-| COUCHBASE_DUMP_DATAFILE  | data.json       | Filename of the json data dump file
-| COUCHBASE_HOST           | dbc             | Hostname of the couchbase database. Could use whatever public IP or DSN.
-| COUCHBASE_ADMIN          | dev:dev         | Couchbase admin user and password (ex: user:password)
-| COUCHBASE_USERS          |                 | Mysql list of users to the cluster "," is separator between users and ":" between user and his password. ex : user:password,user2:user2Password,user3,user4
-| COUCHBASE_BUCKET         |                 | Couchbase bucket name to use or create
+| Variable                |     Default     | Description                                                                                                                                                  |
+| ----------------------- | :-------------: | :----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| SXCMD                   |                 | If set, container will execute this command instead of the container command (ex: SXCMD="create mysql demo2" for creating the demo2 mysql database)          |
+| SXDBTOOLS_DEBUG         |      true       | Activate debugging display                                                                                                                                   |
+| SXDBTOOLS_BACKUP_DIR    |     /backup     | The final destination directory for backup                                                                                                                   |
+| SXDBTOOLS_DUMP_DIR      |      /dump      | The final destination directory for dump                                                                                                                     |
+| MYSQL_DUMP_DIR          |   /dump/mysql   | Directory used for save and restore mysql dump (container internal path)                                                                                     |
+| MYSQL_DUMP_DATAFILE     |    data.sql     | Filename of the default sql data dump file                                                                                                                   |
+| MYSQL_DUMP_SCHEMAFILE   |   schema.sql    | Filename of the default sql schema dump file                                                                                                                 |
+| MYSQL_DUMP_ISEXTENDED   |      true       | Enable smart extended dump for fast load, readibility and versioning                                                                                         |
+| MYSQL_HOST              |       dbm       | Hostname of the mysql database. Could use whatever public IP or DSN.                                                                                         |
+| MYSQL_ADMIN             |  [linked user]  | Mysql admin user and password (ex: user:password). Default will use root and MYSQL_ROOT_PASSWORD found into the linked container                             |
+| MYSQL_DATABASE          |                 | Mysql database name to use or create                                                                                                                         |
+| MYSQL_USERS             |                 | Mysql list of users to the database "," is separator between users and ":" between user and his password. ex : user:password,user2:user2Password,user3,user4 |
+| COUCHBASE_DUMP_DIR      | /dump/couchbase | Directory used for save and restore couchbase dump (container internal path)                                                                                 |
+| COUCHBASE_DUMP_DATAFILE |    data.json    | Filename of the json data dump file                                                                                                                          |
+| COUCHBASE_HOST          |       dbc       | Hostname of the couchbase database. Could use whatever public IP or DSN.                                                                                     |
+| COUCHBASE_ADMIN         |     dev:dev     | Couchbase admin user and password (ex: user:password)                                                                                                        |
+| COUCHBASE_USERS         |                 | Mysql list of users to the cluster "," is separator between users and ":" between user and his password. ex : user:password,user2:user2Password,user3,user4  |
+| COUCHBASE_BUCKET        |                 | Couchbase bucket name to use or create                                                                                                                       |
 
 #### Examples
 
@@ -343,17 +343,17 @@ app:                                        # docker-compose service name
 
 ### Global Commands
 
-| Command        | database-type   | options  | Description
-|----------------|-----------------|----------|---------------
-| create         |                 |          | Create all user(s) + database(s) + data for all database type
-| create         | mysql/couchbase |          | Create all user(s) + database(s) + data for one database type (mysql or couchbase)
-| create         | mysql/couchbase | database | Create one database + data for one database type (mysql or couchbase)
-| delete         |                 |          | Delete all user(s) + database(s) + data for all database type
-| delete         | mysql/couchbase |          | Delete all user(s) + database(s) + data for one database type (mysql or couchbase)
-| delete         | mysql/couchbase | database | Delete one database + data for one database type (mysql or couchbase)
-| recreate       |                 |          | Delete and create all user(s) + database(s) + data for all database type
-| recreate       | mysql/couchbase |          | Delete and create all user(s) + database(s) + data for one database type (mysql or couchbase)
-| recreate       | mysql/couchbase | database | Delete and create one database + data for one database type (mysql or couchbase)
+| Command  | database-type   | options  | Description                                                                                   |
+| -------- | --------------- | -------- | --------------------------------------------------------------------------------------------- |
+| create   |                 |          | Create all user(s) + database(s) + data for all database type                                 |
+| create   | mysql/couchbase |          | Create all user(s) + database(s) + data for one database type (mysql or couchbase)            |
+| create   | mysql/couchbase | database | Create one database + data for one database type (mysql or couchbase)                         |
+| delete   |                 |          | Delete all user(s) + database(s) + data for all database type                                 |
+| delete   | mysql/couchbase |          | Delete all user(s) + database(s) + data for one database type (mysql or couchbase)            |
+| delete   | mysql/couchbase | database | Delete one database + data for one database type (mysql or couchbase)                         |
+| recreate |                 |          | Delete and create all user(s) + database(s) + data for all database type                      |
+| recreate | mysql/couchbase |          | Delete and create all user(s) + database(s) + data for one database type (mysql or couchbase) |
+| recreate | mysql/couchbase | database | Delete and create one database + data for one database type (mysql or couchbase)              |
 
 #### Examples
 
@@ -429,15 +429,15 @@ app:                                        # docker-compose service name
 
 ### Data Commands
 
-| Command        | database-type   | options  | Description
-|----------------|-----------------|----------|---------------
-| dump           |                 |          | Dump all database(s) AND all bucket(s) in dump directory
-| dump           | mysql/couchbase |          | Dump all database(s) OR all bucket(s) in dump directory
-| dump           | mysql/couchbase | database | Dump only one database or bucket in dump directory
-| import         |                 |          | import all database(s) AND all bucket(s) from dump directory
-| import         | mysql/couchbase |          | import all database(s) OR all bucket(s) from dump directory
-| import         | mysql/couchbase | database | import database(s) from dump directory
-| create-data    |                 |          | alias of import command
+| Command     | database-type   | options  | Description                                                  |
+| ----------- | --------------- | -------- | ------------------------------------------------------------ |
+| dump        |                 |          | Dump all database(s) AND all bucket(s) in dump directory     |
+| dump        | mysql/couchbase |          | Dump all database(s) OR all bucket(s) in dump directory      |
+| dump        | mysql/couchbase | database | Dump only one database or bucket in dump directory           |
+| import      |                 |          | import all database(s) AND all bucket(s) from dump directory |
+| import      | mysql/couchbase |          | import all database(s) OR all bucket(s) from dump directory  |
+| import      | mysql/couchbase | database | import database(s) from dump directory                       |
+| create-data |                 |          | alias of import command                                      |
 
 #### Examples
 
@@ -506,12 +506,12 @@ app:                                        # docker-compose service name
 
 ### Backup / Restore Commands
 
-| Command        | database-type   | options  | Description
-|----------------|-----------------|----------|---------------
-| backup         |                 |          | Backup database(s) in backup directory (not implemented)
-| backup         | mysql/couchbase |          | Backup all database(s) or all bucket(s) in backup directory (not implemented)
-| backup         | mysql/couchbase | database | Backup one database or bucket in backup directory (not implemented)
-| restore        | archivename.tgz |          | Restore database(s) in backup directory (not implemented)
+| Command | database-type   | options  | Description                                                                   |
+| ------- | --------------- | -------- | ----------------------------------------------------------------------------- |
+| backup  |                 |          | Backup database(s) in backup directory (not implemented)                      |
+| backup  | mysql/couchbase |          | Backup all database(s) or all bucket(s) in backup directory (not implemented) |
+| backup  | mysql/couchbase | database | Backup one database or bucket in backup directory (not implemented)           |
+| restore | archivename.tgz |          | Restore database(s) in backup directory (not implemented)                     |
 
 #### Examples
 
@@ -566,17 +566,17 @@ app:                                        # docker-compose service name
 
 ### Database Commands
 
-| Command        | database-type   | options  | Description
-|----------------|-----------------|----------|---------------
-| create-db      |                 |          | Create all database(s) for all database type
-| create-db      | mysql/couchbase |          | Create all database(s) for one database type (mysql or couchbase)
-| create-db      | mysql/couchbase | database | Create one database for one database type (mysql or couchbase)
-| delete-db      |                 |          | Delete all database(s) for all database type
-| delete-db      | mysql/couchbase |          | Delete all database(s) for one database type (mysql or couchbase)
-| delete-db      | mysql/couchbase | database | Delete one database for one database type (mysql or couchbase)
-| recreate-db    |                 |          | Delete and create all database(s) for all database type
-| recreate-db    | mysql/couchbase |          | Delete and create all database(s) for one database type (mysql or couchbase)
-| recreate-db    | mysql/couchbase | database | Delete and create one database for one database type (mysql or couchbase)
+| Command     | database-type   | options  | Description                                                                  |
+| ----------- | --------------- | -------- | ---------------------------------------------------------------------------- |
+| create-db   |                 |          | Create all database(s) for all database type                                 |
+| create-db   | mysql/couchbase |          | Create all database(s) for one database type (mysql or couchbase)            |
+| create-db   | mysql/couchbase | database | Create one database for one database type (mysql or couchbase)               |
+| delete-db   |                 |          | Delete all database(s) for all database type                                 |
+| delete-db   | mysql/couchbase |          | Delete all database(s) for one database type (mysql or couchbase)            |
+| delete-db   | mysql/couchbase | database | Delete one database for one database type (mysql or couchbase)               |
+| recreate-db |                 |          | Delete and create all database(s) for all database type                      |
+| recreate-db | mysql/couchbase |          | Delete and create all database(s) for one database type (mysql or couchbase) |
+| recreate-db | mysql/couchbase | database | Delete and create one database for one database type (mysql or couchbase)    |
 
 #### Examples
 
@@ -624,17 +624,17 @@ app:                                        # docker-compose service name
 
 ### User management Commands
 
-| Command        | database-type   | options  | Description
-|----------------|-----------------|----------|---------------
-| create-user    |                 |          | Create all user(s) for all database type
-| create-user    | mysql/couchbase |          | Create all user(s) for one database type (mysql or couchbase)
-| create-user    | mysql/couchbase | user     | Create one user for one database type (mysql or couchbase)
-| delete-user    |                 |          | Delete all user(s) for all database type
-| delete-user    | mysql/couchbase |          | Delete all user(s) for one database type (mysql or couchbase)
-| delete-user    | mysql/couchbase | user     | Delete one user for one database type (mysql or couchbase)
-| recreate-user  |                 |          | Delete and create all user(s) for all database type
-| recreate-user  | mysql/couchbase |          | Delete and create all user(s) for one database type (mysql or couchbase)
-| recreate-user  | mysql/couchbase | user     | Delete and create one user for one database type (mysql or couchbase)
+| Command       | database-type   | options | Description                                                              |
+| ------------- | --------------- | ------- | ------------------------------------------------------------------------ |
+| create-user   |                 |         | Create all user(s) for all database type                                 |
+| create-user   | mysql/couchbase |         | Create all user(s) for one database type (mysql or couchbase)            |
+| create-user   | mysql/couchbase | user    | Create one user for one database type (mysql or couchbase)               |
+| delete-user   |                 |         | Delete all user(s) for all database type                                 |
+| delete-user   | mysql/couchbase |         | Delete all user(s) for one database type (mysql or couchbase)            |
+| delete-user   | mysql/couchbase | user    | Delete one user for one database type (mysql or couchbase)               |
+| recreate-user |                 |         | Delete and create all user(s) for all database type                      |
+| recreate-user | mysql/couchbase |         | Delete and create all user(s) for one database type (mysql or couchbase) |
+| recreate-user | mysql/couchbase | user    | Delete and create one user for one database type (mysql or couchbase)    |
 
 #### Examples
 
@@ -682,16 +682,16 @@ app:                                        # docker-compose service name
 
 ### sx-dbtools Commands
 
-| Command        | database-type   | options  | Description
-|----------------|-----------------|----------|---------------
-| usage          |                 |          | usage message
-| <cmd>          | help            |          | display information about a command
-| info           |                 |          | give information about the running sx-dbtools
-| version        |                 |          | give the version of the running sx_dbtools
-| cmd            |                 |          | return an interactive bash command
-| bash           |                 |          | alias of command with no arguments
-| cmd            | command         |          | execute the command and return result
-| daemon         |                 |          | container never giveup and run permanently
+| Command | database-type | options | Description                                   |
+| ------- | ------------- | ------- | --------------------------------------------- |
+| usage   |               |         | usage message                                 |
+| <cmd>   | help          |         | display information about a command           |
+| info    |               |         | give information about the running sx-dbtools |
+| version |               |         | give the version of the running sx_dbtools    |
+| cmd     |               |         | return an interactive bash command            |
+| bash    |               |         | alias of command with no arguments            |
+| cmd     | command       |         | execute the command and return result         |
+| daemon  |               |         | container never giveup and run permanently    |
 
 #### Examples
 
