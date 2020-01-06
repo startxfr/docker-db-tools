@@ -91,7 +91,7 @@ UNLOCK TABLES;
 
 ```javascript
 [
-    {"_id":"app::version","app":"sx-dbtools","stage":"dev","version":"0.1.36"}
+    {"_id":"app::version","app":"sx-dbtools","stage":"dev","version":"0.1.37"}
 ]
 ```
 
