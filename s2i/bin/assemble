@@ -32,9 +32,10 @@ then
 else
     echo "$PREFIX no source dump directory. Create $SXDBTOOLS_DUMP_DIR"
     mkdir -p $SXDBTOOLS_DUMP_DIR
+    cp /tmp/*.sql /tmp/*.json /tmp/src/*.sql /tmp/src/*.json $SXDBTOOLS_DUMP_DIR/
 fi
-echo "$PREFIX Fixing perm"
-chown 1001:0 -R $SXDBTOOLS_DUMP_DIR $SXDBTOOLS_BACKUP_DIR &>/dev/null
-chmod g=u -R $SXDBTOOLS_DUMP_DIR $SXDBTOOLS_BACKUP_DIR &>/dev/null
+# echo "$PREFIX Fixing perm"
+# chown 1001:0 -R $SXDBTOOLS_DUMP_DIR $SXDBTOOLS_BACKUP_DIR &>/dev/null
+# chmod g=u -R $SXDBTOOLS_DUMP_DIR $SXDBTOOLS_BACKUP_DIR &>/dev/null
 
 exit 0;
