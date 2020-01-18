@@ -1,6 +1,6 @@
 FROM couchbase:enterprise-5.5.2
 
-ENV SXDBTOOLS_VERSION="0.1.39" \
+ENV SXDBTOOLS_VERSION="0.1.40" \
     SXDBTOOLS_BACKUP_DIR=/backup \
     SXDBTOOLS_DUMP_DIR=/dump \
     SXDBTOOLS_DEBUG=false \
@@ -44,7 +44,8 @@ RUN apt-get update -y && \
     rm -f /bin/sx-dbtools*.c && \
     adduser couchbase mysql > /dev/null && \
     adduser mysql couchbase > /dev/null  && \
-    chmod -R ugo+rw $SXDBTOOLS_BACKUP_DIR $SXDBTOOLS_BACKUP_DIR 
+    chown 1001:0 -R $SXDBTOOLS_DUMP_DIR $SXDBTOOLS_BACKUP_DIR $COUCHBASE_DUMP_DIR $MYSQL_DUMP_DIR  && \
+    chmod ugo+rwx $SXDBTOOLS_BACKUP_DIR $SXDBTOOLS_BACKUP_DIR $COUCHBASE_DUMP_DIR $MYSQL_DUMP_DIR
 
 WORKDIR /tmp
 
