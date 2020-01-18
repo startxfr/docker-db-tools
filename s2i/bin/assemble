@@ -9,33 +9,69 @@
 PREFIX="---> S2I assemble sx-dbtools : "
 
 echo "$PREFIX Installing application source"
-if [[ -r /tmp/src/backup ]]
+
+echo "$PREFIX Manage backup directory $SXDBTOOLS_BACKUP_DIR"
+if [[ ! -d $SXDBTOOLS_BACKUP_DIR ]]
 then
-    echo "$PREFIX copy source from /tmp/src/backup > $SXDBTOOLS_BACKUP_DIR"
-    cp /tmp/src/backup/. $SXDBTOOLS_BACKUP_DIR/
-elif [[ -r /tmp/backup ]]
-then
-    echo "$PREFIX copy source from /tmp/backup > $SXDBTOOLS_BACKUP_DIR"
-    cp /tmp/backup/. $SXDBTOOLS_BACKUP_DIR/
-else
-    echo "$PREFIX no source backup directory. Create $SXDBTOOLS_BACKUP_DIR"
+    echo "$PREFIX create backup directory $SXDBTOOLS_BACKUP_DIR"
     mkdir -p $SXDBTOOLS_BACKUP_DIR
+    echo "$PREFIX Fixing perm"
+    chown 1001:0 -R $SXDBTOOLS_BACKUP_DIR &>/dev/null
+    chmod g=u -R $SXDBTOOLS_BACKUP_DIR &>/dev/null
 fi
-if [[ -r /tmp/src/dump ]]
+if [ $(find /tmp -name '*.tgz' | wc -l) -gt 0 ]; then
+    echo "$PREFIX copy tgz files from /tmp > $SXDBTOOLS_BACKUP_DIR"
+    cp /tmp/*.tgz $SXDBTOOLS_BACKUP_DIR/
+fi
+if [ $(find /tmp/backup -name '*.tgz' | wc -l) -gt 0 ]; then
+    echo "$PREFIX copy tgz files from /tmp/backup > $SXDBTOOLS_BACKUP_DIR"
+    cp /tmp/backup/*.tgz $SXDBTOOLS_BACKUP_DIR/
+fi
+if [ $(find /tmp/src/backup -name '*.tgz' | wc -l) -gt 0 ]; then
+    echo "$PREFIX copy tgz files from /tmp/src/backup > $SXDBTOOLS_BACKUP_DIR"
+    cp /tmp/src/backup/*.tgz $SXDBTOOLS_BACKUP_DIR/
+fi
+
+echo "$PREFIX Manage dump directory $SXDBTOOLS_DUMP_DIR"
+if [[ ! -d $SXDBTOOLS_DUMP_DIR ]]
 then
-    echo "$PREFIX copy source from /tmp/src/dump > $SXDBTOOLS_DUMP_DIR"
-    cp /tmp/src/dump/. $SXDBTOOLS_DUMP_DIR/
-elif [[ -r /tmp/dump ]]
-then
-    echo "$PREFIX copy source from /tmp/dump > $SXDBTOOLS_DUMP_DIR"
-    cp /tmp/dump/. $SXDBTOOLS_DUMP_DIR/
-else
-    echo "$PREFIX no source dump directory. Create $SXDBTOOLS_DUMP_DIR"
+    echo "$PREFIX create dump directory $SXDBTOOLS_DUMP_DIR"
     mkdir -p $SXDBTOOLS_DUMP_DIR
-    cp /tmp/*.sql /tmp/*.json /tmp/src/*.sql /tmp/src/*.json $SXDBTOOLS_DUMP_DIR/
+    echo "$PREFIX Fixing perm"
+    chown 1001:0 -R $SXDBTOOLS_DUMP_DIR &>/dev/null
+    chmod g=u -R $SXDBTOOLS_DUMP_DIR &>/dev/null
 fi
-# echo "$PREFIX Fixing perm"
-# chown 1001:0 -R $SXDBTOOLS_DUMP_DIR $SXDBTOOLS_BACKUP_DIR &>/dev/null
-# chmod g=u -R $SXDBTOOLS_DUMP_DIR $SXDBTOOLS_BACKUP_DIR &>/dev/null
+if [ $(find /tmp -name '*.sql' | wc -l) -gt 0 ]; then
+    echo "$PREFIX copy sql files from /tmp > $MYSQL_DUMP_DIR"
+    cp /tmp/*.sql $MYSQL_DUMP_DIR/
+fi
+if [ $(find /tmp -name '*.json' | wc -l) -gt 0 ]; then
+    echo "$PREFIX copy json files from /tmp > $COUCHBASE_DUMP_DIR"
+    cp /tmp/*.json $COUCHBASE_DUMP_DIR/
+fi
+if [ $(find /tmp/dump -name '*.sql' | wc -l) -gt 0 ]; then
+    echo "$PREFIX copy sql files from /tmp/dump > $MYSQL_DUMP_DIR"
+    cp /tmp/dump/*.sql $MYSQL_DUMP_DIR/
+fi
+if [ $(find /tmp/dump -name '*.json' | wc -l) -gt 0 ]; then
+    echo "$PREFIX copy json files from /tmp/dump > $COUCHBASE_DUMP_DIR"
+    cp /tmp/dump/*.json $COUCHBASE_DUMP_DIR/
+fi
+if [ $(find /tmp/src/dump -name '*.sql' | wc -l) -gt 0 ]; then
+    echo "$PREFIX copy sql files from /tmp/src/dump > $MYSQL_DUMP_DIR"
+    cp /tmp/src/dump/*.sql $MYSQL_DUMP_DIR/
+fi
+if [ $(find /tmp/src/dump -name '*.json' | wc -l) -gt 0 ]; then
+    echo "$PREFIX copy json files from /tmp/src/dump > $COUCHBASE_DUMP_DIR"
+    cp /tmp/src/dump/*.json $COUCHBASE_DUMP_DIR/
+fi
+if [ $(find /tmp/src/dump/mysql -name '*.*' | wc -l) -gt 0 ]; then
+    echo "$PREFIX copy all files from /tmp/src/dump/mysql > $MYSQL_DUMP_DIR"
+    cp /tmp/src/dump/mysql/*.* $MYSQL_DUMP_DIR/
+fi
+if [ $(find /tmp/src/dump/couchbase -name '*.*' | wc -l) -gt 0 ]; then
+    echo "$PREFIX copy all files from /tmp/src/dump/couchbase > $COUCHBASE_DUMP_DIR"
+    cp /tmp/src/dump/couchbase/*.* $COUCHBASE_DUMP_DIR/
+fi
 
 exit 0;
