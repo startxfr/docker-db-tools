@@ -45,7 +45,8 @@ RUN apt-get update -y && \
     adduser couchbase mysql > /dev/null && \
     adduser mysql couchbase > /dev/null  && \
     chown 1001:0 -R $SXDBTOOLS_DUMP_DIR $SXDBTOOLS_BACKUP_DIR $COUCHBASE_DUMP_DIR $MYSQL_DUMP_DIR  && \
-    chmod ugo+rwx $SXDBTOOLS_BACKUP_DIR $SXDBTOOLS_BACKUP_DIR $COUCHBASE_DUMP_DIR $MYSQL_DUMP_DIR
+    chmod ugo+rwx $SXDBTOOLS_BACKUP_DIR $SXDBTOOLS_BACKUP_DIR $COUCHBASE_DUMP_DIR $MYSQL_DUMP_DIR && \
+    rm -rf /tmp/*.tgz
 
 WORKDIR /tmp
 
