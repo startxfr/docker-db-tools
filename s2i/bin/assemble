@@ -8,6 +8,8 @@
 #
 PREFIX="---> S2I assemble sx-dbtools : "
 
+echo "$PREFIX Start sx-dbtools v$SXDBTOOLS_VERSION"
+
 echo "$PREFIX Installing application source"
 
 echo "$PREFIX Manage backup directory $SXDBTOOLS_BACKUP_DIR"
