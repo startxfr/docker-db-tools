@@ -1,6 +1,6 @@
 FROM couchbase:enterprise-5.5.2
 
-ENV SXDBTOOLS_VERSION="0.1.42" \
+ENV SXDBTOOLS_VERSION="0.1.43" \
     SXDBTOOLS_BACKUP_DIR=/backup \
     SXDBTOOLS_DUMP_DIR=/dump \
     SXDBTOOLS_DEBUG=false \
