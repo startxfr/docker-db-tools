@@ -40,9 +40,9 @@ items:
           from:
             kind: DockerImage
             name: startx/db-tools:stable-s2i
-        - name: 0.1.43
+        - name: 0.1.44
           annotations:
-            openshift.io/display-name: S2I sx-dbtools (v0.1.43)
+            openshift.io/display-name: S2I sx-dbtools (v0.1.44)
             description:
               Database tools for manipulating couchbase and mariadb container.
               For more information about using this builder image, including OpenShift
@@ -54,7 +54,7 @@ items:
             sampleRepo: https://github.com/startxfr/docker-db-tools-example.git
           from:
             kind: DockerImage
-            name: startx/db-tools:0.1.43-s2i
+            name: startx/db-tools:0.1.44-s2i
         - name: 0.1.21
           annotations:
             openshift.io/display-name: S2I sx-dbtools (v0.1.21)
