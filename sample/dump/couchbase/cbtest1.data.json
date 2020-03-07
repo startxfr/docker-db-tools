@@ -2,5 +2,5 @@
     "_id": "app::version",
     "stage": "test",
     "app": "sx-dbtools",
-    "version": "0.1.44"
+    "version": "0.1.45"
 }]
