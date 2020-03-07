@@ -84,7 +84,7 @@ UNLOCK TABLES;
 #### Example for `~/dump/couchbase/data.json`
 
 ```javascript
-[{ _id: "app::version", app: "sx-dbtools", stage: "dev", version: "0.1.45" }];
+[{ _id: "app::version", app: "sx-dbtools", stage: "dev", version: "0.1.46" }];
 ```
 
 ## Running sx-dbtools
