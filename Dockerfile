@@ -1,6 +1,6 @@
 FROM couchbase:enterprise-5.5.2
 
-ENV SXDBTOOLS_VERSION="0.1.45" \
+ENV SXDBTOOLS_VERSION="0.1.46" \
     SXDBTOOLS_BACKUP_DIR=/backup \
     SXDBTOOLS_DUMP_DIR=/dump \
     SXDBTOOLS_DEBUG=true \
@@ -35,21 +35,21 @@ LABEL name="startx/db-tools" \
 
 COPY ./bin /tmp/sxbin
 COPY ./s2i/bin /s2i
-RUN apt-get update -y &&
-    apt-get dist-upgrade -y &&
-    apt-get install -y mariadb-server-10.0 mariadb-client-10.0 tar gzip &&
-    apt-get clean &&
-    mv /tmp/sxbin/* /bin/ &&
-    rm -rf /tmp/sxbin &&
-    mkdir -p $MYSQL_DUMP_DIR &&
-    mkdir -p $COUCHBASE_DUMP_DIR &&
-    mkdir -p $SXDBTOOLS_BACKUP_DIR &&
-    chmod -R ug+x /bin/sx-dbtools* &&
-    rm -f /bin/sx-dbtools*.c &&
-    adduser couchbase mysql >/dev/null &&
-    adduser mysql couchbase >/dev/null &&
-    chown 1001:0 -R $SXDBTOOLS_DUMP_DIR $SXDBTOOLS_BACKUP_DIR $COUCHBASE_DUMP_DIR $MYSQL_DUMP_DIR &&
-    chmod ugo+rwx $SXDBTOOLS_BACKUP_DIR $SXDBTOOLS_BACKUP_DIR $COUCHBASE_DUMP_DIR $MYSQL_DUMP_DIR &&
+RUN apt-get update -y && \
+    apt-get dist-upgrade -y && \
+    apt-get install -y mariadb-server-10.0 mariadb-client-10.0 tar gzip && \
+    apt-get clean && \
+    mv /tmp/sxbin/* /bin/ && \
+    rm -rf /tmp/sxbin && \
+    mkdir -p $MYSQL_DUMP_DIR && \
+    mkdir -p $COUCHBASE_DUMP_DIR && \
+    mkdir -p $SXDBTOOLS_BACKUP_DIR && \
+    chmod -R ug+x /bin/sx-dbtools* && \
+    rm -f /bin/sx-dbtools*.c && \
+    adduser couchbase mysql >/dev/null && \
+    adduser mysql couchbase >/dev/null && \
+    chown 1001:0 -R $SXDBTOOLS_DUMP_DIR $SXDBTOOLS_BACKUP_DIR $COUCHBASE_DUMP_DIR $MYSQL_DUMP_DIR && \
+    chmod ugo+rwx $SXDBTOOLS_BACKUP_DIR $SXDBTOOLS_BACKUP_DIR $COUCHBASE_DUMP_DIR $MYSQL_DUMP_DIR && \
     rm -rf /tmp/*.tgz
 
 WORKDIR /tmp
